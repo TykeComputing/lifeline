@@ -1,4 +1,4 @@
-lifeline
-========
+Lifeline Engine
+================
 
-Sandbox for toying with making a 2D game.
+Sandbox for making a 2D game.
