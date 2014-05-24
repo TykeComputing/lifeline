@@ -22,8 +22,11 @@ cmake_minimum_required(VERSION 2.8)
 
 project(lifeline)
 
-set(LIFELINE_EXECUTABLE_SRC_LIST
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+find_package(SDL2 REQUIRED)
+
+set(LE_EXECUTABLE_SRC_LIST
     src/main.cpp)
 
-add_executable(${PROJECT_NAME} ${LIFELINE_EXECUTABLE_SRC_LIST})
+add_executable(${PROJECT_NAME} ${LE_EXECUTABLE_SRC_LIST})
 
