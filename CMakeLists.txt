@@ -33,6 +33,7 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 
 include(${LE_CMAKE_DIR}/BuildWarnings.cmake)
+add_definitions(-std=c++11)
 
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp
