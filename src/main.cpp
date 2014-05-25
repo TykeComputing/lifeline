@@ -19,13 +19,16 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include <iostream>
-//#include <SDL2/SDL.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <SDL2/SDL.h>
 
-using namespace std;
+#define LE_UNUSED_VAR(x) (void)x;
 
-int main()
+int main(int arg_count, char ** args)
 {
-    cout << "Hello World!" << endl;
-    return 0;
+  LE_UNUSED_VAR(arg_count);
+  LE_UNUSED_VAR(args);
+
+  return 0;
 }

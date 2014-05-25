@@ -17,36 +17,15 @@
 # along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################################
 
-cmake_minimum_required(VERSION 2.8)
+message(STATUS "Setting build warnings for ${CMAKE_CXX_COMPILER_ID}")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  # TODO - When on a windows machine, find out what default switches are used in VS2013 and add them here.
+  set(WARNING_FLAGS "/EHa /MTd /W4 /WX /D_CRT_SECURE_NO_DEPRECATE")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall -Wextra -Werror")  
+  set(WARNING_FLAGS "${WARNING_FLAGS} -pedantic -pedantic-errors")
+  # TODO - Determine what warnings shoud be set by reading GCC docs and then set them here.
 
-# Will start with one project and split into multiple if deemed useful.
-project(lifeline)
-
-set(LE_CMAKE_DIR ${CMAKE_SOURCE_DIR}/CMake)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMake/Modules/)
-
-message(FATAL ${LE_CMAKE_DIR})
-message(FATAL ${CMAKE_MODULE_PATH})
-
-find_package(SDL2 REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(OpenGL REQUIRED)
-
-include(${LE_CMAKE_DIR}/BuildWarnings.cmake)
-
-set(LE_EXECUTABLE_SRC_LIST
-  src/main.cpp
-)
-
-include_directories(
-  ${GLEW_INCLUDE_PATH}
-  ${SDL2_INCLUDE_DIR}
-)
-
-add_executable(${PROJECT_NAME} ${LE_EXECUTABLE_SRC_LIST})
-
-target_link_libraries(${PROJECT_NAME}
-  ${GLEW_LIBRARY}
-  ${OPENGL_gl_LIBRARY}
-  ${SDL2_LIBRARY}
-)
+  # TODO - Place optimization flags for appropriate configurations elsewhere
+  #set(WARNING_FLAGS "${WARNING_FLAGS} -ftree-vectorize -ffast-math -ftree-vectorizer-verbose=1")
+endif()
