@@ -22,19 +22,39 @@ cmake_minimum_required(VERSION 2.8)#.12
 # Will start with one project and split into multiple if deemed useful.
 project(lifeline)
 
-message(STATUS "      Target OS: ${CMAKE_HOST_SYSTEM_NAME}")
-message(STATUS "Target compiler: ${CMAKE_CXX_COMPILER_ID}")
+set(TARGET_ARCH "x86" CACHE STRING "Determines if application 32 bit or 64 bit. This affects what external libs are used.")
 
 set(LE_CMAKE_DIR ${CMAKE_SOURCE_DIR}/CMake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMake/Modules/)
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set(LE_EXTERNAL_LIB_DIR "${PROJECT_SOURCE_DIR}/external/windows/lib/${TARGET_ARCH}" CACHE PATH "Where all external dependency libraries are stored.")
+  set(LE_EXTERNAL_DLL_DIR "${PROJECT_SOURCE_DIR}/external/windows/dll/${TARGET_ARCH}" CACHE PATH "Where all external dependency dlls are stored.")
+  set(LE_EXTERNAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/windows/include" CACHE PATH "Where all external dependency includes are stored.")
+endif()
+
+message(STATUS "##########################################")
+message(STATUS "Targets")
+message(STATUS "-------")
+message(STATUS "OS: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "Architecture: ${TARGET_ARCH}")
+message(STATUS "##########################################")
 
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 
 include(${LE_CMAKE_DIR}/BuildWarnings.cmake)
-add_definitions(-std=c++11)
-#add_compile_options(-m32 -std=c++11)
+include(${LE_CMAKE_DIR}/SetupLibraries.cmake)
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	add_compile_options(-std=c++11)
+
+	if("${TARGET_ARCH}" STREQUAL "x86")
+		add_compile_options(-m32)
+	endif()	
+endif()
 
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp

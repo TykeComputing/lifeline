@@ -113,10 +113,10 @@
 #=============================================================================
 
 # Lifeline Engine specific modifications:
-#   - Changed SDL2_SEARCH_PATHS values to be OS dependent (since they are).
-#     - Added Lifeline Engine specific path to external libraries.
+#   - Changed SDL2_SEARCH_PATHS values to be OS dependent (since they are). (5/2014)
+#     - Added Lifeline Engine specific path to external libraries. (5/2014)
 # Lifeline Engine specific TODO:
-#   - Clean up code added. (5/25/2014)
+#   - Clean up code added. (5/2014)
 
 ################################
 #
@@ -126,31 +126,22 @@
 IF("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
 	FIND_PATH(SDL2_INCLUDE_DIR SDL.h
 		HINTS $ENV{SDL2DIR}
-		PATHS external/windows/include/SDL2
+		PATHS ${LE_EXTERNAL_INCLUDE_DIR}/SDL2
 	)
 
 	FIND_LIBRARY(SDL2_LIBRARY_TEMP
 		NAMES SDL2
 		HINTS $ENV{SDL2DIR}
-		PATH_SUFFIXES lib64 lib
-		PATHS external/windows/lib/x86
+		PATHS ${LE_EXTERNAL_LIB_DIR}
 	)
 
-	IF(NOT SDL2_BUILDING_LIBRARY)
-		IF(NOT ${SDL2_INCLUDE_DIR} MATCHES ".framework")
-			# Non-OS X framework versions expect you to also dynamically link to
-			# SDL2main. This is mainly for Windows and OS X. Other (Unix) platforms
-			# seem to provide SDL2main for compatibility even though they don't
-			# necessarily need it.
-			FIND_LIBRARY(SDL2MAIN_LIBRARY
-				NAMES SDL2main
-				HINTS
-				$ENV{SDL2DIR}
-				PATH_SUFFIXES lib64 lib
-				PATHS ${SDL2_SEARCH_PATHS}
-			)
-		ENDIF(NOT ${SDL2_INCLUDE_DIR} MATCHES ".framework")
-	ENDIF(NOT SDL2_BUILDING_LIBRARY)
+	# FIND_LIBRARY(SDL2MAIN_LIBRARY
+	# 	NAMES SDL2main
+	# 	HINTS
+	# 	$ENV{SDL2DIR}
+	# 	PATH_SUFFIXES
+	# 	PATHS ${PROJECT_SOURCE_DIR}/external/windows/lib/${TARGET_ARCH}
+	# )
 
 ################################
 #
@@ -197,7 +188,9 @@ ELSEIF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 			)
 		ENDIF(NOT ${SDL2_INCLUDE_DIR} MATCHES ".framework")
 	ENDIF(NOT SDL2_BUILDING_LIBRARY)
-
+ELSE()
+	# Lifeline Engine TODO - Change this if needed.
+	MESSAGE(FATAL "Unable to find SDL2 - UNSUPPORTED PLATFORM")
 ENDIF()
 
 # SDL2 may require threads on your system.

@@ -17,15 +17,26 @@
 # along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################################
 
-message(STATUS "Setting build warnings for ${CMAKE_CXX_COMPILER_ID}...")
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  # TODO - When on a windows machine, find out what default switches are used in VS2013 and add them here.
-  set(WARNING_FLAGS "/EHa /MTd /W4 /WX /D_CRT_SECURE_NO_DEPRECATE")
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall -Wextra -Werror")  
-  set(WARNING_FLAGS "${WARNING_FLAGS} -pedantic -pedantic-errors")
-  # TODO - Determine what warnings shoud be set by reading GCC docs and then set them here.
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  message(STATUS "Copying all external DLLs from {LE_EXTERNAL_DLL_DIR}/...")
+  
+  file(GLOB EXTERNAL_DLL_REMOVAL_LIST "${CMAKE_BINARY_DIR}*.dll")
+  if(EXTERNAL_DLL_REMOVAL_LIST)
+    message(STATUS "  Removing ${EXTERNAL_DLL_REMOVAL_LIST}...")
+    file(REMOVE ${EXTERNAL_DLL_REMOVAL_LIST})
+  else()
+    message(STATUS "  Nothing to remove - no existing external dlls found...")
+  endif()
 
-  # TODO - Place optimization flags for appropriate configurations elsewhere
-  #set(WARNING_FLAGS "${WARNING_FLAGS} -ftree-vectorize -ffast-math -ftree-vectorizer-verbose=1")
+  file(GLOB EXTERNAL_DLL_COPY_LIST "${LE_EXTERNAL_DLL_DIR}/*.dll")
+  message(STATUS " test ${LE_EXTERNAL_DLL_DIR}")
+  if(EXTERNAL_DLL_COPY_LIST)
+    message(STATUS "  Copying ${EXTERNAL_DLL_COPY_LIST}...")
+    file(COPY ${EXTERNAL_DLL_COPY_LIST} DESTINATION "${CMAKE_BINARY_DIR}")
+  else()
+    message(STATUS "  Nothing to copy - no external dlls found...")
+  endif()
+
+  unset(EXTERNAL_DLL_REMOVAL_LIST)
+  unset(EXTERNAL_DLL_COPY_LIST)
 endif()

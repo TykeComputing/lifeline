@@ -9,21 +9,22 @@
 
 # SOURCE https://code.google.com/p/nvidia-texture-tools/source/browse/trunk/cmake/FindGLEW.cmake?r=96
 # Retreived on 5/24/14
-# Slighty modified
 
-IF (WIN32)
+# Lifeline Engine specific modifications:
+#   - Changed SDL2_SEARCH_PATHS values to be OS dependent (since they are). (5/2014)
+#     - Added Lifeline Engine specific path to external libraries. (5/2014)
+# Lifeline Engine specific TODO:
+#   - Clean up code added. (5/2014)
+
+IF ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
   FIND_PATH( GLEW_INCLUDE_PATH GL/glew.h
-    $ENV{PROGRAMFILES}/GLEW/include
-    ${PROJECT_SOURCE_DIR}/src/nvgl/glew/include
+    PATHS ${LE_EXTERNAL_INCLUDE_DIR}
     DOC "The directory where GL/glew.h resides")
   FIND_LIBRARY( GLEW_LIBRARY
     NAMES glew GLEW glew32 glew32s
-    PATHS
-    $ENV{PROGRAMFILES}/GLEW/lib
-    ${PROJECT_SOURCE_DIR}/src/nvgl/glew/bin
-    ${PROJECT_SOURCE_DIR}/src/nvgl/glew/lib
+    PATHS ${LE_EXTERNAL_LIB_DIR}
     DOC "The GLEW library")
-ELSE ()
+ELSE ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
   FIND_PATH( GLEW_INCLUDE_PATH GL/glew.h
     /usr/include
     /usr/local/include
@@ -41,6 +42,10 @@ ELSE ()
     /sw/lib
     /opt/local/lib
     DOC "The GLEW library")
+
+ELSE()
+    # Lifeline Engine TODO - Change this if needed.
+    MESSAGE(FATAL "Unable to find SDL2 - UNSUPPORTED PLATFORM")
 ENDIF ()
 
 IF (GLEW_INCLUDE_PATH)
