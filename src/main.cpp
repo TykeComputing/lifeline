@@ -23,7 +23,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/glew.h>
 #include <GL/gl.h>
-#include <SDL2/SDL.h>
+#include "SDL.h"
+#undef main
 
 #define LE_ERROR(msg) std::printf("%s:%s(%d) | %s\n", __FILE__, __FUNCTION__, __LINE__, msg)
 #define LE_PRINT_SDL_ERROR() LE_ERROR(SDL_GetError()); SDL_ClearError()
@@ -38,7 +39,7 @@ void LE_SDL_GL_SetAttribute(SDL_GLattr attrib, int val)
   }
 }
 
-int main(int arg_count, char ** args)
+int main(int arg_count, char *args[])
 {
   LE_UNUSED_VAR(arg_count);
   LE_UNUSED_VAR(args);
@@ -61,7 +62,7 @@ int main(int arg_count, char ** args)
   LE_SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 
   Uint32 sdl_window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
-  SDL_Window * app_window = SDL_CreateWindow("Lifeline Engine", 0, 0, 1280, 760, sdl_window_flags);
+  SDL_Window * app_window = SDL_CreateWindow("Lifeline Engine", 64, 64, 1280, 760, sdl_window_flags);
   if(app_window == nullptr)
   {
     LE_ERROR("OS Init: Error creating SDL window, exiting...\n");
