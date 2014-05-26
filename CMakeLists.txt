@@ -53,7 +53,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
 	if("${TARGET_ARCH}" STREQUAL "x86")
 		add_compile_options(-m32)
-	endif()	
+	endif()
 endif()
 
 set(LE_EXECUTABLE_SRC_LIST
@@ -71,4 +71,5 @@ target_link_libraries(${PROJECT_NAME}
   ${GLEW_LIBRARY}
   ${OPENGL_gl_LIBRARY}
   ${SDL2_LIBRARY}
+  ${SDL2MAIN_LIBRARY}
 )

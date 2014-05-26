@@ -24,7 +24,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include "SDL.h"
-#undef main
 
 #define LE_ERROR(msg) std::printf("%s:%s(%d) | %s\n", __FILE__, __FUNCTION__, __LINE__, msg)
 #define LE_PRINT_SDL_ERROR() LE_ERROR(SDL_GetError()); SDL_ClearError()
