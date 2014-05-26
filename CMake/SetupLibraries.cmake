@@ -18,25 +18,20 @@
 ################################################################################################
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-  message(STATUS "Copying all external DLLs from {LE_EXTERNAL_DLL_DIR}/...")
-  
-  file(GLOB EXTERNAL_DLL_REMOVAL_LIST "${CMAKE_BINARY_DIR}*.dll")
-  if(EXTERNAL_DLL_REMOVAL_LIST)
-    message(STATUS "  Removing ${EXTERNAL_DLL_REMOVAL_LIST}...")
-    file(REMOVE ${EXTERNAL_DLL_REMOVAL_LIST})
-  else()
-    message(STATUS "  Nothing to remove - no existing external dlls found...")
-  endif()
+  message(STATUS "Copying all external DLLs from ${LE_EXTERNAL_DLL_DIR}/ to ${CMAKE_BINARY_DIR}/...")
 
+  # Copy dlls overwriting whatever is currently in the build directory
   file(GLOB EXTERNAL_DLL_COPY_LIST "${LE_EXTERNAL_DLL_DIR}/*.dll")
-  message(STATUS " test ${LE_EXTERNAL_DLL_DIR}")
   if(EXTERNAL_DLL_COPY_LIST)
-    message(STATUS "  Copying ${EXTERNAL_DLL_COPY_LIST}...")
-    file(COPY ${EXTERNAL_DLL_COPY_LIST} DESTINATION "${CMAKE_BINARY_DIR}")
+    foreach(DLL_IT ${EXTERNAL_DLL_COPY_LIST})
+
+      message(STATUS "  Copying ${DLL_IT}...")      
+    endforeach()
+
+    file(COPY ${EXTERNAL_DLL_COPY_LIST} DESTINATION "${CMAKE_BINARY_DIR}")    
   else()
     message(STATUS "  Nothing to copy - no external dlls found...")
   endif()
 
-  unset(EXTERNAL_DLL_REMOVAL_LIST)
   unset(EXTERNAL_DLL_COPY_LIST)
 endif()
