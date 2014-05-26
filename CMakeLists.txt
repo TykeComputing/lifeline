@@ -17,16 +17,16 @@
 # along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################################
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8)#.12
 
 # Will start with one project and split into multiple if deemed useful.
 project(lifeline)
 
+message(STATUS "      Target OS: ${CMAKE_HOST_SYSTEM_NAME}")
+message(STATUS "Target compiler: ${CMAKE_CXX_COMPILER_ID}")
+
 set(LE_CMAKE_DIR ${CMAKE_SOURCE_DIR}/CMake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMake/Modules/)
-
-message(FATAL ${LE_CMAKE_DIR})
-message(FATAL ${CMAKE_MODULE_PATH})
 
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
@@ -34,6 +34,7 @@ find_package(OpenGL REQUIRED)
 
 include(${LE_CMAKE_DIR}/BuildWarnings.cmake)
 add_definitions(-std=c++11)
+#add_compile_options(-m32 -std=c++11)
 
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp
