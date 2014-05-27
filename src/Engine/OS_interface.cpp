@@ -21,6 +21,14 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "OS_interface.h"
 
+namespace LE
+{
+
 OS_interface::OS_interface()
 {
+  
 }
+
+}
+
+} // namespace LE

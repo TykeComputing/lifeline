@@ -19,13 +19,20 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef OS_INTERFACE_H
-#define OS_INTERFACE_H
+#ifndef LE_ENGINE_OS_INTERFACE_H
+#define LE_ENGINE_OS_INTERFACE_H
+
+namespace LE
+{
 
 class OS_interface
 {
 public:
   OS_interface();
+
+private:
 };
 
-#endif // OS_INTERFACE_H
+} // namespace LE
+
+#endif // LE_ENGINE_OS_INTERFACE_H
