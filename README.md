@@ -3,7 +3,7 @@ Lifeline (WORKING TITLE)
 
 Synopsis
 -------------
-Lifeline will be a 2D game and engine. What exactly the game will be is undecided at this point but once possible it will be rapidly prototyped and iterated on in engine.
+Lifeline will be a 2D game and engine. What exactly the game will be is undecided at this point.
 
 Goals
 -------------
