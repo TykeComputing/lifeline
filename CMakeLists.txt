@@ -17,10 +17,9 @@
 # along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################################
 
-cmake_minimum_required(VERSION 2.8)#.12
-
 # Will start with one project and split into multiple if deemed useful.
 project(lifeline)
+cmake_minimum_required(VERSION 2.8)#.12
 
 set(TARGET_ARCH "x86" CACHE STRING "Determines if application 32 bit or 64 bit. This affects what external libs are used.")
 
@@ -49,11 +48,11 @@ include(${LE_CMAKE_DIR}/BuildWarnings.cmake)
 include(${LE_CMAKE_DIR}/SetupLibraries.cmake)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-	add_compile_options(-std=c++11)
+  add_compile_options(-std=c++11)
 
-	if("${TARGET_ARCH}" STREQUAL "x86")
-		add_compile_options(-m32)
-	endif()
+  if("${TARGET_ARCH}" STREQUAL "x86")
+    add_compile_options(-m32)
+  endif()
 endif()
 
 set(LE_EXECUTABLE_SRC_LIST
