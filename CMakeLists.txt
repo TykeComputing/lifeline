@@ -57,6 +57,8 @@ endif()
 
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp
+  src/engine/OS_interface.cpp
+  #src/engine/engine.cpp
 )
 
 include_directories(

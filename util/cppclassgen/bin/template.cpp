@@ -29,6 +29,4 @@ namespace %NAMESPACE_NAME%
   
 }
 
-}
-
 } // namespace %NAMESPACE_NAME%

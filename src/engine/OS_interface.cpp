@@ -26,8 +26,6 @@ namespace LE
 
 OS_interface::OS_interface()
 {
-  
-}
 
 }
 

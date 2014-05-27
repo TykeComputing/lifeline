@@ -26,8 +26,6 @@ namespace LE
 
 engine::engine()
 {
-  
-}
 
 }
 
