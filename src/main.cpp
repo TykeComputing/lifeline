@@ -27,7 +27,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #define LE_ERROR(msg) std::printf("%s:%s(%d) | %s\n", __FILE__, __FUNCTION__, __LINE__, msg)
 #define LE_PRINT_SDL_ERROR() LE_ERROR(SDL_GetError()); SDL_ClearError()
-#define LE_UNUSED_VAR(x) (void)
+#define LE_UNUSED_VAR(x) (void)x
 
 void LE_SDL_GL_SetAttribute(SDL_GLattr attrib, int val)
 {
