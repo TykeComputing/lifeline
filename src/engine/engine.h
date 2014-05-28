@@ -22,6 +22,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_ENGINE_ENGINE_H
 #define LE_ENGINE_ENGINE_H
 
+#include "OS_interface.h"
+#include "window.h"
+#include "graphics_context.h"
+
 namespace LE
 {
 
@@ -30,7 +34,16 @@ class engine
 public:
   engine();
 
+  void run();
+
+  void set_is_running(bool val);
+
 private:
+  OS_interface p_os_interface;
+  window p_window;
+  graphics_context p_graphics_context;
+
+  bool p_is_running = true;
 };
 
 } // namespace LE

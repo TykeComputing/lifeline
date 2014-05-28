@@ -19,34 +19,44 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include <cstdio>
+#include "window.h"
 
-#include <SDL2/SDL.h>
-#include <GL/glew.h>
-#include <GL/gl.h>
-
+#include <common/assert.h>
 #include <common/fatal_construction_exception.h>
-#include <engine/engine.h>
 
-#define LE_UNUSED_VAR(x) (void)x
-
-int main(int arg_count, char *args[])
+namespace LE
 {
-  LE_UNUSED_VAR(arg_count);
-  LE_UNUSED_VAR(args);
 
-  //// Initialize
-
-  try
+window::window()
+{
+  Uint32 sdl_window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
+  p_raw_window = SDL_CreateWindow("Lifeline Engine", 64, 64, 1280, 760, sdl_window_flags);
+  if(p_raw_window == nullptr)
   {
-    LE::engine game_engine;
-    game_engine.run();
+    LE_ERROR(SDL_GetError());
+    SDL_ClearError();
+    throw fatal_construction_exception("Error creating SDL window, exiting...\n");
   }
-  catch(LE::fatal_construction_exception const& e)
-  {
-    e.print("Engine Creation");
-    return -1;
-  }
-
-  return 0;
 }
+
+window::~window()
+{
+  SDL_DestroyWindow(p_raw_window);
+}
+
+void window::update()
+{
+  SDL_GL_SwapWindow(p_raw_window);
+}
+
+SDL_Window const* window::get() const
+{
+  return p_raw_window;
+}
+
+SDL_Window * window::get()
+{
+  return p_raw_window;
+}
+
+} // namespace LE

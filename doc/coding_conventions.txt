@@ -23,7 +23,26 @@ All lower case with underscores except for acronyms which will be uppercase.
 **** Variable naming ****
 See "Class naming"
 
-**** Constructor/Destructor usage ****
+For private member variables use p_*
+For public member variables use m_*
+Exclusively use getters/setters for non-POD types.
+
+**** Constructor/Destructors ****
 Prefer using constructors/destructors vs initialize/terminate (or other similar member function
 scheme). If a constructor fails, throw a fatal_construction_exception if the failure is non-
 recoverable. Otherwise throw an appropriate exception.
+
+Member initializer list starting token `:` should be placed on same line as closing parenthesis.
+
+**** Forward Declaration of class/structs ****
+Should be grouped together with the comment header `// fwd-decl`
+
+**** Getter/Setters ****
+Placement in class declaration: always last.
+
+**** Static methods(member functions) ****
+Place after all non-static methods.
+
+**** C vs C++ ****
+Always select C++ over C when feasible. This will be done as a learning experience as I have
+always done the opposite in the past.

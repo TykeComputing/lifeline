@@ -19,34 +19,29 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include <cstdio>
+#ifndef LE_ENGINE_WINDOW_H
+#define LE_ENGINE_WINDOW_H
 
-#include <SDL2/SDL.h>
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include "SDL.h"
 
-#include <common/fatal_construction_exception.h>
-#include <engine/engine.h>
-
-#define LE_UNUSED_VAR(x) (void)x
-
-int main(int arg_count, char *args[])
+namespace LE
 {
-  LE_UNUSED_VAR(arg_count);
-  LE_UNUSED_VAR(args);
 
-  //// Initialize
+class window
+{
+public:
+  window();
+  ~window();
 
-  try
-  {
-    LE::engine game_engine;
-    game_engine.run();
-  }
-  catch(LE::fatal_construction_exception const& e)
-  {
-    e.print("Engine Creation");
-    return -1;
-  }
+  void update();
 
-  return 0;
-}
+  SDL_Window const* get() const;
+  SDL_Window * get();
+
+private:
+  SDL_Window * p_raw_window;
+};
+
+} // namespace LE
+
+#endif // LE_ENGINE_WINDOW_H

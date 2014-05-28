@@ -19,34 +19,11 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include <cstdio>
+#ifndef LE_COMMON_LE_PRINTF_H
+#define LE_COMMON_LE_PRINTF_H
 
-#include <SDL2/SDL.h>
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <cstdarg>
 
-#include <common/fatal_construction_exception.h>
-#include <engine/engine.h>
+void LE_printf(char const* format, ...);
 
-#define LE_UNUSED_VAR(x) (void)x
-
-int main(int arg_count, char *args[])
-{
-  LE_UNUSED_VAR(arg_count);
-  LE_UNUSED_VAR(args);
-
-  //// Initialize
-
-  try
-  {
-    LE::engine game_engine;
-    game_engine.run();
-  }
-  catch(LE::fatal_construction_exception const& e)
-  {
-    e.print("Engine Creation");
-    return -1;
-  }
-
-  return 0;
-}
+#endif // LE_COMMON_LE_PRINTF_H

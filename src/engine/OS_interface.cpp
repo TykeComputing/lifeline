@@ -21,12 +21,61 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "OS_interface.h"
 
+#include <common/assert.h>
+#include <common/fatal_construction_exception.h>
+
 namespace LE
 {
 
 OS_interface::OS_interface()
 {
+  int sdl_init_res = SDL_Init(SDL_INIT_VIDEO);
+  if(sdl_init_res != 0)
+  {
+    LE_ERROR(SDL_GetError());
+    SDL_ClearError();
+    throw fatal_construction_exception("Error initializing SDL, exiting...\n");
+  }
 
+  auto LE_SDL_GL_SetAttribute = [](SDL_GLattr attrib, int val)->void
+  {
+    int set_attrib_res = SDL_GL_SetAttribute(attrib, val);
+    if(set_attrib_res != 0)
+    {
+      LE_ERROR(SDL_GetError());
+      SDL_ClearError();
+    }
+  };
+
+  int const LE_GL_version_major = 3;
+  int const LE_GL_version_minor = 2;
+  LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, LE_GL_version_major);
+  LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, LE_GL_version_minor);
+  LE_SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
+}
+
+OS_interface::~OS_interface()
+{
+  SDL_Quit();
+}
+
+// TODO - Remove return value, have quit signaled via message once messaging system in place.
+bool OS_interface::update()
+{
+  SDL_Event curr_event;
+  while(SDL_PollEvent(&curr_event))
+  {
+    switch(curr_event.type)
+    {
+      case SDL_QUIT:
+      {
+        return false;
+      }
+      break;
+    }
+  }
+
+  return true;
 }
 
 } // namespace LE

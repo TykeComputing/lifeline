@@ -22,13 +22,22 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_ENGINE_OS_INTERFACE_H
 #define LE_ENGINE_OS_INTERFACE_H
 
+#include "graphics_context.h"
+#include "window.h"
+
 namespace LE
 {
+
+// fwd-decl
+class engine;
 
 class OS_interface
 {
 public:
   OS_interface();
+  ~OS_interface();
+
+  bool update();
 
 private:
 };

@@ -19,34 +19,29 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include <cstdio>
+#ifndef LE_COMMON_FATAL_CONSTRUCTION_EXCEPTION_H
+#define LE_COMMON_FATAL_CONSTRUCTION_EXCEPTION_H
 
-#include <SDL2/SDL.h>
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <string>
+#include <iosfwd>
 
-#include <common/fatal_construction_exception.h>
-#include <engine/engine.h>
-
-#define LE_UNUSED_VAR(x) (void)x
-
-int main(int arg_count, char *args[])
+namespace LE
 {
-  LE_UNUSED_VAR(arg_count);
-  LE_UNUSED_VAR(args);
 
-  //// Initialize
+class fatal_construction_exception
+{
+public:
+  fatal_construction_exception();
+  fatal_construction_exception(char const* message);
+  fatal_construction_exception(std::string const& message);
 
-  try
-  {
-    LE::engine game_engine;
-    game_engine.run();
-  }
-  catch(LE::fatal_construction_exception const& e)
-  {
-    e.print("Engine Creation");
-    return -1;
-  }
+  void print(std::string const& prefix) const;
+  void print(std::ostream & out, std::string const& prefix) const;
 
-  return 0;
-}
+private:
+  std::string p_message;
+};
+
+} // namespace LE
+
+#endif // LE_COMMON_FATAL_CONSTRUCTION_EXCEPTION_H

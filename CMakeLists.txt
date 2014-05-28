@@ -57,11 +57,19 @@ endif()
 
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp
+
+  src/common/assert.h
+  src/common/fatal_construction_exception.cpp
+  src/common/LE_printf.cpp
+
+  src/engine/engine.cpp
+  src/engine/graphics_context.cpp
   src/engine/OS_interface.cpp
-  #src/engine/engine.cpp
+  src/engine/window.cpp
 )
 
 include_directories(
+  src
   ${GLEW_INCLUDE_PATH}
   ${SDL2_INCLUDE_DIR}
 )
