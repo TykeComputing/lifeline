@@ -19,35 +19,39 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_SHADER_PROGRAM_DEFINITION_H
-#define LE_GRAPHICS_SHADER_PROGRAM_DEFINITION_H
+#include "message_construction_exception.h"
 
-#include <string>
-#include <unordered_map>
-#include <utility> // pair
-#include <vector>
-
-#include <GL/gl.h>
+#include <iostream>
 
 namespace LE
 {
 
-class shader_program_definition
+message_construction_exception::message_construction_exception()
+  : p_message("No message provided.")
 {
-public:
-  shader_program_definition();
-  //shader_program_definition(std::string const& spd_file_name);
 
-  void add_shader_files(
-      GLenum shader_type,
-      std::string const& file_name);
+}
 
-private:
-  typedef std::vector<std::string> shader_file_names;
+message_construction_exception::message_construction_exception(char const* message)
+  : p_message(message)
+{
 
-  std::unordered_map<GLenum, shader_file_names> p_shader_sources;
-};
+}
+
+message_construction_exception::message_construction_exception(std::string const& message)
+  : p_message(message)
+{
+
+}
+
+void message_construction_exception::print(std::string const& prefix) const
+{
+  print(std::cerr, prefix);
+}
+
+void message_construction_exception::print(std::ostream & out, std::string const& prefix) const
+{
+  out << prefix << ": " << p_message << std::endl;
+}
 
 } // namespace LE
-
-#endif // LE_GRAPHICS_SHADER_PROGRAM_DEFINITION_H

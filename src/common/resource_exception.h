@@ -19,21 +19,26 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include "shader_program_definition.h"
+#ifndef LE_COMMON_RESOURCE_EXCEPTION_H
+#define LE_COMMON_RESOURCE_EXCEPTION_H
+
+#include <string>
+
+#include <common/message_exception.h>
 
 namespace LE
 {
 
-shader_program_definition::shader_program_definition()
+class resource_exception : public message_exception
 {
+public:
+  resource_exception();
+  resource_exception(char const* message);
+  resource_exception(std::string const& message);
 
-}
-
-void shader_program_definition::add_shader_files(
-  GLenum shader_type,
-  std::string const& file_name)
-{
-  p_shader_sources[shader_type].push_back(file_name);
-}
+private:
+};
 
 } // namespace LE
+
+#endif // LE_COMMON_RESOURCE_EXCEPTION_H

@@ -60,10 +60,12 @@ set(LE_EXECUTABLE_SRC_LIST
 
   src/common/assert.h
   src/common/fatal_construction_exception.cpp
+  src/common/file_string.cpp
   src/common/LE_printf.cpp
+  src/common/message_exception.cpp
+  src/common/resource_exception.cpp
 
   src/graphics/shader_program.cpp
-  src/graphics/shader_program_definition.cpp
 
   src/engine/engine.cpp
   src/engine/graphics_context.cpp

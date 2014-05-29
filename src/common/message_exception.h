@@ -19,40 +19,29 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_COMMON_ASSERT_H
-#define LE_COMMON_ASSERT_H
+#ifndef LE_COMMON_MESSAGE_EXCEPTION_H
+#define LE_COMMON_MESSAGE_EXCEPTION_H
 
-#include <ostream>
 #include <string>
-
-#include <SDL2/SDL.h>
-
-#define LE_ERRORIF(cond, msg) { if(cond) { display_error_message(__FILE__, __FUNCTION__, __LINE__, msg); assert(!cond); } }
-#define LE_ERROR(msg) display_error_message(__FILE__, __FUNCTION__, __LINE__, msg); assert(true)
+#include <iosfwd>
 
 namespace LE
 {
-  void display_error_message(
-    char const* file,
-    char const* function,
-    int line,
-    char const* message)
-  {
-    std::string formatted_message =
-        file + ":" + function + "(" + std::tostring(line) + ") | " + message;
 
-    int res = SDL_ShowSimpleMessageBox(
-      SDL_MESSAGEBOX_ERROR,
-      "LifeLine Engine - ERROR!",
-      formatted_message.c_str(),
-      NULL);
+class message_exception
+{
+public:
+  message_exception();
+  message_exception(char const* message);
+  message_exception(std::string const& message);
 
-    if(res != 0)
-    {
-      std::cerr << "Attempting to display error message before SDL_Init()!" << std::endl;
-      std::cerr << formatted_message << std::endl;
-    }
-  }
-}
+  void print(std::string const& prefix) const;
+  void print(std::ostream & out, std::string const& prefix) const;
 
-#endif // LE_COMMON_ASSERT_H
+private:
+  std::string p_message;
+};
+
+} // namespace LE
+
+#endif // LE_COMMON_MESSAGE_EXCEPTION_H

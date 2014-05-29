@@ -23,23 +23,20 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #define LE_COMMON_FATAL_CONSTRUCTION_EXCEPTION_H
 
 #include <string>
-#include <iosfwd>
+
+#include <common/message_exception.h>
 
 namespace LE
 {
 
-class fatal_construction_exception
+class fatal_construction_exception : public message_exception
 {
 public:
   fatal_construction_exception();
   fatal_construction_exception(char const* message);
   fatal_construction_exception(std::string const& message);
 
-  void print(std::string const& prefix) const;
-  void print(std::ostream & out, std::string const& prefix) const;
-
 private:
-  std::string p_message;
 };
 
 } // namespace LE

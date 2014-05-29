@@ -34,6 +34,10 @@ recoverable. Otherwise throw an appropriate exception.
 
 Member initializer list starting token `:` should be placed on same line as closing parenthesis.
 
+Member initializer list should only be used for trivial initialization. Anything that requires
+work or reaching outside LE (such as an external API call) should be done in the constructor
+body.
+
 **** Header file ordering ****
 License
 
@@ -71,6 +75,10 @@ private:
 **** C vs C++ ****
 Always select C++ over C when feasible. This will be done as a learning experience as I have
 always done the opposite in the past.
+
+**** class vs struct ****
+struct should only be used for POD types with no (or very few) member functions and public data.
+class should be used for everything else.
 
 **** const Correctness ****
 Always use logical const correctness.

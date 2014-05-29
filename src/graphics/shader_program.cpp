@@ -21,12 +21,20 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "shader_program.h"
 
+#include <common/assert.h>
+
 namespace LE
 {
 
-shader_program::shader_program()
+shader_program::shader_program(shader_program_definition const& spd)
 {
+  std::vector<shader> shader_ids;
+  for(auto const& it : spd.m_shader_sources)
+  {
+    shader_ids.push_back(it.first);
 
+
+  }
 }
 
 shader_program::~shader_program()
