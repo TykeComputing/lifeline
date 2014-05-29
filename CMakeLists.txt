@@ -63,6 +63,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/file_string.cpp
   src/common/LE_printf.cpp
   src/common/message_exception.cpp
+  #src/common/resource.cpp
+  #src/common/resource_manager.cpp
   src/common/resource_exception.cpp
 
   src/graphics/shader.cpp
