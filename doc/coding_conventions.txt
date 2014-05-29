@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 
-**** Class naming ****
+**** Class Naming ****
 All lower case with underscores except for acronyms which will be uppercase.
 
-**** Variable naming ****
+**** Variable Naming ****
 See "Class naming"
 
 For private member variables use p_*
@@ -34,15 +34,37 @@ recoverable. Otherwise throw an appropriate exception.
 
 Member initializer list starting token `:` should be placed on same line as closing parenthesis.
 
-**** Forward Declaration of class/structs ****
+**** Forward Declaration of class/struct ****
 Should be grouped together with the comment header `// fwd-decl`
 
 **** Getter/Setters ****
 Placement in class declaration: always last.
 
-**** Static methods(member functions) ****
+**** Static Methods ****
 Place after all non-static methods.
 
 **** C vs C++ ****
 Always select C++ over C when feasible. This will be done as a learning experience as I have
 always done the opposite in the past.
+
+**** const Correctness ****
+Always use logical const correctness.
+
+**** General 3rd Party API Rules ****
+
+Member variables that are used to store a handle to resources from some external API, should be
+marked as "raw" (ex. p_raw_window). Getters to these resources should be named simply "get".
+
+**** OpenGL Wrapping ****
+Stick close to OpenGL functionality when naming and choosing functionality of wrapper classes.
+Use OpenGL terminology where appropriate to be very clear what is being done in a function.
+
+Since OpenGL uses a lot of global state, wrapping it while still providing an accurate idea of
+the state changes going on underneath will not be trivial. Some rules to help:
+- If a function logically changes an attribute of some object (shader_program, VAO, FBO, etc)
+  it should be a member function. Its const-ness should be based on whether it changes 
+  underlying OpenGL state **directly related to the object**.
+- If a function changes global state (buffer/texture/fbo bindings, which shader is being used, 
+  etc.) it should be a static function for the appropriate class OR a manager class of some 
+  sort.
+  

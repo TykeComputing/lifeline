@@ -62,6 +62,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/fatal_construction_exception.cpp
   src/common/LE_printf.cpp
 
+  src/graphics/shader_program.cpp
+
   src/engine/engine.cpp
   src/engine/graphics_context.cpp
   src/engine/OS_interface.cpp

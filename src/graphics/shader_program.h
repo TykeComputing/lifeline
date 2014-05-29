@@ -19,32 +19,26 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include <cstdio>
+#ifndef LE_GRAPHICS_SHADER_PROGRAM_H
+#define LE_GRAPHICS_SHADER_PROGRAM_H
 
-#include <SDL2/SDL.h>
 #include <GL/glew.h>
-#include <GL/gl.h>
 
-#include <common/fatal_construction_exception.h>
-#include <engine/engine.h>
-
-#define LE_UNUSED_VAR(x) (void)x
-
-int main(int arg_count, char *args[])
+namespace LE
 {
-  LE_UNUSED_VAR(arg_count);
-  LE_UNUSED_VAR(args);
 
-  try
-  {
-    LE::engine game_engine;
-    game_engine.run();
-  }
-  catch(LE::fatal_construction_exception const& e)
-  {
-    e.print("Engine Creation");
-    return -1;
-  }
+class shader_program
+{
+public:
+  shader_program();
+  ~shader_program() { glUseProgram(s); }
 
-  return 0;
-}
+  static void use(shader_program & sp);
+
+private:
+  GLuint p_raw_program_name;
+};
+
+} // namespace LE
+
+#endif // LE_GRAPHICS_SHADER_PROGRAM_H
