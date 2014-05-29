@@ -22,37 +22,40 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_COMMON_ASSERT_H
 #define LE_COMMON_ASSERT_H
 
-#include <ostream>
+#include <iostream>
 #include <string>
 
 #include <SDL2/SDL.h>
 
-#define LE_ERRORIF(cond, msg) { if(cond) { display_error_message(__FILE__, __FUNCTION__, __LINE__, msg); assert(!cond); } }
-#define LE_ERROR(msg) display_error_message(__FILE__, __FUNCTION__, __LINE__, msg); assert(true)
+#ifdef __GNUC__
+#include<sys/signal.h>
+#define LE_HALT_PROGRAM() raise(SIGTRAP);
+#elif _MSC_VER
+#define LE_HALT_PROGRAM() __debug_break();
+#else
+#define LE_HALT_PROGRAM()
+#endif
 
-namespace LE
-{
-  void display_error_message(
-    char const* file,
-    char const* function,
-    int line,
-    char const* message)
-  {
-    std::string formatted_message =
-        file + ":" + function + "(" + std::tostring(line) + ") | " + message;
 
-    int res = SDL_ShowSimpleMessageBox(
-      SDL_MESSAGEBOX_ERROR,
-      "LifeLine Engine - ERROR!",
-      formatted_message.c_str(),
-      NULL);
+#define LE_ERROR(msg) { LE_display_error_message(__FILE__, __FUNCTION__, __LINE__, msg); LE_HALT_PROGRAM(); }
+#define LE_ERRORIF(cond, msg) { if(cond) { LE_ERROR(msg); LE_HALT_PROGRAM(); } }
 
-    if(res != 0)
-    {
-      std::cerr << "Attempting to display error message before SDL_Init()!" << std::endl;
-      std::cerr << formatted_message << std::endl;
-    }
-  }
-}
+void LE_display_error_message(
+  std::string const& file,
+  std::string const& function,
+  int line,
+  char const* message);
+
+void LE_display_error_message(
+  std::string const& file,
+  std::string const& function,
+  int line,
+  unsigned char const* message);
+
+void LE_display_error_message(
+  std::string const& file,
+  std::string const& function,
+  int line,
+  std::string const& message);
 
 #endif // LE_COMMON_ASSERT_H

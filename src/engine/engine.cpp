@@ -22,7 +22,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include "engine.h"
 
 // TODO - Remove once graphics framework is in place
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 namespace LE
 {

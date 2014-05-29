@@ -21,7 +21,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "window.h"
 
-#include <common/assert.h>
+#include <common/error.h>
 #include <common/fatal_construction_exception.h>
 
 namespace LE

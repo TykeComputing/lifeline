@@ -23,7 +23,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/glew.h>
 
-#include <common/assert.h>
+#include <common/error.h>
 #include <common/fatal_construction_exception.h>
 #include <common/LE_printf.h>
 

@@ -21,6 +21,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "shader.h"
 
+#include <common/file_string.h>
+#include <common/resource_exception.h>
+#include <common/LE_printf.h>
+
 namespace LE
 {
 
@@ -34,10 +38,10 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_soure_file_na
   shader_source_strings.reserve(num_shader_sources);
   for(auto const& file_name_it : shader_soure_file_names)
   {
-    shader_source_strings.emplace_back(*file_name_it);
+    shader_source_strings.emplace_back(file_name_it);
     if(shader_source_strings.back().is_valid() == false)
     {
-      throw resource_exception("Unable to open shader file \"" + file_name_it + "\!");
+      throw resource_exception("Unable to open shader file \"" + file_name_it + "\"!");
     }
   }
 
@@ -52,7 +56,7 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_soure_file_na
   shader_source_c_str_array.reserve(num_shader_sources);
   for(auto const& shader_string_it : shader_source_strings)
   {
-    shader_source_c_str_array.emplace_back( (*shader_string_it).get().c_str() );
+    shader_source_c_str_array.emplace_back(shader_string_it.get_str().c_str());
   }
 
   glShaderSource(
@@ -70,7 +74,8 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_soure_file_na
     glGetShaderiv(p_raw_shader_name, GL_INFO_LOG_LENGTH, &shader_log_length);
 
     // Allocate buffer and get compiler errors
-    std::string shader_log(shader_log_length);
+    std::vector<char> shader_log;
+    shader_log.resize(shader_log_length);
     glGetShaderInfoLog(p_raw_shader_name, shader_log_length, nullptr, shader_log.data());
 
     // If OpenGL implementation provides newline, get rid of it
@@ -83,11 +88,11 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_soure_file_na
     LE_printf("== SHADER SOURCES =======");
     for(auto const& shader_source_it : shader_source_strings)
     {
-      LE_printf(
-        "(%4d) %s\n", shader_source_it.get_num_lines(), shader_source_it.get_file_name());
+      LE_printf("(%4d) %s\n",
+        shader_source_it.get_num_lines(), shader_source_it.get_file_name().c_str());
     }
     LE_printf("=== ERROR LOG ===========\n");
-    LE_printf("%s\n", shader_log.c_str());
+    LE_printf("%s\n", shader_log.data());
     LE_printf("----------------------------------------------------------------\n");
 
     // cleanup from failure

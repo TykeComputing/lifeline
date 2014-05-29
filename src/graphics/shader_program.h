@@ -24,7 +24,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 #include <common/file_string.h>
 #include <common/resource_exception.h>

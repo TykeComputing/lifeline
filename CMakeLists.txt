@@ -58,7 +58,7 @@ endif()
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp
 
-  src/common/assert.h
+  src/common/error.cpp
   src/common/fatal_construction_exception.cpp
   src/common/file_string.cpp
   src/common/LE_printf.cpp
