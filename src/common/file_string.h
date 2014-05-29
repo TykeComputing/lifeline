@@ -33,16 +33,15 @@ public:
   file_string(char const* file_name);
   file_string(std::string const& file_name);
 
-  char const* cbegin(void) const;
-  char const* cend(void) const;
+  unsigned get_num_lines() const;
 
-  unsigned get_num_lines(void) const;
-
-  bool is_valid(void) const;
-  std::string const& get(void) const;
+  bool is_valid() const;
+  std::string const& get_file_name() const;
+  std::string const& get_str() const;
 
 private:
   std::string p_file_string;
+  std::string p_file_name;
   bool p_is_valid = false;
 };
 

@@ -19,39 +19,30 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include "message_exception.h"
+#ifndef LE_GRAPHICS_SHADER_H
+#define LE_GRAPHICS_SHADER_H
 
-#include <iostream>
+#include <string>
+#include <vector>
+
+#include <GL/gl.h>
 
 namespace LE
 {
 
-message_exception::message_exception()
-  : p_message("No message provided.")
+class shader
 {
+public:
+  shader(GLenum type, std::vector<std::string> const& shader_soure_file_names);
+  ~shader();
 
-}
+private:
+  GLuint p_raw_shader_name = 0;
+  GLenum p_type = GL_NONE;
 
-message_exception::message_exception(char const* message)
-  : p_message(message)
-{
-
-}
-
-message_exception::message_exception(std::string const& message)
-  : p_message(message)
-{
-
-}
-
-void message_exception::print(std::string const& prefix) const
-{
-  print(std::cerr, prefix);
-}
-
-void message_exception::print(std::ostream & out, std::string const& prefix) const
-{
-  out << prefix << ": " << p_message << std::endl;
-}
+  friend class shader_program;
+};
 
 } // namespace LE
+
+#endif // LE_GRAPHICS_SHADER_H

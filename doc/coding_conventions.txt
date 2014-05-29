@@ -89,7 +89,11 @@ Member variables that are used to store a handle to resources from some external
 marked as "raw" (ex. p_raw_window).
 
 Getters to these resources should be named "get_raw". Avoid these getters where possible by
-properly wrapping needed functionality.
+properly wrapping needed functionality. For APIs where the raw resource would be an integer
+handle const would mean nothing on these functions since the API can be called directly with the
+handle. If possible try to avoid raw getters (perhaps making the special case that needs
+it a friend, or by some other method). Otherwise it's a matter of trusting the client to not
+directly use the API.
 
 **** OpenGL Wrapping ****
 OpenGL types should be openly used (including enums etc), as wrapping them gives no immediate

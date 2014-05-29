@@ -27,16 +27,17 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-file_string::file_string(char const* file_name)
+file_string::file_string(char const* file_name) :
+  p_file_name(file_name)
 {
-  std::ifstream in_file(file_name, ios::ate);
-  if(in_file.open() == false)
+  std::ifstream in_file(file_name, std::ios::ate);
+  if(in_file.is_open())
   {
     p_file_string.resize(in_file.tellg());
-    in_file.seekg(0, ios_base::beg);
+    in_file.seekg(0, std::ios_base::beg);
 
     p_file_string.assign(
-      (std::istreambuf_iterator<char>(t)),
+      (std::istreambuf_iterator<char>(in_file)),
        std::istreambuf_iterator<char>());
 
     p_is_valid = true;
@@ -48,26 +49,30 @@ file_string::file_string(std::string const& file_path) :
 {
 }
 
-std::string const& file_string::get(void) const
-{
-  return p_file_string;
-}
-
-bool file_string::is_valid(void) const
-{
-  return p_is_valid;
-}
-
-unsigned file_string::get_num_lines(void) const
+unsigned file_string::get_num_lines() const
 {
   auto is_new_line_pred = [](char c)->bool
   {
     return c == '\n';
   };
 
-  return std::count_if(p_file_strint.cbegin(), p_file_strint.cend(), is_new_line_pred);
+  return std::count_if(p_file_string.cbegin(), p_file_string.cend(), is_new_line_pred);
 }
 
+bool file_string::is_valid() const
+{
+  return p_is_valid;
+}
+
+std::string const& file_string::get_file_name() const
+{
+  return p_file_name;
+}
+
+std::string const& file_string::get_str() const
+{
+  return p_file_string;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

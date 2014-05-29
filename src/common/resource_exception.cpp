@@ -24,17 +24,17 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-resource_exception()
+resource_exception::resource_exception()
 {
 
 }
 
-resource_exception(char const* message) :
+resource_exception::resource_exception(char const* message) :
   message_exception(message)
 {
 }
 
-resource_exception(std::string const& message) :
+resource_exception::resource_exception(std::string const& message) :
   message_exception(message)
 {
 }

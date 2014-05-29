@@ -26,17 +26,17 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-fatal_construction_exception()
+fatal_construction_exception::fatal_construction_exception()
 {
 
 }
 
-fatal_construction_exception(char const* message) :
+fatal_construction_exception::fatal_construction_exception(char const* message) :
   message_exception(message)
 {
 }
 
-fatal_construction_exception(std::string const& message) :
+fatal_construction_exception::fatal_construction_exception(std::string const& message) :
   message_exception(message)
 {
 }

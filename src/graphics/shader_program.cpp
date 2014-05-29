@@ -26,15 +26,19 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-shader_program::shader_program(shader_program_definition const& spd)
+shader_program::shader_program(std::vector<shader> const& shaders)
 {
-  std::vector<shader> shader_ids;
-  for(auto const& it : spd.m_shader_sources)
+  for(auto const& shader_it : shaders)
   {
-    shader_ids.push_back(it.first);
-
-
+    glAttachShader(p_raw_program_name, shader_it.p_raw_shader_name);
   }
+
+  // TODO - Bind vertex attribs here
+
+  glLinkProgram(p_raw_program_name);
+
+
+
 }
 
 shader_program::~shader_program()

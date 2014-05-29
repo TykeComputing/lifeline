@@ -65,6 +65,7 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/message_exception.cpp
   src/common/resource_exception.cpp
 
+  src/graphics/shader.cpp
   src/graphics/shader_program.cpp
 
   src/engine/engine.cpp
