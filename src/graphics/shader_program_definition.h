@@ -19,32 +19,35 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_SHADER_PROGRAM_H
-#define LE_GRAPHICS_SHADER_PROGRAM_H
+#ifndef LE_GRAPHICS_SHADER_PROGRAM_DEFINITION_H
+#define LE_GRAPHICS_SHADER_PROGRAM_DEFINITION_H
 
 #include <string>
+#include <unordered_map>
+#include <utility> // pair
 #include <vector>
 
-#include <GL/glew.h>
+#include <GL/gl.h>
 
 namespace LE
 {
 
-class shader_program
+class shader_program_definition
 {
 public:
-  shader_program();
-  ~shader_program();
+  shader_program_definition();
+  //shader_program_definition(std::string const& spd_file_name);
 
-  GLint get_unform_location(char const* attrib_name) const;
-
-  static void use(shader_program & sp);
-  // TODO - static set_uniform's for built in type (single and vector), and LE types (vec*, etc)
+  void add_shader_files(
+      GLenum shader_type,
+      std::string const& file_name);
 
 private:
-  GLuint p_raw_program_name;
+  typedef std::vector<std::string> shader_file_names;
+
+  std::unordered_map<GLenum, shader_file_names> p_shader_sources;
 };
 
 } // namespace LE
 
-#endif // LE_GRAPHICS_SHADER_PROGRAM_H
+#endif // LE_GRAPHICS_SHADER_PROGRAM_DEFINITION_H

@@ -63,6 +63,7 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/LE_printf.cpp
 
   src/graphics/shader_program.cpp
+  src/graphics/shader_program_definition.cpp
 
   src/engine/engine.cpp
   src/engine/graphics_context.cpp

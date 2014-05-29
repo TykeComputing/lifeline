@@ -49,12 +49,12 @@ void window::update()
   SDL_GL_SwapWindow(p_raw_window);
 }
 
-SDL_Window const* window::get() const
+SDL_Window const* window::get_raw() const
 {
   return p_raw_window;
 }
 
-SDL_Window * window::get()
+SDL_Window * window::get_raw()
 {
   return p_raw_window;
 }

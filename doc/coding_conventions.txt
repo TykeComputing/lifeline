@@ -34,14 +34,39 @@ recoverable. Otherwise throw an appropriate exception.
 
 Member initializer list starting token `:` should be placed on same line as closing parenthesis.
 
-**** Forward Declaration of class/struct ****
-Should be grouped together with the comment header `// fwd-decl`
+**** Header file ordering ****
+License
 
-**** Getter/Setters ****
-Placement in class declaration: always last.
+includes
 
-**** Static Methods ****
-Place after all non-static methods.
+// fwd-decl
+forward declarations
+
+class
+{
+  typedefs
+
+public:
+  constructors
+  general methods
+  getters/setters
+  static methods
+  variables
+private:
+  same as public
+}
+
+**** Include order ****
+
+.h
+- c/c++ std headers
+- 3rd party libraries
+- files from other modules within this engine
+- files from this module
+
+.cpp
+- this
+- same as .h
 
 **** C vs C++ ****
 Always select C++ over C when feasible. This will be done as a learning experience as I have
@@ -53,9 +78,15 @@ Always use logical const correctness.
 **** General 3rd Party API Rules ****
 
 Member variables that are used to store a handle to resources from some external API, should be
-marked as "raw" (ex. p_raw_window). Getters to these resources should be named simply "get".
+marked as "raw" (ex. p_raw_window).
+
+Getters to these resources should be named "get_raw". Avoid these getters where possible by
+properly wrapping needed functionality.
 
 **** OpenGL Wrapping ****
+OpenGL types should be openly used (including enums etc), as wrapping them gives no immediate
+(since I will not be switching renderers). OpenGL objects however, should be always be wrapped.
+
 Stick close to OpenGL functionality when naming and choosing functionality of wrapper classes.
 Use OpenGL terminology where appropriate to be very clear what is being done in a function.
 
@@ -67,4 +98,3 @@ the state changes going on underneath will not be trivial. Some rules to help:
 - If a function changes global state (buffer/texture/fbo bindings, which shader is being used, 
   etc.) it should be a static function for the appropriate class OR a manager class of some 
   sort.
-  

@@ -44,7 +44,7 @@ namespace LE
 
 graphics_context::graphics_context(window & target_window)
 {
-  p_raw_context = SDL_GL_CreateContext(target_window.get());
+  p_raw_context = SDL_GL_CreateContext(target_window.get_raw());
   if(p_raw_context == nullptr)
   {
     LE_ERROR(SDL_GetError());

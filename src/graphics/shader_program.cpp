@@ -26,7 +26,17 @@ namespace LE
 
 shader_program::shader_program()
 {
-  
+
+}
+
+shader_program::~shader_program()
+{
+
+}
+
+static void use(shader_program::shader_program & sp)
+{
+  glUseProgram(sp.p_raw_program_name);
 }
 
 } // namespace LE

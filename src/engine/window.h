@@ -35,8 +35,8 @@ public:
 
   void update();
 
-  SDL_Window const* get() const;
-  SDL_Window * get();
+  SDL_Window const* get_raw() const;
+  SDL_Window * get_raw();
 
 private:
   SDL_Window * p_raw_window;
