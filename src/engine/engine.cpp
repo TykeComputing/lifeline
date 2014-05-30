@@ -24,6 +24,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 // TODO - Remove once graphics framework is in place
 #include <GL/glew.h>
 
+#include <common/LE_printf.h>
+
 namespace LE
 {
 
@@ -32,6 +34,8 @@ engine::engine() :
   p_window(),
   p_graphics_context(p_window)
 {
+  LE_printf("Working Directory: %s\n", p_os_interface.get_working_dir().c_str());
+
 }
 
 void engine::run()

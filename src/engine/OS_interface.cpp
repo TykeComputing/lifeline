@@ -21,6 +21,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "OS_interface.h"
 
+#include <SDL2/SDL.h>
+
 #include <common/error.h>
 #include <common/fatal_construction_exception.h>
 
@@ -76,6 +78,23 @@ bool OS_interface::update()
   }
 
   return true;
+}
+
+std::string OS_interface::get_working_dir(void) const
+{
+  char * cwd_c_str = SDL_GetBasePath();
+  if(cwd_c_str)
+  {
+    std::string cwd(cwd_c_str);
+    SDL_free(cwd_c_str);
+    return cwd;
+  }
+  else
+  {
+    LE_ERROR(SDL_GetError());
+    SDL_ClearError();
+    return std::string("Unable to get working directory.");
+  }
 }
 
 } // namespace LE

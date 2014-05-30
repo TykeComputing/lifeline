@@ -94,7 +94,7 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
     }
 
     LE_printf("-- GLSL SHADER COMPILER ERRORS: --------------------------------\n");
-    LE_printf("== SHADER SOURCES =======");
+    LE_printf("== SHADER SOURCES =======\n");
     for(auto const& shader_source_it : shader_source_strings)
     {
       LE_printf("(%4d) %s\n",

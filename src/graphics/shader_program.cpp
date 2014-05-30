@@ -30,6 +30,8 @@ namespace LE
 
 shader_program::shader_program(std::vector<shader> const& shaders)
 {
+  p_raw_program_name = glCreateProgram();
+
   for(auto const& shader_it : shaders)
   {
     glAttachShader(p_raw_program_name, shader_it.p_raw_shader_name);
@@ -57,8 +59,8 @@ shader_program::shader_program(std::vector<shader> const& shaders)
       link_log.back() = '\0';
     }
 
-    LE_printf("-- GLSL SHADER LINKER ERRORS: --------------------------------\n");
-    LE_printf("== SHADER NAMES =======");
+    LE_printf("-- GLSL SHADER LINKER ERRORS: ----------------------------------\n");
+    LE_printf("== SHADER NAMES =======\n");
     for(auto const& shader_it : shaders)
     {
       LE_printf("%s\n", shader_it.get_file_name().c_str());
@@ -71,6 +73,15 @@ shader_program::shader_program(std::vector<shader> const& shaders)
     glDeleteProgram(p_raw_program_name);
 
     throw resource_exception("Shader linking failed.");
+  }
+  else
+  {
+    // Detatch shaders as they are no longer needed (OpenGL will not delete shaders still attached
+    //   to a program).
+    for(auto const& shader_it : shaders)
+    {
+      glDetachShader(p_raw_program_name, shader_it.p_raw_shader_name);
+    }
   }
 }
 

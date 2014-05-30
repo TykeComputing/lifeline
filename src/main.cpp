@@ -28,6 +28,12 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/fatal_construction_exception.h>
 #include <engine/engine.h>
 
+// TODO - REMOVE AFTER TESTING
+#include <graphics/shader_program.h>
+#include <string>
+#include <vector>
+#include <common/resource_exception.h>
+
 #define LE_UNUSED_VAR(x) (void)x
 
 int main(int arg_count, char *args[])
@@ -38,6 +44,28 @@ int main(int arg_count, char *args[])
   try
   {
     LE::engine game_engine;
+
+    try
+    {
+      std::vector<LE::shader> shaders;
+      shaders.emplace_back(
+            GL_VERTEX_SHADER, std::vector<std::string>(1, "resources/shaders/solid_color.vert"));
+      shaders.emplace_back(
+            GL_FRAGMENT_SHADER, std::vector<std::string>(1, "resources/shaders/solid_color.frag"));
+      LE::shader_program solid_color(shaders); LE_UNUSED_VAR(solid_color);
+      shaders.clear();
+      shaders.emplace_back(
+            GL_VERTEX_SHADER, std::vector<std::string>(1, "resources/shaders/textured.vert"));
+      shaders.emplace_back(
+            GL_FRAGMENT_SHADER, std::vector<std::string>(1, "resources/shaders/textured.frag"));
+      LE::shader_program textured(shaders); LE_UNUSED_VAR(textured);
+      shaders.clear();
+    }
+    catch(LE::resource_exception const& e)
+    {
+      e.print("Shader Loading");
+    }
+
     game_engine.run();
   }
   catch(LE::fatal_construction_exception const& e)

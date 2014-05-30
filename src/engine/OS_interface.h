@@ -22,6 +22,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_ENGINE_OS_INTERFACE_H
 #define LE_ENGINE_OS_INTERFACE_H
 
+#include <string>
+
 #include "graphics_context.h"
 #include "window.h"
 
@@ -36,6 +38,8 @@ class OS_interface
 public:
   OS_interface();
   ~OS_interface();
+
+  std::string get_working_dir(void) const;
 
   bool update();
 
