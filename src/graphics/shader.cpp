@@ -22,33 +22,42 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include "shader.h"
 
 #include <common/file_string.h>
-#include <common/resource_exception.h>
 #include <common/LE_printf.h>
+#include <common/resource_exception.h>
 
 namespace LE
 {
 
-shader::shader(GLenum type, std::vector<std::string> const& shader_soure_file_names) :
+shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_names) :
   p_type(type)
 {
-  size_t num_shader_sources = shader_soure_file_names.size();
+  if(shader_source_file_names.empty())
+  {
+    throw resource_exception("No shader sources specified!.");
+  }
+
+  // Since shader sources are copy pasted in order, it is safe to assume that the last
+  //   name will be the most descriptive.
+  p_file_name = shader_source_file_names.back();
+
+  size_t num_shader_sources = shader_source_file_names.size();
 
   // Load shader sources into memory
   std::vector<file_string> shader_source_strings;
   shader_source_strings.reserve(num_shader_sources);
-  for(auto const& file_name_it : shader_soure_file_names)
+  for(auto const& file_name_it : shader_source_file_names)
   {
     shader_source_strings.emplace_back(file_name_it);
     if(shader_source_strings.back().is_valid() == false)
     {
-      throw resource_exception("Unable to open shader file \"" + file_name_it + "\"!");
+      throw resource_exception("Unable to open shader file \"" + file_name_it + "\".");
     }
   }
 
   p_raw_shader_name = glCreateShader(type);
   if(p_raw_shader_name == 0)
   {
-    throw resource_exception("Unable to create shader, internal OpenGL error!");
+    throw resource_exception("Unable to create shader, internal OpenGL error.");
   }
 
   // Get input in the form that OpenGL requires (an array of c strings)
@@ -70,18 +79,18 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_soure_file_na
   glGetShaderiv(p_raw_shader_name, GL_COMPILE_STATUS, &shader_compile_status);
   if(shader_compile_status == GL_FALSE)
   {
-    GLint shader_log_length;
-    glGetShaderiv(p_raw_shader_name, GL_INFO_LOG_LENGTH, &shader_log_length);
+    GLint compile_log_length;
+    glGetShaderiv(p_raw_shader_name, GL_INFO_LOG_LENGTH, &compile_log_length);
 
     // Allocate buffer and get compiler errors
-    std::vector<char> shader_log;
-    shader_log.resize(shader_log_length);
-    glGetShaderInfoLog(p_raw_shader_name, shader_log_length, nullptr, shader_log.data());
+    std::vector<char> compile_log;
+    compile_log.resize(compile_log_length);
+    glGetShaderInfoLog(p_raw_shader_name, compile_log_length, nullptr, compile_log.data());
 
     // If OpenGL implementation provides newline, get rid of it
-    if(shader_log.empty() == false && shader_log.back() == '\n')
+    if(compile_log.empty() == false && compile_log.back() == '\n')
     {
-      shader_log.back() = '\0';
+      compile_log.back() = '\0';
     }
 
     LE_printf("-- GLSL SHADER COMPILER ERRORS: --------------------------------\n");
@@ -92,19 +101,24 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_soure_file_na
         shader_source_it.get_num_lines(), shader_source_it.get_file_name().c_str());
     }
     LE_printf("=== ERROR LOG ===========\n");
-    LE_printf("%s\n", shader_log.data());
+    LE_printf("%s\n", compile_log.data());
     LE_printf("----------------------------------------------------------------\n");
 
     // cleanup from failure
     glDeleteShader(p_raw_shader_name);
 
-    throw resource_exception("Shader compilation failed!");
+    throw resource_exception("Shader compilation failed.");
   }
 }
 
 shader::~shader()
 {
   glDeleteShader(p_raw_shader_name);
+}
+
+std::string const& shader::get_file_name() const
+{
+  return p_file_name;
 }
 
 } // namespace LE

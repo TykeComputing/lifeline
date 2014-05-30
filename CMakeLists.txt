@@ -20,16 +20,26 @@
 # Will start with one project and split into multiple if deemed useful.
 project(lifeline)
 cmake_minimum_required(VERSION 2.8)#.12
+enable_language(C CXX)
 
-set(TARGET_ARCH "x86" CACHE STRING "Determines if application 32 bit or 64 bit. This affects what external libs are used.")
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING
+      "Choose the type of build, options are: ${CMAKE_CONFIGURATION_TYPES}.")
+endif()
+
+set(TARGET_ARCH "x86" CACHE STRING
+  "Determines if application 32 bit or 64 bit. This affects what external libs are used.")
 
 set(LE_CMAKE_DIR ${CMAKE_SOURCE_DIR}/CMake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMake/Modules/)
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-  set(LE_EXTERNAL_LIB_DIR "${PROJECT_SOURCE_DIR}/external/windows/lib/${TARGET_ARCH}" CACHE PATH "Where all external dependency libraries are stored.")
-  set(LE_EXTERNAL_DLL_DIR "${PROJECT_SOURCE_DIR}/external/windows/dll/${TARGET_ARCH}" CACHE PATH "Where all external dependency dlls are stored.")
-  set(LE_EXTERNAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/windows/include" CACHE PATH "Where all external dependency includes are stored.")
+  set(LE_EXTERNAL_LIB_DIR "${PROJECT_SOURCE_DIR}/external/windows/lib/${TARGET_ARCH}" CACHE PATH
+    "Where all external dependency libraries are stored.")
+  set(LE_EXTERNAL_DLL_DIR "${PROJECT_SOURCE_DIR}/external/windows/dll/${TARGET_ARCH}" CACHE PATH
+    "Where all external dependency dlls are stored.")
+  set(LE_EXTERNAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/windows/include" CACHE PATH
+    "Where all external dependency includes are stored.")
 endif()
 
 message(STATUS "##########################################")
@@ -38,6 +48,7 @@ message(STATUS "-------")
 message(STATUS "OS: ${CMAKE_SYSTEM_NAME}")
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Architecture: ${TARGET_ARCH}")
+message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "##########################################")
 
 find_package(SDL2 REQUIRED)
@@ -51,7 +62,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_compile_options(-std=c++11)
 
   if("${TARGET_ARCH}" STREQUAL "x86")
-    add_compile_options(-m32)
+    #add_compile_options(-m32) # needs linker flags and other options too, defering until later
   endif()
 endif()
 
@@ -69,6 +80,7 @@ set(LE_EXECUTABLE_SRC_LIST
 
   src/graphics/shader.cpp
   src/graphics/shader_program.cpp
+  #src/graphics/shader_program_definition.cpp
 
   src/engine/engine.cpp
   src/engine/graphics_context.cpp

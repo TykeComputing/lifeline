@@ -76,7 +76,7 @@ void LE_display_error_message(
 
   if(res != 0)
   {
-    std::cerr << "Attempting to display error message before SDL_Init()!" << std::endl;
+    std::cerr << "Attempting to display error message before SDL_Init()." << std::endl;
     std::cerr << formatted_message << std::endl;
   }
 }

@@ -26,9 +26,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/glew.h>
 
-#include <common/file_string.h>
-#include <common/resource_exception.h>
-
 #include <graphics/shader.h>
 
 namespace LE
