@@ -73,15 +73,18 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/fatal_construction_exception.cpp
   src/common/file_string.cpp
   src/common/LE_printf.cpp
+  src/common/macros.h
   src/common/message_exception.cpp
   #src/common/resource.cpp
   #src/common/resource_manager.cpp
   src/common/resource_exception.cpp
 
+  src/graphics/error_checking.cpp
   src/graphics/shader.cpp
   src/graphics/shader_program.cpp
   #src/graphics/shader_program_definition.cpp
   #src/graphics/texture2D.cpp
+  src/graphics/vertex.cpp
   src/graphics/vertex_array.cpp
   src/graphics/vertex_buffer.cpp
 

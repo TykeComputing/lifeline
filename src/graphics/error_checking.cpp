@@ -19,43 +19,31 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_COMMON_ASSERT_H
-#define LE_COMMON_ASSERT_H
+#include "error_checking.h"
 
-#include <iostream>
-#include <string>
+namespace LE
+{
 
-#include <SDL2/SDL.h>
+namespace detail
+{
 
-#ifdef __GNUC__
-#include<sys/signal.h>
-#define LE_HALT_PROGRAM() raise(SIGTRAP);
-#elif _MSC_VER
-#define LE_HALT_PROGRAM() __debug_break();
-#else
-#define LE_HALT_PROGRAM()
-#endif
+std::string get_GL_errors(GLenum last_error)
+{
+  std::string error_string;
+  while(last_error != GL_NO_ERROR)
+  {
+    error_string += std::to_string(last_error);
 
+    last_error = glGetError();
 
-#define LE_ERROR(msg) { LE_display_error_message(__FILE__, __FUNCTION__, __LINE__, msg); LE_HALT_PROGRAM(); }
-#define LE_ERRORIF(cond, msg) { if(cond) { LE_ERROR(msg); } }
+    if(last_error != GL_NO_ERROR)
+    {
+      error_string.append(", ");
+    }
+  }
+  return error_string;
+}
 
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  char const* message);
+}
 
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  unsigned char const* message);
-
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  std::string const& message);
-
-#endif // LE_COMMON_ASSERT_H
+} // namespace LE

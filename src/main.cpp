@@ -33,6 +33,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 #include <common/resource_exception.h>
+#include <graphics/vertex.h>
+#include <graphics/vertex_array.h>
+#include <graphics/vertex_buffer.h>
 
 #define LE_UNUSED_VAR(x) (void)x
 

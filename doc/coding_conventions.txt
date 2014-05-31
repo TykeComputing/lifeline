@@ -101,6 +101,8 @@ OpenGL types should be openly used (including enums etc), as wrapping them gives
 
 Stick close to OpenGL functionality when naming and choosing functionality of wrapper classes.
 Use OpenGL terminology where appropriate to be very clear what is being done in a function.
+One place to stray from OpenGL naming is in the case of cruft (which OpenGL has much of). In
+this case choose a name that describes what the API actually does or requires.
 
 Since OpenGL uses a lot of global state, wrapping it while still providing an accurate idea of
 the state changes going on underneath will not be trivial. Some rules to help:

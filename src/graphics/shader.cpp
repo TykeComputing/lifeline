@@ -25,6 +25,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/LE_printf.h>
 #include <common/resource_exception.h>
 
+#include <graphics/error_checking.h>
+
 namespace LE
 {
 
@@ -107,8 +109,12 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
     // cleanup from failure
     glDeleteShader(p_raw_name);
 
+    LE_ERRORIF_GL_ERROR();
+
     throw resource_exception("Shader compilation failed.");
   }
+
+  LE_ERRORIF_GL_ERROR();
 }
 
 shader::~shader()

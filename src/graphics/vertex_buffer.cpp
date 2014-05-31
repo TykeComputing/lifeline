@@ -21,6 +21,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "vertex_buffer.h"
 
+#include <graphics/error_checking.h>
+
 namespace LE
 {
 
@@ -42,6 +44,46 @@ void vertex_buffer::bind(GLenum target, vertex_buffer & VBO)
 void vertex_buffer::unbind(GLenum target)
 {
   glBindBuffer(target, 0);
+}
+
+void vertex_buffer::set_data(GLenum target, GLsizeiptr size, GLvoid const* data, GLenum usage)
+{
+  glBufferData(target, size, data, usage);
+
+  LE_ERRORIF_GL_ERROR();
+}
+
+void vertex_buffer::copy_data(
+  vertex_buffer & destination, vertex_buffer const& source, GLsizeiptr size, GLenum usage)
+{
+  glBindBuffer(GL_COPY_READ_BUFFER, source.p_raw_name);
+  glBindBuffer(GL_COPY_WRITE_BUFFER, destination.p_raw_name);
+
+  // Allocate space for new data
+  glBufferData(GL_COPY_WRITE_BUFFER, size, nullptr, usage);
+
+  glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, size);
+
+  glBindBuffer(GL_COPY_READ_BUFFER, 0);
+  glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
+
+  LE_ERRORIF_GL_ERROR();
+}
+
+void draw_arrays(
+  GLenum mode, GLint vertex_offset, GLsizei vertex_count)
+{
+  glDrawArrays(mode, vertex_offset, vertex_count);
+}
+
+void draw_elements(
+  GLenum mode, GLsizei index_count, GLenum index_type, GLint vertex_byte_offset)
+{
+  // Last parameter "pointer" is used as an offset in modern OpenGL,
+  //   is a pointer due to legacy OpenGL cruft.
+  // See: http://stackoverflow.com/a/8283855/2507444
+  glDrawElements(mode, index_count, index_type,
+    reinterpret_cast<GLvoid*>(static_cast<std::uintptr_t>(vertex_byte_offset * sizeof(GLint))) );
 }
 
 } // namespace LE

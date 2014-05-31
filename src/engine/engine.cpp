@@ -26,6 +26,11 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <common/LE_printf.h>
 
+// TODO - Remove when done testing
+#include <graphics/vertex.h>
+#include <graphics/vertex_array.h>
+#include <graphics/vertex_buffer.h>
+
 namespace LE
 {
 
@@ -35,11 +40,39 @@ engine::engine() :
   p_graphics_context(p_window)
 {
   LE_printf("Working Directory: %s\n", p_os_interface.get_working_dir().c_str());
-
 }
 
 void engine::run()
 {
+  // TODO - Remove when done testing
+  LE::vertex_array fsq_VAO;
+  LE::vertex_buffer fsq_VBO;
+
+  LE::vertex_array::bind(fsq_VAO);
+  LE::vertex_buffer::bind(GL_ARRAY_BUFFER, fsq_VBO);
+
+  glEnableVertexAttribArray(LE::vertex_attrib_type::position);
+  glEnableVertexAttribArray(LE::vertex_attrib_type::texcoord);
+
+  glVertexAttribPointer(LE::vertex_attrib_type::position,
+    2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)0);
+  glVertexAttribPointer(LE::vertex_attrib_type::texcoord,
+    2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)(sizeof(float) * 2));
+
+  vertex v = { 0.0f, 0.0f, 0.0f, 0.0f };
+  float fsq_verts[] =
+  {
+    -1.0f, -1.0f, /**/ 0.0f, 0.0f,
+     1.0f, -1.0f, /**/ 1.0f, 0.0f,
+    -1.0f,  1.0f, /**/ 0.0f, 1.0f,
+
+    -1.0f,  1.0f, /**/ 0.0f, 1.0f,
+     1.0f, -1.0f, /**/ 1.0f, 0.0f,
+     1.0f,  1.0f, /**/ 1.0f, 1.0f
+  };
+  GLsizei num_fsq_verts = sizeof(fsq_verts) / (sizeof(float) * 4);
+  ///////////////////////
+
   glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 
   p_is_running = true;

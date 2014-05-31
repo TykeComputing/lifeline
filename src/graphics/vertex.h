@@ -19,43 +19,25 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_COMMON_ASSERT_H
-#define LE_COMMON_ASSERT_H
+#ifndef LE_GRAPHICS_VERTEX_H
+#define LE_GRAPHICS_VERTEX_H
 
-#include <iostream>
-#include <string>
+#include <common/macros.h>
 
-#include <SDL2/SDL.h>
+namespace LE
+{
 
-#ifdef __GNUC__
-#include<sys/signal.h>
-#define LE_HALT_PROGRAM() raise(SIGTRAP);
-#elif _MSC_VER
-#define LE_HALT_PROGRAM() __debug_break();
-#else
-#define LE_HALT_PROGRAM()
-#endif
+// TODO - Consider moving start, num, and end into macro definition.
+LE_ENUM_2(vertex_attrib_type,
+  position,
+  texcoord)
 
+struct vertex
+{
+  float x, y;
+  float s, t;
+};
 
-#define LE_ERROR(msg) { LE_display_error_message(__FILE__, __FUNCTION__, __LINE__, msg); LE_HALT_PROGRAM(); }
-#define LE_ERRORIF(cond, msg) { if(cond) { LE_ERROR(msg); } }
+} // namespace LE
 
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  char const* message);
-
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  unsigned char const* message);
-
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  std::string const& message);
-
-#endif // LE_COMMON_ASSERT_H
+#endif // LE_GRAPHICS_VERTEX_H

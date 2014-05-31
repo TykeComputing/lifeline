@@ -25,6 +25,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/LE_printf.h>
 #include <common/resource_exception.h>
 
+#include <graphics/error_checking.h>
+#include <graphics/vertex.h> // vertex_attribute_type
+
 namespace LE
 {
 
@@ -37,7 +40,12 @@ shader_program::shader_program(std::vector<shader> const& shaders)
     glAttachShader(p_raw_name, shader_it.p_raw_name);
   }
 
-  // TODO - Bind vertex attribs here
+  // Bind vertex attribs
+  // Quick and dirty solution, no need currently for a generic solution
+  for(GLuint i = vertex_attrib_type::e_start; i != vertex_attrib_type::e_end; ++i)
+  {
+    glBindAttribLocation(p_raw_name, i, vertex_attrib_type::c_str[i]);
+  }
 
   glLinkProgram(p_raw_name);
 
@@ -72,6 +80,8 @@ shader_program::shader_program(std::vector<shader> const& shaders)
     // cleanup from failure
     glDeleteProgram(p_raw_name);
 
+    LE_ERRORIF_GL_ERROR();
+
     throw resource_exception("Shader linking failed.");
   }
   else
@@ -82,6 +92,8 @@ shader_program::shader_program(std::vector<shader> const& shaders)
     {
       glDetachShader(p_raw_name, shader_it.p_raw_name);
     }
+
+    LE_ERRORIF_GL_ERROR();
   }
 }
 

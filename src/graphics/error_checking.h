@@ -19,43 +19,34 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_COMMON_ASSERT_H
-#define LE_COMMON_ASSERT_H
+#ifndef LE_GRAPHICS_ERROR_CHECKING_H
+#define LE_GRAPHICS_ERROR_CHECKING_H
 
-#include <iostream>
+#include <GL/glew.h>
+
 #include <string>
 
-#include <SDL2/SDL.h>
+#include <common/error.h>
 
-#ifdef __GNUC__
-#include<sys/signal.h>
-#define LE_HALT_PROGRAM() raise(SIGTRAP);
-#elif _MSC_VER
-#define LE_HALT_PROGRAM() __debug_break();
-#else
-#define LE_HALT_PROGRAM()
-#endif
+#define LE_ERRORIF_GL_ERROR() \
+{ \
+  GLenum last_error = glGetError(); \
+  if(last_error != GL_NO_ERROR) \
+  { \
+    LE_ERROR("Graphics: Internal OpenGL Error!\nCode(s): " + LE::detail::get_GL_errors(last_error)); \
+  } \
+}
 
+namespace LE
+{
 
-#define LE_ERROR(msg) { LE_display_error_message(__FILE__, __FUNCTION__, __LINE__, msg); LE_HALT_PROGRAM(); }
-#define LE_ERRORIF(cond, msg) { if(cond) { LE_ERROR(msg); } }
+namespace detail
+{
 
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  char const* message);
+std::string get_GL_errors(GLenum last_error);
 
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  unsigned char const* message);
+}
 
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  std::string const& message);
+}
 
-#endif // LE_COMMON_ASSERT_H
+#endif // LE_GRAPHICS_ERROR_CHECKING_H
