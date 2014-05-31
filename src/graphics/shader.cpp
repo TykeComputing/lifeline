@@ -54,8 +54,8 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
     }
   }
 
-  p_raw_shader_name = glCreateShader(type);
-  if(p_raw_shader_name == 0)
+  p_raw_name = glCreateShader(type);
+  if(p_raw_name == 0)
   {
     throw resource_exception("Unable to create shader, internal OpenGL error.");
   }
@@ -69,23 +69,23 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
   }
 
   glShaderSource(
-    p_raw_shader_name,
+    p_raw_name,
     shader_source_c_str_array.size(), shader_source_c_str_array.data(), nullptr);
 
-  glCompileShader(p_raw_shader_name);
+  glCompileShader(p_raw_name);
 
   // Check for compilation failure
   GLint shader_compile_status;
-  glGetShaderiv(p_raw_shader_name, GL_COMPILE_STATUS, &shader_compile_status);
+  glGetShaderiv(p_raw_name, GL_COMPILE_STATUS, &shader_compile_status);
   if(shader_compile_status == GL_FALSE)
   {
     GLint compile_log_length;
-    glGetShaderiv(p_raw_shader_name, GL_INFO_LOG_LENGTH, &compile_log_length);
+    glGetShaderiv(p_raw_name, GL_INFO_LOG_LENGTH, &compile_log_length);
 
     // Allocate buffer and get compiler errors
     std::vector<char> compile_log;
     compile_log.resize(compile_log_length);
-    glGetShaderInfoLog(p_raw_shader_name, compile_log_length, nullptr, compile_log.data());
+    glGetShaderInfoLog(p_raw_name, compile_log_length, nullptr, compile_log.data());
 
     // If OpenGL implementation provides newline, get rid of it
     if(compile_log.empty() == false && compile_log.back() == '\n')
@@ -105,7 +105,7 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
     LE_printf("----------------------------------------------------------------\n");
 
     // cleanup from failure
-    glDeleteShader(p_raw_shader_name);
+    glDeleteShader(p_raw_name);
 
     throw resource_exception("Shader compilation failed.");
   }
@@ -113,7 +113,7 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
 
 shader::~shader()
 {
-  glDeleteShader(p_raw_shader_name);
+  glDeleteShader(p_raw_name);
 }
 
 std::string const& shader::get_file_name() const

@@ -19,28 +19,27 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_SHADER_PROGRAM_H
-#define LE_GRAPHICS_SHADER_PROGRAM_H
-
-#include <vector>
+#ifndef LE_GRAPHICS_VERTEX_BUFFER_H
+#define LE_GRAPHICS_VERTEX_BUFFER_H
 
 #include <GL/glew.h>
-
-#include <graphics/shader.h>
 
 namespace LE
 {
 
-class shader_program
+class vertex_buffer
 {
 public:
-  shader_program(std::vector<shader> const& shaders);
-  ~shader_program();
+  vertex_buffer(vertex_buffer const& rhs) = delete;
+  vertex_buffer const& operator=(vertex_buffer const& rhs) = delete;
 
-  GLint get_unform_location(char const* attrib_name) const;
+  vertex_buffer();
+  ~vertex_buffer();
 
-  static void use(shader_program & sp);
-  // TODO - static set_uniform's for built in type (single and vector), and LE types (vec*, etc)
+  static void bind(GLenum target, vertex_buffer & VBO);
+  static void unbind(GLenum target);
+
+  //static GLuint get_bound_raw_name();
 
 private:
   GLuint p_raw_name = 0;
@@ -48,4 +47,4 @@ private:
 
 } // namespace LE
 
-#endif // LE_GRAPHICS_SHADER_PROGRAM_H
+#endif // LE_GRAPHICS_VERTEX_BUFFER_H

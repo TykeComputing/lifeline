@@ -19,33 +19,20 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_SHADER_PROGRAM_H
-#define LE_GRAPHICS_SHADER_PROGRAM_H
-
-#include <vector>
-
-#include <GL/glew.h>
-
-#include <graphics/shader.h>
+#ifndef LE_GRAPHICS_TEXTURE2D_H
+#define LE_GRAPHICS_TEXTURE2D_H
 
 namespace LE
 {
 
-class shader_program
+class texture2D
 {
 public:
-  shader_program(std::vector<shader> const& shaders);
-  ~shader_program();
-
-  GLint get_unform_location(char const* attrib_name) const;
-
-  static void use(shader_program & sp);
-  // TODO - static set_uniform's for built in type (single and vector), and LE types (vec*, etc)
+  texture2D();
 
 private:
-  GLuint p_raw_name = 0;
 };
 
 } // namespace LE
 
-#endif // LE_GRAPHICS_SHADER_PROGRAM_H
+#endif // LE_GRAPHICS_TEXTURE2D_H

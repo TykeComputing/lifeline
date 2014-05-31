@@ -39,7 +39,7 @@ public:
   std::string const& get_file_name() const;
 
 private:
-  GLuint p_raw_shader_name = 0;
+  GLuint p_raw_name = 0;
   GLenum p_type = GL_NONE;
   std::string p_file_name;
 

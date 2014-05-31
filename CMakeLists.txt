@@ -81,6 +81,9 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/shader.cpp
   src/graphics/shader_program.cpp
   #src/graphics/shader_program_definition.cpp
+  #src/graphics/texture2D.cpp
+  src/graphics/vertex_array.cpp
+  src/graphics/vertex_buffer.cpp
 
   src/engine/engine.cpp
   src/engine/graphics_context.cpp
@@ -102,12 +105,3 @@ target_link_libraries(${PROJECT_NAME}
   ${SDL2_LIBRARY}
   ${SDL2MAIN_LIBRARY}
 )
-
-# NOT DESIREABLE, instead searching for method of setting working directory.
-## Copy resource to build directory
-#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-#  COMMAND "${CMAKE_COMMAND}" -E copy_directory
-#    "${PROJECT_SOURCE_DIR}/resources" "${CMAKE_BINARY_DIR}/resources"
-#  COMMENT "Copying game resources..."
-#)
-

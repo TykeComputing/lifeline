@@ -45,6 +45,7 @@ int main(int arg_count, char *args[])
   {
     LE::engine game_engine;
 
+    // TODO - Move shader loading to someplace that makes more sense once resources exist
     try
     {
       std::vector<LE::shader> shaders;

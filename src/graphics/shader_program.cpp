@@ -30,28 +30,28 @@ namespace LE
 
 shader_program::shader_program(std::vector<shader> const& shaders)
 {
-  p_raw_program_name = glCreateProgram();
+  p_raw_name = glCreateProgram();
 
   for(auto const& shader_it : shaders)
   {
-    glAttachShader(p_raw_program_name, shader_it.p_raw_shader_name);
+    glAttachShader(p_raw_name, shader_it.p_raw_name);
   }
 
   // TODO - Bind vertex attribs here
 
-  glLinkProgram(p_raw_program_name);
+  glLinkProgram(p_raw_name);
 
   GLint program_link_status;
-  glGetProgramiv(p_raw_program_name, GL_LINK_STATUS, &program_link_status);
+  glGetProgramiv(p_raw_name, GL_LINK_STATUS, &program_link_status);
   if(program_link_status == GL_FALSE)
   {
     GLint link_log_length;
-    glGetProgramiv(p_raw_program_name, GL_INFO_LOG_LENGTH, &link_log_length);
+    glGetProgramiv(p_raw_name, GL_INFO_LOG_LENGTH, &link_log_length);
 
     // Allocate buffer and get link errors
     std::vector<char> link_log;
     link_log.resize(link_log_length);
-    glGetProgramInfoLog(p_raw_program_name, link_log_length, nullptr, link_log.data());
+    glGetProgramInfoLog(p_raw_name, link_log_length, nullptr, link_log.data());
 
     // If OpenGL implementation provides newline, get rid of it
     if(link_log.empty() == false && link_log.back() == '\n')
@@ -70,7 +70,7 @@ shader_program::shader_program(std::vector<shader> const& shaders)
     LE_printf("----------------------------------------------------------------\n");
 
     // cleanup from failure
-    glDeleteProgram(p_raw_program_name);
+    glDeleteProgram(p_raw_name);
 
     throw resource_exception("Shader linking failed.");
   }
@@ -80,19 +80,19 @@ shader_program::shader_program(std::vector<shader> const& shaders)
     //   to a program).
     for(auto const& shader_it : shaders)
     {
-      glDetachShader(p_raw_program_name, shader_it.p_raw_shader_name);
+      glDetachShader(p_raw_name, shader_it.p_raw_name);
     }
   }
 }
 
 shader_program::~shader_program()
 {
-  glDeleteProgram(p_raw_program_name);
+  glDeleteProgram(p_raw_name);
 }
 
 void shader_program::use(shader_program & sp)
 {
-  glUseProgram(sp.p_raw_program_name);
+  glUseProgram(sp.p_raw_name);
 }
 
 } // namespace LE
