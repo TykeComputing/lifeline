@@ -51,15 +51,8 @@ void engine::run()
   LE::vertex_array::bind(fsq_VAO);
   LE::vertex_buffer::bind(GL_ARRAY_BUFFER, fsq_VBO);
 
-  glEnableVertexAttribArray(LE::vertex_attrib_type::position);
-  glEnableVertexAttribArray(LE::vertex_attrib_type::texcoord);
-
-  glVertexAttribPointer(LE::vertex_attrib_type::position,
-    2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)0);
-  glVertexAttribPointer(LE::vertex_attrib_type::texcoord,
-    2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)(sizeof(float) * 2));
-
-  vertex v = { 0.0f, 0.0f, 0.0f, 0.0f };
+  vertex v = { 1.0f, 2.0f, 3.0f, 4.0f };
+  vertex::specify_vertex_attributes();
   float fsq_verts[] =
   {
     -1.0f, -1.0f, /**/ 0.0f, 0.0f,
