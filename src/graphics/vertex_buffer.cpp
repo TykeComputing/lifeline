@@ -46,6 +46,19 @@ void vertex_buffer::unbind(GLenum target)
   glBindBuffer(target, 0);
 }
 
+void vertex_buffer::specify_vertex_attrtibute(
+  GLuint attrib_index,
+  GLint num_components, GLenum type, GLboolean normalized,
+  GLsizei byte_stride, GLsizei byte_offset)
+{
+  glEnableVertexAttribArray(attrib_index);
+
+  glVertexAttribPointer(
+    attrib_index,
+    num_components, type, normalized,
+    byte_stride, reinterpret_cast<GLvoid*>(static_cast<std::uintptr_t>(byte_offset)) );
+}
+
 void vertex_buffer::set_data(GLenum target, GLsizeiptr size, GLvoid const* data, GLenum usage)
 {
   glBufferData(target, size, data, usage);
@@ -77,13 +90,13 @@ void draw_arrays(
 }
 
 void draw_elements(
-  GLenum mode, GLsizei index_count, GLenum index_type, GLint vertex_byte_offset)
+  GLenum mode, GLsizei index_count, GLenum index_type, GLsizei vertex_byte_offset)
 {
   // Last parameter "pointer" is used as an offset in modern OpenGL,
   //   is a pointer due to legacy OpenGL cruft.
   // See: http://stackoverflow.com/a/8283855/2507444
   glDrawElements(mode, index_count, index_type,
-    reinterpret_cast<GLvoid*>(static_cast<std::uintptr_t>(vertex_byte_offset * sizeof(GLint))) );
+    reinterpret_cast<GLvoid*>(static_cast<std::uintptr_t>(vertex_byte_offset)) );
 }
 
 } // namespace LE

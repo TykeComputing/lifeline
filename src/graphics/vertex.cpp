@@ -21,12 +21,19 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "vertex.h"
 
+#include <cstddef> // offsetof
+
+#include <graphics/vertex_buffer.h>
+
 namespace LE
 {
 
-//vertex::vertex()
-//{
-
-//}
+void vertex::specify_vertex_attributes()
+{
+  vertex_buffer::specify_vertex_attrtibute(
+    vertex_attrib_type::position,
+    decltype(position)::num_components, GL_FLOAT, GL_FALSE,
+    sizeof(decltype(position)), offsetof(vertex, position));
+}
 
 } // namespace LE

@@ -39,6 +39,11 @@ public:
   static void bind(GLenum target, vertex_buffer & VBO);
   static void unbind(GLenum target);
 
+  static void specify_vertex_attrtibute(
+    GLuint attrib_index,
+    GLint num_components, GLenum type, GLboolean normalized,
+    GLsizei byte_stride, GLsizei byte_offset);
+
   static void set_data(GLenum target, GLsizeiptr size, GLvoid const* data, GLenum usage);
   static void copy_data(
     vertex_buffer & destination, vertex_buffer const& source, GLsizeiptr size, GLenum usage);
@@ -46,7 +51,7 @@ public:
   static void draw_arrays(
     GLenum mode, GLint vertex_offset, GLsizei vertex_count);
   static void draw_elements(
-    GLenum mode, GLsizei index_count, GLenum index_type, GLint vertex_byte_offset);
+    GLenum mode, GLsizei index_count, GLenum index_type, GLsizei vertex_byte_offset);
 
 private:
   GLuint p_raw_name = 0;

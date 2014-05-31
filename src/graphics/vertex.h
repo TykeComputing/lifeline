@@ -32,10 +32,20 @@ LE_ENUM_2(vertex_attrib_type,
   position,
   texcoord)
 
-struct vertex
+// TODO - Remove when actual vec2 is implemented
+struct vec2f
 {
   float x, y;
-  float s, t;
+
+  static unsigned const num_components = 2;
+};
+
+struct vertex
+{
+  static void specify_vertex_attributes();
+
+  vec2f position;
+  vec2f texcoord;
 };
 
 } // namespace LE
