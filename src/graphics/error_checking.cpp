@@ -24,8 +24,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-namespace detail
+std::string get_GL_errors()
 {
+  return get_GL_errors(glGetError());
+}
 
 std::string get_GL_errors(GLenum last_error)
 {
@@ -42,8 +44,6 @@ std::string get_GL_errors(GLenum last_error)
     }
   }
   return error_string;
-}
-
 }
 
 } // namespace LE

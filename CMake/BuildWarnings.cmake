@@ -20,12 +20,12 @@
 message(STATUS "Setting build warnings for ${CMAKE_CXX_COMPILER_ID}...")
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # TODO - When on a windows machine, find out what default switches are used in VS2013 and add them here.
-  set(WARNING_FLAGS "/EHa /MTd /W4 /WX /D_CRT_SECURE_NO_DEPRECATE")
+  add_compile_options(/EHa /MTd /W4 /WX /D_CRT_SECURE_NO_DEPRECATE)
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall -Wextra -Werror")  
-  set(WARNING_FLAGS "${WARNING_FLAGS} -pedantic -pedantic-errors")
+  add_compile_options(-Wall -Wextra -Werror -Wfatal-errors)
+  add_compile_options(-pedantic -pedantic-errors)
   # TODO - Determine what warnings shoud be set by reading GCC docs and then set them here.
 
   # TODO - Place optimization flags for appropriate configurations elsewhere
-  #set(WARNING_FLAGS "${WARNING_FLAGS} -ftree-vectorize -ffast-math -ftree-vectorizer-verbose=1")
+  #set(-ftree-vectorize -ffast-math -ftree-vectorizer-verbose=1)
 endif()

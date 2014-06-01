@@ -33,19 +33,15 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
   GLenum last_error = glGetError(); \
   if(last_error != GL_NO_ERROR) \
   { \
-    LE_ERROR("Graphics: Internal OpenGL Error!\nCode(s): " + LE::detail::get_GL_errors(last_error)); \
+    LE_ERROR("Graphics: Internal OpenGL Error!\nCode(s): " + LE::get_GL_errors(last_error)); \
   } \
 }
 
 namespace LE
 {
 
-namespace detail
-{
-
+std::string get_GL_errors();
 std::string get_GL_errors(GLenum last_error);
-
-}
 
 }
 

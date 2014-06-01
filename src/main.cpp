@@ -25,6 +25,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/glew.h>
 
 #include <common/fatal_construction_exception.h>
+#include <common/macros.h>
 #include <engine/engine.h>
 
 // TODO - REMOVE AFTER TESTING
@@ -35,8 +36,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <graphics/vertex.h>
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
-
-#define LE_UNUSED_VAR(x) (void)x
 
 int main(int arg_count, char *args[])
 {
@@ -50,10 +49,6 @@ int main(int arg_count, char *args[])
     // TODO - Move shader loading to someplace that makes more sense once resources exist
     try
     {
-
-      auto err = glGetError();
-      err = glGetError();
-      err = glGetError();
       std::vector<LE::shader> shaders;
       shaders.emplace_back(
             GL_VERTEX_SHADER, std::vector<std::string>(1, "resources/shaders/solid_color.vert"));

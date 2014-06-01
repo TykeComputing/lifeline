@@ -26,6 +26,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/error.h>
 #include <common/fatal_construction_exception.h>
 #include <common/LE_printf.h>
+#include <graphics/error_checking.h>
 
 #include <engine/window.h>
 
@@ -42,13 +43,25 @@ graphics_context::graphics_context(window & target_window)
     throw fatal_construction_exception("Error creating OpenGL context, exiting...");
   }
 
-  // TODO - Verify if glewExperimental is actually needed
-  glewExperimental = true;
+  // Experimental is needed for OpenGL 3.2+ core contexts
+  // See: http://www.opengl.org/wiki/OpenGL_Loading_Library
+  glewExperimental = GL_TRUE;
   GLenum glew_init_res = glewInit();
   if(glew_init_res != GLEW_OK)
   {
     LE_ERROR(glewGetErrorString(glew_init_res));
     throw fatal_construction_exception("Error intializing GLEW, exiting...");
+  }
+
+  std::string glew_init_GL_errors = get_GL_errors();
+  if(glew_init_GL_errors.empty())
+  {
+    LE_printf("OpenGL Function Loading: No errors on glewInit...\n");
+  }
+  else
+  {
+    LE_printf("OpenGL Function Loading: Errors on glewInit: %s \n",
+      glew_init_GL_errors.c_str());
   }
 
   if(!GLEW_VERSION_3_2)

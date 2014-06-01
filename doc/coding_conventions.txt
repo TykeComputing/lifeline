@@ -17,6 +17,11 @@ You should have received a copy of the GNU General Public License
 along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 
+**** Warnings ****
+Always code with warnings on, as many as reasonable (i.e. don't use warnings about padding 
+size). Always strive to produce warning free code. This will help produce better, error free
+code.
+
 **** Class Naming ****
 All lower case with underscores except for acronyms which will be uppercase.
 

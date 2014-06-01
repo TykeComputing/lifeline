@@ -83,13 +83,13 @@ void vertex_buffer::copy_data(
   LE_ERRORIF_GL_ERROR();
 }
 
-void draw_arrays(
+void vertex_buffer::draw_arrays(
   GLenum mode, GLint vertex_offset, GLsizei vertex_count)
 {
   glDrawArrays(mode, vertex_offset, vertex_count);
 }
 
-void draw_elements(
+void vertex_buffer::draw_elements(
   GLenum mode, GLsizei index_count, GLenum index_type, GLsizei vertex_byte_offset)
 {
   // Last parameter "pointer" is used as an offset in modern OpenGL,

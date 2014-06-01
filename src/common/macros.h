@@ -22,6 +22,16 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_COMMON_MACROS_H
 #define LE_COMMON_MACROS_H
 
+// Useful for unused function parameters, etc.
+#define LE_UNUSED_VAR(x) (void)x
+
+// N
+#ifdef __GNUC__
+#define LE_VAR_ATTR_UNUSED __attribute__((unused))
+#else
+#define LE_VAR_ATTR_UNUSED
+#endif
+
 // TODO - Consider using strongly typed enumerations(C++11)?
 #define LE_ENUM_INTERNAL_1(a                                 ) enum value { e_start = 0, a = 0, e_num_vals, e_end = e_num_vals - 1 };
 #define LE_ENUM_INTERNAL_2(a, b                              ) enum value { e_start = 0, a = 0, b, e_num_vals, e_end = e_num_vals - 1 };
@@ -36,18 +46,18 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #define LE_ENUM_INTERNAL_11(a, b, c, d, e, f, g, h, i, j, k   ) enum value { e_start = 0, a = 0, b, c, d, e, f, g, h, i, j, k, e_num_vals, e_end = e_num_vals - 1 };
 #define LE_ENUM_INTERNAL_12(a, b, c, d, e, f, g, h, i, j, k, l) enum value { e_start = 0, a = 0, b, c, d, e, f, g, h, i, j, k, l, e_num_vals, e_end = e_num_vals - 1 };
 
-#define LE_ENUM_STR_INTERNAL_1(a                                 ) static const char * c_str[] = { #a };
-#define LE_ENUM_STR_INTERNAL_2(a, b                              ) static const char * c_str[] = { #a, #b };
-#define LE_ENUM_STR_INTERNAL_3(a, b, c                           ) static const char * c_str[] = { #a, #b, #c };
-#define LE_ENUM_STR_INTERNAL_4(a, b, c, d                        ) static const char * c_str[] = { #a, #b, #c, #d };
-#define LE_ENUM_STR_INTERNAL_5(a, b, c, d, e                     ) static const char * c_str[] = { #a, #b, #c, #d, #e };
-#define LE_ENUM_STR_INTERNAL_6(a, b, c, d, e, f                  ) static const char * c_str[] = { #a, #b, #c, #d, #e, #f };
-#define LE_ENUM_STR_INTERNAL_7(a, b, c, d, e, f, g               ) static const char * c_str[] = { #a, #b, #c, #d, #e, #f, #g };
-#define LE_ENUM_STR_INTERNAL_8(a, b, c, d, e, f, g, h            ) static const char * c_str[] = { #a, #b, #c, #d, #e, #f, #g, #h };
-#define LE_ENUM_STR_INTERNAL_9(a, b, c, d, e, f, g, h, i         ) static const char * c_str[] = { #a, #b, #c, #d, #e, #f, #g, #h, #i };
-#define LE_ENUM_STR_INTERNAL_10(a, b, c, d, e, f, g, h, i, j      ) static const char * c_str[] = { #a, #b, #c, #d, #e, #f, #g, #h, #i, #j };
-#define LE_ENUM_STR_INTERNAL_11(a, b, c, d, e, f, g, h, i, j, k   ) static const char * c_str[] = { #a, #b, #c, #d, #e, #f, #g, #h, #i, #j, #k };
-#define LE_ENUM_STR_INTERNAL_12(a, b, c, d, e, f, g, h, i, j, k, l) static const char * c_str[] = { #a, #b, #c, #d, #e, #f, #g, #h, #i, #j, #k, #l };
+#define LE_ENUM_STR_INTERNAL_1(a                                 ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a };
+#define LE_ENUM_STR_INTERNAL_2(a, b                              ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b };
+#define LE_ENUM_STR_INTERNAL_3(a, b, c                           ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c };
+#define LE_ENUM_STR_INTERNAL_4(a, b, c, d                        ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c, #d };
+#define LE_ENUM_STR_INTERNAL_5(a, b, c, d, e                     ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c, #d, #e };
+#define LE_ENUM_STR_INTERNAL_6(a, b, c, d, e, f                  ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c, #d, #e, #f };
+#define LE_ENUM_STR_INTERNAL_7(a, b, c, d, e, f, g               ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c, #d, #e, #f, #g };
+#define LE_ENUM_STR_INTERNAL_8(a, b, c, d, e, f, g, h            ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c, #d, #e, #f, #g, #h };
+#define LE_ENUM_STR_INTERNAL_9(a, b, c, d, e, f, g, h, i         ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c, #d, #e, #f, #g, #h, #i };
+#define LE_ENUM_STR_INTERNAL_10(a, b, c, d, e, f, g, h, i, j      ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c, #d, #e, #f, #g, #h, #i, #j };
+#define LE_ENUM_STR_INTERNAL_11(a, b, c, d, e, f, g, h, i, j, k   ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c, #d, #e, #f, #g, #h, #i, #j, #k };
+#define LE_ENUM_STR_INTERNAL_12(a, b, c, d, e, f, g, h, i, j, k, l) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b, #c, #d, #e, #f, #g, #h, #i, #j, #k, #l };
 
 #define LE_ENUM_1(enum_name, a                                 ) namespace enum_name { LE_ENUM_INTERNAL_1(a                                  )  LE_ENUM_STR_INTERNAL_1(a                                  ) }
 #define LE_ENUM_2(enum_name, a, b                              ) namespace enum_name { LE_ENUM_INTERNAL_2(a, b                               )  LE_ENUM_STR_INTERNAL_2(a, b                               ) }

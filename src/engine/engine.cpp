@@ -51,7 +51,7 @@ void engine::run()
   LE::vertex_array::bind(fsq_VAO);
   LE::vertex_buffer::bind(GL_ARRAY_BUFFER, fsq_VBO);
 
-  vertex v = { 1.0f, 2.0f, 3.0f, 4.0f };
+  //vertex v = { 1.0f, 2.0f, 3.0f, 4.0f };
   vertex::specify_vertex_attributes();
   float fsq_verts[] =
   {
@@ -65,6 +65,9 @@ void engine::run()
   };
   GLsizei num_fsq_verts = sizeof(fsq_verts) / (sizeof(float) * 4);
   ///////////////////////
+  /// \brief glClearColor
+
+  LE::vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(fsq_verts), fsq_verts, GL_STATIC_DRAW);
 
   glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 
@@ -78,6 +81,8 @@ void engine::run()
     // Render
     // TODO - Move once graphics framework is in place
     glClear(GL_COLOR_BUFFER_BIT);
+
+    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, num_fsq_verts);
 
     p_window.update();
   }
