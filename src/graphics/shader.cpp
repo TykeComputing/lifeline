@@ -21,6 +21,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "shader.h"
 
+#include <utility>
+
 #include <common/file_string.h>
 #include <common/LE_printf.h>
 #include <common/resource_exception.h>

@@ -24,6 +24,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 
+#include <common/error.h>
 #include <common/fatal_construction_exception.h>
 #include <common/macros.h>
 #include <engine/engine.h>
@@ -47,32 +48,44 @@ int main(int arg_count, char *args[])
     LE::engine game_engine;
 
     // TODO - Move shader loading to someplace that makes more sense once resources exist
+    // Load shaders
+    std::vector<LE::shader *> shaders;
     try
-    {
-      std::vector<LE::shader> shaders;
+    {      
       shaders.emplace_back(
-            GL_VERTEX_SHADER, std::vector<std::string>(1, "resources/shaders/solid_color.vert"));
+        new LE::shader(GL_VERTEX_SHADER, std::vector<std::string>(1, "resources/shaders/solid_color.vert")) );
       shaders.emplace_back(
-            GL_FRAGMENT_SHADER, std::vector<std::string>(1, "resources/shaders/solid_color.frag"));
-      LE::shader_program solid_color(shaders); LE_UNUSED_VAR(solid_color);
-      shaders.clear();
-      shaders.emplace_back(
-            GL_VERTEX_SHADER, std::vector<std::string>(1, "resources/shaders/textured.vert"));
-      shaders.emplace_back(
-            GL_FRAGMENT_SHADER, std::vector<std::string>(1, "resources/shaders/textured.frag"));
-      LE::shader_program textured(shaders); LE_UNUSED_VAR(textured);
-      shaders.clear();
+        new LE::shader(GL_FRAGMENT_SHADER, std::vector<std::string>(1, "resources/shaders/solid_color.frag")) );
     }
     catch(LE::resource_exception const& e)
     {
       e.print("Shader Loading");
+      LE_ERROR("Test error"); // TODO - Remove
+      return -1;
     }
+
+    // Load shader_program
+    LE::shader_program * solid_color = nullptr;
+    try
+    {
+      solid_color = new LE::shader_program(shaders);
+    }
+    catch (LE::resource_exception const& e)
+    {
+      e.print("Shader Program Loading");
+      LE_ERROR("Test error"); // TODO - Remove
+      return -1;
+    }
+
+    shaders.clear();
+    LE::shader_program::use(*solid_color);
 
     game_engine.run();
   }
   catch(LE::fatal_construction_exception const& e)
   {
     e.print("Engine Creation");
+    LE_ERROR("Test error"); // TODO - Remove
     return -1;
   }
 

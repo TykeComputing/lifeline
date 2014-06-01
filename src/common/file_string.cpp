@@ -33,7 +33,7 @@ file_string::file_string(char const* file_name) :
   std::ifstream in_file(file_name, std::ios::ate);
   if(in_file.is_open())
   {
-    p_file_string.resize(in_file.tellg());
+    p_file_string.resize(static_cast<std::string::size_type>(in_file.tellg()));
     in_file.seekg(0, std::ios_base::beg);
 
     p_file_string.assign(

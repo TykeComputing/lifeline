@@ -21,6 +21,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "shader_program.h"
 
+#include <utility>
+
 #include <common/error.h>
 #include <common/LE_printf.h>
 #include <common/resource_exception.h>
@@ -31,13 +33,13 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-shader_program::shader_program(std::vector<shader> const& shaders)
+shader_program::shader_program(std::vector<shader*> const& shaders)
 {
   p_raw_name = glCreateProgram();
 
   for(auto const& shader_it : shaders)
   {
-    glAttachShader(p_raw_name, shader_it.p_raw_name);
+    glAttachShader(p_raw_name, shader_it->p_raw_name);
   }
 
   // Bind vertex attribs
@@ -71,7 +73,7 @@ shader_program::shader_program(std::vector<shader> const& shaders)
     LE_printf("== SHADER NAMES =======\n");
     for(auto const& shader_it : shaders)
     {
-      LE_printf("%s\n", shader_it.get_file_name().c_str());
+      LE_printf("%s\n", shader_it->get_file_name().c_str());
     }
     LE_printf("=== ERROR LOG ===========\n");
     LE_printf("%s\n", link_log.data());
@@ -90,7 +92,7 @@ shader_program::shader_program(std::vector<shader> const& shaders)
     //   to a program).
     for(auto const& shader_it : shaders)
     {
-      glDetachShader(p_raw_name, shader_it.p_raw_name);
+      glDetachShader(p_raw_name, shader_it->p_raw_name);
     }
 
     LE_ERRORIF_GL_ERROR();

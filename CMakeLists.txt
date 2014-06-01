@@ -56,7 +56,7 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 
 include(${LE_CMAKE_DIR}/BuildWarnings.cmake)
-include(${LE_CMAKE_DIR}/SetupLibraries.cmake)
+include(${LE_CMAKE_DIR}/SetupExternalLibraries.cmake)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_compile_options(-std=c++11)
@@ -66,32 +66,53 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   endif()
 endif()
 
+# Header files are added so they will show up in IDEs correctly
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp
 
   src/common/error.cpp
+  src/common/error.h
   src/common/fatal_construction_exception.cpp
+  src/common/fatal_construction_exception.h
   src/common/file_string.cpp
+  src/common/file_string.h
   src/common/LE_printf.cpp
+  src/common/LE_printf.h
   src/common/macros.h
   src/common/message_exception.cpp
+  src/common/message_exception.h
   #src/common/resource.cpp
+  #src/common/resource.h
   #src/common/resource_manager.cpp
+  #src/common/resource_manager.h
   src/common/resource_exception.cpp
+  src/common/resource_exception.h
 
   src/graphics/error_checking.cpp
+  src/graphics/error_checking.h
   src/graphics/shader.cpp
+  src/graphics/shader.h
   src/graphics/shader_program.cpp
+  src/graphics/shader_program.h
   #src/graphics/shader_program_definition.cpp
+  #src/graphics/shader_program_definition.h
   #src/graphics/texture2D.cpp
+  #src/graphics/texture2D.h
   src/graphics/vertex.cpp
+  src/graphics/vertex.h
   src/graphics/vertex_array.cpp
+  src/graphics/vertex_array.h
   src/graphics/vertex_buffer.cpp
+  src/graphics/vertex_buffer.h
 
   src/engine/engine.cpp
+  src/engine/engine.h
   src/engine/graphics_context.cpp
+  src/engine/graphics_context.h
   src/engine/OS_interface.cpp
+  src/engine/OS_interface.h
   src/engine/window.cpp
+  src/engine/window.h
 )
 
 include_directories(

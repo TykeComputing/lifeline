@@ -64,10 +64,10 @@ void engine::run()
      1.0f,  1.0f, /**/ 1.0f, 1.0f
   };
   GLsizei num_fsq_verts = sizeof(fsq_verts) / (sizeof(float) * 4);
-  ///////////////////////
-  /// \brief glClearColor
-
+  
   LE::vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(fsq_verts), fsq_verts, GL_STATIC_DRAW);
+
+  ///////////////////////
 
   glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 

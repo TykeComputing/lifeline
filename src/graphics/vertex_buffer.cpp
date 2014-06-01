@@ -21,6 +21,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "vertex_buffer.h"
 
+#include <utility>
+
 #include <graphics/error_checking.h>
 
 namespace LE
@@ -56,7 +58,7 @@ void vertex_buffer::specify_vertex_attrtibute(
   glVertexAttribPointer(
     attrib_index,
     num_components, type, normalized,
-    byte_stride, reinterpret_cast<GLvoid*>(static_cast<std::uintptr_t>(byte_offset)) );
+    byte_stride, reinterpret_cast<GLvoid*>(static_cast<uintptr_t>(byte_offset)) );
 }
 
 void vertex_buffer::set_data(GLenum target, GLsizeiptr size, GLvoid const* data, GLenum usage)
@@ -96,7 +98,7 @@ void vertex_buffer::draw_elements(
   //   is a pointer due to legacy OpenGL cruft.
   // See: http://stackoverflow.com/a/8283855/2507444
   glDrawElements(mode, index_count, index_type,
-    reinterpret_cast<GLvoid*>(static_cast<std::uintptr_t>(vertex_byte_offset)) );
+    reinterpret_cast<GLvoid*>(static_cast<uintptr_t>(vertex_byte_offset)) );
 }
 
 } // namespace LE

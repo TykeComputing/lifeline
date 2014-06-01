@@ -27,12 +27,16 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/glew.h>
 
+#include <common/macros.h>
+
 namespace LE
 {
 
 class shader
 {
 public:
+  LE_NON_COPYABLE(shader);
+
   shader(GLenum type, std::vector<std::string> const& shader_soure_file_names);
   ~shader();
 

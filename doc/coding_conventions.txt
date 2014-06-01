@@ -117,3 +117,6 @@ the state changes going on underneath will not be trivial. Some rules to help:
 - If a function changes global state (buffer/texture/fbo bindings, which shader is being used, 
   etc.) it should be a static function for the appropriate class OR a manager class of some 
   sort.
+
+OpenGL wrapers should always be non-copyable (no copy constructor or assignment operatior).
+They however have explicit functions to facilitate copying of the underlying OpenGL resource.

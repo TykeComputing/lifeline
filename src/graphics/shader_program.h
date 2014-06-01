@@ -26,6 +26,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/glew.h>
 
+#include <common/macros.h>
+
 #include <graphics/shader.h>
 
 namespace LE
@@ -34,7 +36,9 @@ namespace LE
 class shader_program
 {
 public:
-  shader_program(std::vector<shader> const& shaders);
+  LE_NON_COPYABLE(shader_program);
+
+  shader_program(std::vector<shader*> const& shaders);
   ~shader_program();
 
   GLint get_unform_location(char const* attrib_name) const;

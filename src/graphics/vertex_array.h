@@ -24,12 +24,16 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/glew.h>
 
+#include <common/macros.h>
+
 namespace LE
 {
 
 class vertex_array
 {
 public:
+  LE_NON_COPYABLE(vertex_array);
+
   vertex_array();
   ~vertex_array();
 

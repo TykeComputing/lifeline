@@ -21,6 +21,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "vertex_array.h"
 
+#include <utility>
+
 namespace LE
 {
 

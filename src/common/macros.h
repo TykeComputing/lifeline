@@ -22,6 +22,17 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_COMMON_MACROS_H
 #define LE_COMMON_MACROS_H
 
+#define LE_NON_COPYABLE(class_name) \
+class_name(class_name const& rhs) = delete; \
+class_name const& operator=(class_name const& rhs) = delete;
+
+// Not supported in VS2014/VS12, leaving this here for future reference
+#ifndef _MSC_VER
+#define LE_MOVEABLE_DEFAULT(class_name) \
+class_name(class_name && rhs) = default; \
+class_name const& operator=(class_name && rhs) = default;
+#endif
+
 // Useful for unused function parameters, etc.
 #define LE_UNUSED_VAR(x) (void)x
 

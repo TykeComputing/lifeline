@@ -23,7 +23,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cstring>
-#
+#include <vector>
 
 void LE_display_error_message(
   std::string const& file,

@@ -24,14 +24,15 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/glew.h>
 
+#include <common/macros.h>
+
 namespace LE
 {
 
 class vertex_buffer
 {
 public:
-  vertex_buffer(vertex_buffer const& rhs) = delete;
-  vertex_buffer const& operator=(vertex_buffer const& rhs) = delete;
+  LE_NON_COPYABLE(vertex_buffer);
 
   vertex_buffer();
   ~vertex_buffer();

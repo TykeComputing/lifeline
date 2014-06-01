@@ -31,7 +31,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include<sys/signal.h>
 #define LE_HALT_PROGRAM() raise(SIGTRAP);
 #elif _MSC_VER
-#define LE_HALT_PROGRAM() __debug_break();
+#define LE_HALT_PROGRAM() __debugbreak();
 #else
 #define LE_HALT_PROGRAM()
 #endif
