@@ -18,8 +18,9 @@
 ################################################################################################
 
 # Will start with one project and split into multiple if deemed useful.
-project(lifeline CXX C)
 cmake_minimum_required(VERSION 2.8)#.12
+
+enable_language(CXX C)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING
@@ -41,6 +42,8 @@ message(STATUS "Architecture: ${TARGET_ARCH}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "##########################################")
 
+project(lifeline CXX C)
+
 include(${LE_CMAKE_DIR}/BuildWarnings.cmake)
 include(${LE_CMAKE_DIR}/SetupExternalDependencies.cmake)
 include(${LE_CMAKE_DIR}/SetupMSVCRuntimeLibrary.cmake)
@@ -52,6 +55,8 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     #add_compile_options(-m32) # needs linker flags and other options too, defering until later
   endif()
 endif()
+
+message(STATUS "Compiler flags: ${COMPILE_OPTIONS}")
 
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
