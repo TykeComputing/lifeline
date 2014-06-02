@@ -18,9 +18,8 @@
 ################################################################################################
 
 # Will start with one project and split into multiple if deemed useful.
-project(lifeline)
+project(lifeline CXX C)
 cmake_minimum_required(VERSION 2.8)#.12
-enable_language(C CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING
@@ -33,15 +32,6 @@ set(TARGET_ARCH "x86" CACHE STRING
 set(LE_CMAKE_DIR ${CMAKE_SOURCE_DIR}/CMake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/CMake/Modules/)
 
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-  set(LE_EXTERNAL_LIB_DIR "${PROJECT_SOURCE_DIR}/external/windows/lib/${TARGET_ARCH}" CACHE PATH
-    "Where all external dependency libraries are stored.")
-  set(LE_EXTERNAL_DLL_DIR "${PROJECT_SOURCE_DIR}/external/windows/dll/${TARGET_ARCH}" CACHE PATH
-    "Where all external dependency dlls are stored.")
-  set(LE_EXTERNAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/windows/include" CACHE PATH
-    "Where all external dependency includes are stored.")
-endif()
-
 message(STATUS "##########################################")
 message(STATUS "Targets")
 message(STATUS "-------")
@@ -51,12 +41,9 @@ message(STATUS "Architecture: ${TARGET_ARCH}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "##########################################")
 
-find_package(SDL2 REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(OpenGL REQUIRED)
-
 include(${LE_CMAKE_DIR}/BuildWarnings.cmake)
-include(${LE_CMAKE_DIR}/SetupExternalLibraries.cmake)
+include(${LE_CMAKE_DIR}/SetupExternalDependencies.cmake)
+include(${LE_CMAKE_DIR}/SetupMSVCRuntimeLibrary.cmake)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   add_compile_options(-std=c++11)
@@ -65,6 +52,10 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     #add_compile_options(-m32) # needs linker flags and other options too, defering until later
   endif()
 endif()
+
+find_package(SDL2 REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(OpenGL REQUIRED)
 
 # Header files are added so they will show up in IDEs correctly
 set(LE_EXECUTABLE_SRC_LIST

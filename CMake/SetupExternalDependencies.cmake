@@ -15,12 +15,22 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################################
+################################################################################################`
 
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set(LE_EXTERNAL_DEPEND_DIR "${PROJECT_SOURCE_DIR}/external" CACHE PATH
+    "Controls the default directory that external dependencies are looked for on a fresh configurtation.")
+
+  set(LE_EXTERNAL_LIB_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/lib/${TARGET_ARCH}" CACHE PATH
+    "Where all external dependency libraries are stored.")
+  set(LE_EXTERNAL_DLL_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/dll/${TARGET_ARCH}" CACHE PATH
+    "Where all external dependency dlls are stored.")
+  set(LE_EXTERNAL_INCLUDE_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/include" CACHE PATH
+    "Where all external dependency includes are stored.")
+
+  # Copy DLLs into
   message(STATUS "Copying all external DLLs from ${LE_EXTERNAL_DLL_DIR}/ to ${CMAKE_BINARY_DIR}/...")
 
-  # Copy dlls overwriting whatever is currently in the build directory
   file(GLOB EXTERNAL_DLL_COPY_LIST "${LE_EXTERNAL_DLL_DIR}/*.dll")
   if(EXTERNAL_DLL_COPY_LIST)
     foreach(DLL_IT ${EXTERNAL_DLL_COPY_LIST})
