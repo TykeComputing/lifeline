@@ -15,17 +15,24 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################################
+################################################################################################`
 
-message(STATUS "Setting build warnings for ${CMAKE_CXX_COMPILER_ID}...")
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  # TODO - When on a windows machine, find out what default switches are used in VS2013 and add them here.
-  add_compile_options(/EHa /MTd /W4 /WX /D_CRT_SECURE_NO_DEPRECATE)
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  add_compile_options(-Wall -Wextra -Werror -Wfatal-errors)
-  add_compile_options(-pedantic -pedantic-errors)
-  # TODO - Determine what warnings shoud be set by reading GCC docs and then set them here.
+function(setup_external_dependencies_runtime)
+  if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+    message(STATUS "Copying all external DLLs from ${LE_EXTERNAL_DLL_DIR}/ to ${CMAKE_BINARY_DIR}/...")
 
-  # TODO - Place optimization flags for appropriate configurations elsewhere
-  #set(-ftree-vectorize -ffast-math -ftree-vectorizer-verbose=1)
-endif()
+    file(GLOB EXTERNAL_DLL_COPY_LIST "${LE_EXTERNAL_DLL_DIR}/*.dll")
+    if(EXTERNAL_DLL_COPY_LIST)
+      foreach(DLL_IT ${EXTERNAL_DLL_COPY_LIST})
+
+        message(STATUS "  Copying ${DLL_IT}...")      
+      endforeach()
+
+      file(COPY ${EXTERNAL_DLL_COPY_LIST} DESTINATION "${CMAKE_BINARY_DIR}")    
+    else()
+      message(STATUS "  Nothing to copy - no external dlls found...")
+    endif()
+
+    unset(EXTERNAL_DLL_COPY_LIST)
+  endif()
+endfunction()
