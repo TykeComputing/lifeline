@@ -25,14 +25,18 @@ enable_language(CXX C)
 set(LE_CMAKE_DIR ${CMAKE_SOURCE_DIR}/CMake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${LE_CMAKE_DIR}/Modules)
 
-message(STATUS "##########################################")
+set(LE_MESSAGE_LINE_BREAK "################################")
+set(LE_MESSAGE_HEADER "----------------")
+
+message(STATUS "${LE_MESSAGE_LINE_BREAK}")
 message(STATUS "Targets")
-message(STATUS "-------")
+message(STATUS "${LE_MESSAGE_HEADER}")
 message(STATUS "OS: ${CMAKE_SYSTEM_NAME}")
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "Architecture: ${LE_TARGET_ARCH}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
-message(STATUS "##########################################")
+
+message(STATUS "${LE_MESSAGE_LINE_BREAK}")
 
 ################################################################
 # LIFELINE
@@ -98,14 +102,17 @@ set(LE_EXECUTABLE_SRC_LIST
 add_executable(${PROJECT_NAME} ${LE_EXECUTABLE_SRC_LIST})
 
 ################################
-# LIFELINE COMPILE FLAGS
+# COMPILE OPTIONS
 ################################
 
 # NOTE - If split into multiple projects, use the common library to set all compile flags
 #       since all other libraries will use it.
 # TODO - Consider Wraping platform specific messages with if statements.
 
-message(STATUS "Setting up build warnings...")
+message(STATUS "Compiler Setup")
+message(STATUS "${LE_MESSAGE_HEADER}")
+
+message(STATUS "Build warnings...")
 target_compile_options(${PROJECT_NAME}
   PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
     /W4 /WX
@@ -118,7 +125,7 @@ target_compile_options(${PROJECT_NAME}
 )
 
 
-message(STATUS "Setting up C++ runtime libraries...")
+message(STATUS "C++ runtime libraries...")
 target_compile_options(${PROJECT_NAME}
   PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
 
@@ -134,37 +141,49 @@ target_compile_options(${PROJECT_NAME}
   >
 ) 
 
-message(STATUS "Enabling C++11 support...")
+message(STATUS "General compile flags...")
 target_compile_options(${PROJECT_NAME}
   PUBLIC $<$<CXX_COMPILER_ID:GNU>:
     -std=c++11
   >
 )
 
-# TODO SET UP GENERAL BUILD SETTINGS
-# /EHa /D_CRT_SECURE_NO_DEPRECATE
+message(STATUS "Preprocessor definitions...")
+target_compile_definitions(${PROJECT_NAME}
+  PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
+    /D_CRT_SECURE_NO_DEPRECATE
+  >
+)
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC src
 )
 
+message(STATUS "${LE_MESSAGE_LINE_BREAK}")
+
 ################################
-# LIFELINE RUNTIME SETUP
+# RUNTIME SETUP
 ################################
 
+message(STATUS "Runtime Setup")
+message(STATUS "${LE_MESSAGE_HEADER}")
+
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  SET(LE_WORKING_DIR_FILE_IN "${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in")
+  set(LE_WORKING_DIR_FILE_OUT "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
   # Set up working directory
-  message(STATUS "Setting project working directory to ${LE_WORKING_DIR}.")
-  message(STATUS "  Be sure to close the project in the IDE before running CMake.")
-  configure_file(${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in
-                ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user
-                @ONLY UNIX)
+  message(STATUS "Setting project working directory to ${LE_WORKING_DIR}...")
+  message(STATUS "  To ensure the settings stick ensure the project is not open before configuring.")
+  message(STATUS "  Writing ${LE_WORKING_DIR_FILE_OUT}...")
+  configure_file("${LE_WORKING_DIR_FILE_IN}" "${LE_WORKING_DIR_FILE_OUT}" @ONLY UNIX)
 endif()
 
 setup_external_dependencies_runtime()
 
+message(STATUS "${LE_MESSAGE_LINE_BREAK}")
+
 ################################
-# LIFELINE EXTERNAL DEPENDENCIES
+# EXTERNAL DEPENDENCIES
 ################################
 
 # NOTE - If split into multiple projects, set the dependencies only where they're needed
