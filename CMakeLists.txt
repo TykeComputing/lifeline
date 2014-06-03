@@ -135,7 +135,6 @@ set(LE_EXECUTABLE_SRC_LIST
 
 add_executable(${PROJECT_NAME} ${LE_EXECUTABLE_SRC_LIST})
 
-
 ################################
 # COMPILE FLAGS
 ################################
@@ -147,7 +146,7 @@ add_executable(${PROJECT_NAME} ${LE_EXECUTABLE_SRC_LIST})
 message(STATUS "Setting up build warnings...")
 target_compile_options(${PROJECT_NAME}
   PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
-    /EHa /MTd /W4 /WX /D_CRT_SECURE_NO_DEPRECATE
+    /W4 /WX
   >
 
   PUBLIC $<$<CXX_COMPILER_ID:GNU>:
@@ -162,17 +161,15 @@ target_compile_options(${PROJECT_NAME}
   PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
 
     # Release configs
-    $<$<OR:
-      $<CONFIG:RELEASE>,
-      $<CONFIG:RELWITHDEBINFO>,
-      $<CONFIG:MINSIZEREL> >:
-        /MD
+    $<$<OR:$<CONFIG:RELEASE>,$<CONFIG:RELWITHDEBINFO>,$<CONFIG:MINSIZEREL>>:
+      /MD
     >
 
     # Debug configs
     $<$<CONFIG:DEBUG>:
       /MDd
     >
+  >
 ) 
 
 message(STATUS "Enabling C++11 support...")
@@ -181,6 +178,9 @@ target_compile_options(${PROJECT_NAME}
     -std=c++11
   >
 )
+
+# TODO SET UP GENERAL BUILD SETTINGS
+# /EHa /D_CRT_SECURE_NO_DEPRECATE
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC src
