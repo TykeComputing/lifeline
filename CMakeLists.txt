@@ -17,7 +17,8 @@
 # along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################################
 
-# NOTE - Will start with one project and split into multiple if deemed useful.
+# TODO - Add checks for versions of VS < 2013 and add fatal messsages
+
 cmake_minimum_required(VERSION 2.8)
 
 enable_language(CXX C)
@@ -168,26 +169,31 @@ message(STATUS "${LE_MESSAGE_LINE_BREAK}")
 message(STATUS "Runtime Setup")
 message(STATUS "${LE_MESSAGE_HEADER}")
 
-option(LE_WRITE_DEBUG_SETTINGS_FILE
+option(LE_RUN_WRITE_SETTINGS_FILE
   "Write an IDE specific file that default debug settings. Will only be written if it does not already exist. To ensure the settings stick ensure the project is not open before configuring."
   ON)
 
-if(LE_WRITE_DEBUG_SETTINGS_FILE)
+# Optionally create a IDE specific file that contains runtime settings (working dir, command 
+#   line arguments, etc.). File is only created if it does not exist already.
+if(LE_RUN_WRITE_SETTINGS_FILE)
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(LE_WORKING_DIR_FILE_IN "${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in")
-    set(LE_WORKING_DIR_FILE_OUT "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
-
-    file(RELATIVE_PATH LE_RESOURCE_DIR_RELATIVE_PATH ${LE_WORKING_DIR} ${LE_RESOURCE_DIR})
-    set(LE_COMMAND_LINE_ARGS 
-      "--resource-dir=\"${LE_RESOURCE_DIR}\""
-      CACHE PATH
-      "The default arguments that will be passed to the application when run when working with certain IDEs. Supported:${LE_DEBUG_SETTINGS_SUPPORTED_IDES}")
-    
-    message(STATUS "Creating project debug settings file...")
-    message(STATUS "  Setting project working directory to ${LE_WORKING_DIR}...")
-    message(STATUS "  Setting project command line arguments to ${LE_COMMAND_LINE_ARGS}...")
-    message(STATUS "  Writing ${LE_WORKING_DIR_FILE_OUT}...")
-    configure_file("${LE_WORKING_DIR_FILE_IN}" "${LE_WORKING_DIR_FILE_OUT}" @ONLY UNIX)
+    set(LE_RUN_SETTINGS_FILE_IN "${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in")
+    set(LE_RUN_SETTINGS_FILE_OUT "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
+    if(NOT EXISTS "${LE_RUN_SETTINGS_FILE_OUT}")
+      file(RELATIVE_PATH LE_RESOURCE_DIR_RELATIVE_PATH ${LE_RUN_WORKING_DIR} ${LE_RESOURCE_DIR})
+      set(LE_RUN_COMMAND_LINE_ARGS 
+        "--resource-dir=\"${LE_RESOURCE_DIR}\""
+        CACHE PATH
+        "The default arguments that will be passed to the application when run when working with certain IDEs. Supported:${LE_RUN_SETTINGS_SUPPORTED_IDES}")
+      
+      message(STATUS "Project runtime settings file not found, creating...")
+      message(STATUS "  Setting project working directory to ${LE_RUN_WORKING_DIR}...")
+      message(STATUS "  Setting project command line arguments to ${LE_RUN_COMMAND_LINE_ARGS}...")
+      message(STATUS "  Writing ${LE_RUN_SETTINGS_FILE_OUT}...")
+      configure_file("${LE_RUN_SETTINGS_FILE_IN}" "${LE_RUN_SETTINGS_FILE_OUT}" @ONLY UNIX)
+    else()
+      message(STATUS "Project runtime settings file already exists, doing nothing...")
+    endif()
   endif()
 endif()
 
@@ -214,10 +220,3 @@ target_link_libraries(${PROJECT_NAME}
   PUBLIC ${SDL2_LIBRARY}
   #PUBLIC ${SDL2MAIN_LIBRARY}
 )
-
-# Check if a file exists
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
-  message(STATUS "Found README.txt!")
-else()
-  message(STATUS "Did NOT find README.txt!")
-endif()

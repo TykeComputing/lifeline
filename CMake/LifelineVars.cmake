@@ -25,11 +25,11 @@ endif()
 set(LE_TARGET_ARCH "x86" CACHE STRING
   "Determines if application 32 bit or 64 bit. This affects what external libs are used.")  
 
-set(LE_DEBUG_SETTINGS_SUPPORTED_IDES "VS2013")
+set(LE_RUN_SETTINGS_SUPPORTED_IDES "VS2013")
 
-set(LE_WORKING_DIR "${CMAKE_BINARY_DIR}"
+set(LE_RUN_WORKING_DIR "${CMAKE_BINARY_DIR}"
   CACHE PATH
-  "The default working directory application will be run from by when working with certain IDEs. Supported: ${LE_DEBUG_SETTINGS_SUPPORTED_IDES}.")
+  "The default working directory application will be run from by when working with certain IDEs. Supported: ${LE_RUN_SETTINGS_SUPPORTED_IDES}.")
 
 set(LE_RESOURCE_DIR "${CMAKE_SOURCE_DIR}")
 
