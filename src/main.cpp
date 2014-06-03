@@ -60,7 +60,7 @@ int main(int arg_count, char *args[])
     catch(LE::resource_exception const& e)
     {
       e.print("Shader Loading");
-      LE_ERROR("Test error"); // TODO - Remove
+      LE_ERROR("Unable to compile shaders!"); // TODO - Remove
       return -1;
     }
 
@@ -73,7 +73,7 @@ int main(int arg_count, char *args[])
     catch (LE::resource_exception const& e)
     {
       e.print("Shader Program Loading");
-      LE_ERROR("Test error"); // TODO - Remove
+      LE_ERROR("Unable to link shaders!"); // TODO - Remove
       return -1;
     }
 
@@ -85,7 +85,7 @@ int main(int arg_count, char *args[])
   catch(LE::fatal_construction_exception const& e)
   {
     e.print("Engine Creation");
-    LE_ERROR("Test error"); // TODO - Remove
+    LE_ERROR("Unable to create engine!"); // TODO - Remove
     return -1;
   }
 

@@ -36,7 +36,7 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
    CACHE PATH
    "Controls the default directory that external dependencies are looked for on a fresh configurtation.")
 
-  set(LE_EXTERNAL_LIB_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/lib/${LE_TARGET_ARCH}" CACHE PATH "")
-  set(LE_EXTERNAL_DLL_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/dll/${LE_TARGET_ARCH}" CACHE PATH "")
-  set(LE_EXTERNAL_INCLUDE_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/include" CACHE PATH "")
+  set(LE_EXTERNAL_LIB_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/lib/${LE_TARGET_ARCH}")
+  set(LE_EXTERNAL_DLL_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/dll/${LE_TARGET_ARCH}")
+  set(LE_EXTERNAL_INCLUDE_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/include")
 endif()
