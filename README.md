@@ -27,6 +27,7 @@ On supported IDEs with `${LE_RUN_WRITE_SETTINGS_FILE}` enabled you can set a few
 - `${LE_RUN_COPY_EXTERNAL_DLLS_TO_WORKING_DIR}` (Windows only): If `ON`, all needed DLLs will be copied to `${LE_RUN_WORKING_DIR}` at configure time.
 - Other settings may be enabled in the future. See all variables named `LE_RUN_*` in the CMake cache for a full list of options.
 
-Other
+Related Links
 -------------
 [Trello Board](https://trello.com/b/INfwr8jl/lifeline)
+[lifeline-resources](https://github.com/peter-clark/lifeline-resources)
