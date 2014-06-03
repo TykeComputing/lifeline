@@ -19,20 +19,27 @@
 
 function(setup_external_dependencies_runtime)
   if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-    message(STATUS "Copying all external DLLs from ${LE_EXTERNAL_DLL_DIR}/ to ${LE_WORKING_DIR}/...")
 
-    file(GLOB EXTERNAL_DLL_COPY_LIST "${LE_EXTERNAL_DLL_DIR}/*.dll")
-    if(EXTERNAL_DLL_COPY_LIST)
-      foreach(DLL_IT ${EXTERNAL_DLL_COPY_LIST})
+    option(LE_COPY_EXTERNAL_DLLS_TO_WORKING_DIR
+      "Copy external dependency DLLs to the working directory upon configuration." 
+      ON)
 
-        message(STATUS "  Copying ${DLL_IT}...")      
-      endforeach()
+    if(LE_COPY_EXTERNAL_DLLS_TO_WORKING_DIR)
+      message(STATUS "Copying all external DLLs from ${LE_EXTERNAL_DLL_DIR}/ to ${LE_WORKING_DIR}/...")
 
-      file(COPY ${EXTERNAL_DLL_COPY_LIST} DESTINATION "${LE_WORKING_DIR}")    
-    else()
-      message(STATUS "  Nothing to copy - no external dlls found...")
+      file(GLOB EXTERNAL_DLL_COPY_LIST "${LE_EXTERNAL_DLL_DIR}/*.DLL")
+      if(EXTERNAL_DLL_COPY_LIST)
+        foreach(DLL_IT ${EXTERNAL_DLL_COPY_LIST})
+
+          message(STATUS "  Copying ${DLL_IT}...")      
+        endforeach()
+
+        file(COPY ${EXTERNAL_DLL_COPY_LIST} DESTINATION "${LE_WORKING_DIR}")    
+      else()
+        message(STATUS "  Nothing to copy - no external DLLs found...")
+      endif()
+
+      unset(EXTERNAL_DLL_COPY_LIST)
     endif()
-
-    unset(EXTERNAL_DLL_COPY_LIST)
   endif()
 endfunction()
