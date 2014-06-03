@@ -29,5 +29,5 @@ On supported IDEs with `${LE_RUN_WRITE_SETTINGS_FILE}` enabled you can set a few
 
 Related Links
 -------------
-[Trello Board](https://trello.com/b/INfwr8jl/lifeline)
-[lifeline-resources](https://github.com/peter-clark/lifeline-resources)
+- [Trello Board](https://trello.com/b/INfwr8jl/lifeline)
+- [lifeline-resources](https://github.com/peter-clark/lifeline-resources)
