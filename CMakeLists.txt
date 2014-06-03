@@ -25,11 +25,6 @@ enable_language(CXX C)
 set(LE_CMAKE_DIR ${CMAKE_SOURCE_DIR}/CMake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${LE_CMAKE_DIR}/Modules)
 
-#include(${LE_CMAKE_DIR}/LifelineVars.cmake)
-include(${LE_CMAKE_DIR}/ExternalDependencyRuntimes.cmake)
-
-#setup_lifeline_vars()
-
 message(STATUS "##########################################")
 message(STATUS "Targets")
 message(STATUS "-------")
@@ -44,41 +39,8 @@ message(STATUS "##########################################")
 ################################################################
 project(lifeline CXX C)
 
-  if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING
-        "Choose the type of build, options are: ${CMAKE_CONFIGURATION_TYPES}.")
-  endif()
-
-  set(LE_TARGET_ARCH "x86" CACHE STRING
-    "Determines if application 32 bit or 64 bit. This affects what external libs are used.")  
-
-  if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-    set(LE_EXTERNAL_DEPEND_DIR
-     "${PROJECT_SOURCE_DIR}/external" 
-     CACHE PATH
-     "Controls the default directory that external dependencies are looked for on a fresh configurtation."
-     FORCE)
-
-    set(LE_EXTERNAL_LIB_DIR
-     "${LE_EXTERNAL_DEPEND_DIR}/windows/lib/${LE_TARGET_ARCH}"
-      CACHE PATH
-      "Where all external dependency libraries are stored."
-      FORCE)
-
-    set(LE_EXTERNAL_DLL_DIR
-     "${LE_EXTERNAL_DEPEND_DIR}/windows/dll/${LE_TARGET_ARCH}"
-      CACHE PATH
-      "Where all external dependency dlls are stored."
-      FORCE)
-
-    set(LE_EXTERNAL_INCLUDE_DIR
-      "${LE_EXTERNAL_DEPEND_DIR}/windows/include"
-      CACHE PATH
-      "Where all external dependency includes are stored."
-      FORCE)
-  endif()
-
-setup_external_dependencies_runtime()
+include(${LE_CMAKE_DIR}/LifelineVars.cmake)
+include(${LE_CMAKE_DIR}/ExternalDependencyRuntimes.cmake)
 
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
@@ -136,7 +98,7 @@ set(LE_EXECUTABLE_SRC_LIST
 add_executable(${PROJECT_NAME} ${LE_EXECUTABLE_SRC_LIST})
 
 ################################
-# COMPILE FLAGS
+# LIFELINE COMPILE FLAGS
 ################################
 
 # NOTE - If split into multiple projects, use the common library to set all compile flags
@@ -185,6 +147,21 @@ target_compile_options(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
   PUBLIC src
 )
+
+################################
+# LIFELINE RUNTIME SETUP
+################################
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  # Set up working directory
+  message(STATUS "Setting project working directory to ${LE_WORKING_DIR}.")
+  message(STATUS "  Be sure to close the project in the IDE before running CMake.")
+  configure_file(${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in
+                ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user
+                @ONLY UNIX)
+endif()
+
+setup_external_dependencies_runtime()
 
 ################################
 # LIFELINE EXTERNAL DEPENDENCIES

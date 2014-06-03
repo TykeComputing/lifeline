@@ -19,7 +19,7 @@
 
 function(setup_external_dependencies_runtime)
   if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-    message(STATUS "Copying all external DLLs from ${LE_EXTERNAL_DLL_DIR}/ to ${CMAKE_BINARY_DIR}/...")
+    message(STATUS "Copying all external DLLs from ${LE_EXTERNAL_DLL_DIR}/ to ${LE_WORKING_DIR}/...")
 
     file(GLOB EXTERNAL_DLL_COPY_LIST "${LE_EXTERNAL_DLL_DIR}/*.dll")
     if(EXTERNAL_DLL_COPY_LIST)
@@ -28,7 +28,7 @@ function(setup_external_dependencies_runtime)
         message(STATUS "  Copying ${DLL_IT}...")      
       endforeach()
 
-      file(COPY ${EXTERNAL_DLL_COPY_LIST} DESTINATION "${CMAKE_BINARY_DIR}")    
+      file(COPY ${EXTERNAL_DLL_COPY_LIST} DESTINATION "${LE_WORKING_DIR}")    
     else()
       message(STATUS "  Nothing to copy - no external dlls found...")
     endif()

@@ -17,38 +17,26 @@
 # along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ################################################################################################`
 
-macro(setup_lifeline_vars)
-  if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING
-        "Choose the type of build, options are: ${CMAKE_CONFIGURATION_TYPES}.")
-  endif()
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING
+      "Choose the type of build, options are: ${CMAKE_CONFIGURATION_TYPES}.")
+endif()
 
-  set(LE_TARGET_ARCH "x86" CACHE STRING
-    "Determines if application 32 bit or 64 bit. This affects what external libs are used.")  
+set(LE_TARGET_ARCH "x86" CACHE STRING
+  "Determines if application 32 bit or 64 bit. This affects what external libs are used.")  
 
-  if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-    set(LE_EXTERNAL_DEPEND_DIR
-     "${PROJECT_SOURCE_DIR}/external" 
-     CACHE PATH
-     "Controls the default directory that external dependencies are looked for on a fresh configurtation."
-     FORCE)
+set(LE_WORKING_DIR "${CMAKE_BINARY_DIR}"
+  CACHE PATH
+  "Determines where the application will be run from by default. Note that this is only implemented for VS2013.")
 
-    set(LE_EXTERNAL_LIB_DIR
-     "${LE_EXTERNAL_DEPEND_DIR}/windows/lib/${LE_TARGET_ARCH}"
-      CACHE INTERNAL PATH
-      "Where all external dependency libraries are stored."
-      FORCE)
+#Windows specific vars
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set(LE_EXTERNAL_DEPEND_DIR
+   "${PROJECT_SOURCE_DIR}/external" 
+   CACHE PATH
+   "Controls the default directory that external dependencies are looked for on a fresh configurtation.")
 
-    set(LE_EXTERNAL_DLL_DIR
-     "${LE_EXTERNAL_DEPEND_DIR}/windows/dll/${LE_TARGET_ARCH}"
-      CACHE INTERNAL PATH
-      "Where all external dependency dlls are stored."
-      FORCE)
-
-    set(LE_EXTERNAL_INCLUDE_DIR
-      "${LE_EXTERNAL_DEPEND_DIR}/windows/include"
-      CACHE INTERNAL PATH
-      "Where all external dependency includes are stored."
-      FORCE)
-  endif()
-endmacro()
+  set(LE_EXTERNAL_LIB_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/lib/${LE_TARGET_ARCH}" CACHE PATH "")
+  set(LE_EXTERNAL_DLL_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/dll/${LE_TARGET_ARCH}" CACHE PATH "")
+  set(LE_EXTERNAL_INCLUDE_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/include" CACHE PATH "")
+endif()
