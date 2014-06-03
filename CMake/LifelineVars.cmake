@@ -25,11 +25,15 @@ endif()
 set(LE_TARGET_ARCH "x86" CACHE STRING
   "Determines if application 32 bit or 64 bit. This affects what external libs are used.")  
 
+set(LE_DEBUG_SETTINGS_SUPPORTED_IDES "VS2013")
+
 set(LE_WORKING_DIR "${CMAKE_BINARY_DIR}"
   CACHE PATH
-  "Determines where the application will be run from by default. Note that this is only implemented for VS2013.")
+  "The default working directory application will be run from by when working with certain IDEs. Supported: ${LE_DEBUG_SETTINGS_SUPPORTED_IDES}.")
 
-#Windows specific vars
+set(LE_RESOURCE_DIR "${CMAKE_SOURCE_DIR}")
+
+# Windows specific vars
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
   set(LE_EXTERNAL_DEPEND_DIR
    "${PROJECT_SOURCE_DIR}/external" 

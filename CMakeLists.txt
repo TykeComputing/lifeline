@@ -168,14 +168,27 @@ message(STATUS "${LE_MESSAGE_LINE_BREAK}")
 message(STATUS "Runtime Setup")
 message(STATUS "${LE_MESSAGE_HEADER}")
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  SET(LE_WORKING_DIR_FILE_IN "${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in")
-  set(LE_WORKING_DIR_FILE_OUT "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
-  # Set up working directory
-  message(STATUS "Setting project working directory to ${LE_WORKING_DIR}...")
-  message(STATUS "  To ensure the settings stick ensure the project is not open before configuring.")
-  message(STATUS "  Writing ${LE_WORKING_DIR_FILE_OUT}...")
-  configure_file("${LE_WORKING_DIR_FILE_IN}" "${LE_WORKING_DIR_FILE_OUT}" @ONLY UNIX)
+option(LE_WRITE_DEBUG_SETTINGS_FILE
+  "Write an IDE specific file that default debug settings. Will only be written if it does not already exist. To ensure the settings stick ensure the project is not open before configuring."
+  ON)
+
+if(LE_WRITE_DEBUG_SETTINGS_FILE)
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    set(LE_WORKING_DIR_FILE_IN "${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in")
+    set(LE_WORKING_DIR_FILE_OUT "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
+
+    file(RELATIVE_PATH LE_RESOURCE_DIR_RELATIVE_PATH ${LE_WORKING_DIR} ${LE_RESOURCE_DIR})
+    set(LE_COMMAND_LINE_ARGS 
+      "--resource-dir=\"${LE_RESOURCE_DIR}\""
+      CACHE PATH
+      "The default arguments that will be passed to the application when run when working with certain IDEs. Supported:${LE_DEBUG_SETTINGS_SUPPORTED_IDES}")
+    
+    message(STATUS "Creating project debug settings file...")
+    message(STATUS "  Setting project working directory to ${LE_WORKING_DIR}...")
+    message(STATUS "  Setting project command line arguments to ${LE_COMMAND_LINE_ARGS}...")
+    message(STATUS "  Writing ${LE_WORKING_DIR_FILE_OUT}...")
+    configure_file("${LE_WORKING_DIR_FILE_IN}" "${LE_WORKING_DIR_FILE_OUT}" @ONLY UNIX)
+  endif()
 endif()
 
 setup_external_dependencies_runtime()
@@ -201,3 +214,10 @@ target_link_libraries(${PROJECT_NAME}
   PUBLIC ${SDL2_LIBRARY}
   #PUBLIC ${SDL2MAIN_LIBRARY}
 )
+
+# Check if a file exists
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
+  message(STATUS "Found README.txt!")
+else()
+  message(STATUS "Did NOT find README.txt!")
+endif()
