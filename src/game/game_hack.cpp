@@ -28,20 +28,24 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-class icomponent
+template<typename comp_t>
+class vec2_t
 {
 public:
-  icomponent() {}
-  virtual ~icomponent() {}
-	
-  virtual void start() = 0;
-  virtual void update() = 0;
-  virtual void end() = 0;
 
+  comp_t
+};
+
+class transform_component
+{
+public:
+	transform_component();
+	~transform_component();
+	
 private:
 };
 
-class graphics_component : public icomponent
+class graphics_component
 {
 public:
   graphics_component()
@@ -97,7 +101,8 @@ game_hack::game_hack()
 void game_hack::update()
 {
 
-  LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, );
+  graphics_component g_comp;
+  LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, g_comp.get_num_verts());
 }
 
 } // namespace LE
