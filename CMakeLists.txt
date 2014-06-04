@@ -170,8 +170,12 @@ message(STATUS "Runtime Setup")
 message(STATUS "${LE_MESSAGE_HEADER}")
 
 option(LE_RUN_WRITE_SETTINGS_FILE
-  "Write an IDE specific file that default debug settings. Will only be written if it does not already exist. To ensure the settings stick ensure the project is not open before configuring."
+  "Write an IDE specific file that default run environment settings. Will only be written if it does not already exist. To ensure the settings stick ensure the project is not open before configuring."
   ON)
+
+option(LE_RUN_WRITE_SETTINGS_FILE_OVERWRITE
+  "Force the existing existing runtime settings file to be overwritten a generated one"
+  OFF)
 
 # Optionally create a IDE specific file that contains runtime settings (working dir, command 
 #   line arguments, etc.). File is only created if it does not exist already.
@@ -179,14 +183,18 @@ if(LE_RUN_WRITE_SETTINGS_FILE)
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(LE_RUN_SETTINGS_FILE_IN "${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in")
     set(LE_RUN_SETTINGS_FILE_OUT "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
-    if(NOT EXISTS "${LE_RUN_SETTINGS_FILE_OUT}")
-      file(RELATIVE_PATH LE_RESOURCE_DIR_RELATIVE_PATH ${LE_RUN_WORKING_DIR} ${LE_RESOURCE_DIR})
+    if(NOT EXISTS "${LE_RUN_SETTINGS_FILE_OUT}" OR LE_RUN_WRITE_SETTINGS_FILE_OVERWRITE)
       set(LE_RUN_COMMAND_LINE_ARGS 
         "--resource-dir=\"${LE_RESOURCE_DIR}\""
         CACHE PATH
         "The default arguments that will be passed to the application when run when working with certain IDEs. Supported:${LE_RUN_SETTINGS_SUPPORTED_IDES}")
       
-      message(STATUS "Project runtime settings file not found, creating...")
+      if(NOT LE_RUN_WRITE_SETTINGS_FILE_OVERWRITE)
+        message(STATUS "Project runtime settings file not found, creating...")
+      else()
+        message(STATUS "Forcing overwrite of project runtime settings file, creating...")
+      endif()
+
       message(STATUS "  Setting project working directory to ${LE_RUN_WORKING_DIR}...")
       message(STATUS "  Setting project command line arguments to ${LE_RUN_COMMAND_LINE_ARGS}...")
       message(STATUS "  Writing ${LE_RUN_SETTINGS_FILE_OUT}...")

@@ -4,23 +4,23 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerWorkingDirectory>@LE_WORKING_DIR@</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>@LE_RUN_WORKING_DIR@</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>@LE_COMMAND_LINE_ARGS@</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>@LE_RUN_COMMAND_LINE_ARGS@</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
-    <LocalDebuggerWorkingDirectory>@LE_WORKING_DIR@</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>@LE_RUN_WORKING_DIR@</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>@LE_COMMAND_LINE_ARGS@</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>@LE_RUN_COMMAND_LINE_ARGS@</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
-    <LocalDebuggerWorkingDirectory>@LE_WORKING_DIR@</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>@LE_RUN_WORKING_DIR@</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>@LE_COMMAND_LINE_ARGS@</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>@LE_RUN_COMMAND_LINE_ARGS@</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerWorkingDirectory>@LE_WORKING_DIR@</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>@LE_RUN_WORKING_DIR@</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>@LE_COMMAND_LINE_ARGS@</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>@LE_RUN_COMMAND_LINE_ARGS@</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>
