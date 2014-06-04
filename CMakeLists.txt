@@ -81,8 +81,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/shader_program.h
   #src/graphics/shader_program_definition.cpp
   #src/graphics/shader_program_definition.h
-  #src/graphics/texture2D.cpp
-  #src/graphics/texture2D.h
+  src/graphics/texture.cpp
+  src/graphics/texture.h
   src/graphics/vertex.cpp
   src/graphics/vertex.h
   src/graphics/vertex_array.cpp
@@ -98,6 +98,9 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/OS_interface.h
   src/engine/window.cpp
   src/engine/window.h
+
+  src/game/game_hack.cpp
+  src/game/game_hack.h
 )
 
 add_executable(${PROJECT_NAME} ${LE_EXECUTABLE_SRC_LIST})
