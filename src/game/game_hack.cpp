@@ -21,12 +21,83 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "game_hack.h"
 
+#include <graphics/vertex.h>
+#include <graphics/vertex_array.h>
+#include <graphics/vertex_buffer.h>
+
 namespace LE
 {
+
+class icomponent
+{
+public:
+  icomponent() {}
+  virtual ~icomponent() {}
+	
+  virtual void start() = 0;
+  virtual void update() = 0;
+  virtual void end() = 0;
+
+private:
+};
+
+class graphics_component : public icomponent
+{
+public:
+  graphics_component()
+  {
+    LE::vertex_array::bind(p_VAO);
+    LE::vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
+
+    vertex::specify_vertex_attributes();
+    vertex verts[] =
+    {
+      { { -0.5f, -0.5f }, { 0.0f, 0.0f } },
+      { {  0.5f, -0.5f }, { 1.0f, 0.0f } },
+      { { -0.5f,  0.5f }, { 0.0f, 1.0f } },
+
+      { { -0.5f,  0.5f }, { 0.0f, 1.0f } },
+      { {  0.5f, -0.5f }, { 1.0f, 0.0f } },
+      { {  0.5f,  0.5f }, { 1.0f, 1.0f } }
+    };
+    num_verts = sizeof(verts) / sizeof(vertex);
+
+    LE::vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+
+    LE::vertex_array::unbind();
+  }
+
+  void bind()
+  {
+    LE::vertex_array::bind(p_VAO);
+  }
+   
+  void unbind()
+  {
+    LE::vertex_array::unbind();
+  }
+
+  GLsizei get_num_verts() const
+  {
+    return num_verts;
+  }
+
+private:
+  LE::vertex_array p_VAO;
+  LE::vertex_buffer p_VBO;
+  
+  GLsizei num_verts = 0;
+};
 
 game_hack::game_hack()
 {
   
+}
+
+void game_hack::update()
+{
+
+  LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, );
 }
 
 } // namespace LE

@@ -28,6 +28,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+// TODO - URGENT Refactor interface to follow conventions established by vertex_buffer.
 class texture
 {
 public:

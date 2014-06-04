@@ -27,10 +27,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/LE_printf.h>
 #include <common/error.h>
 
-// TODO - Remove when done testing
-#include <graphics/vertex.h>
-#include <graphics/vertex_array.h>
-#include <graphics/vertex_buffer.h>
+// TODO - Remove when done hacking
+#include <game/game_hack.h>
+#include <common/resource_exception.h>
 
 namespace LE
 {
@@ -45,31 +44,9 @@ engine::engine() :
 
 void engine::run()
 {
-  // TODO - Remove when done testing
-  LE::vertex_array fsq_VAO;
-  LE::vertex_buffer fsq_VBO;
-
-  LE::vertex_array::bind(fsq_VAO);
-  LE::vertex_buffer::bind(GL_ARRAY_BUFFER, fsq_VBO);
-
-  vertex::specify_vertex_attributes();
-  vertex fsq_verts[] =
-  {
-    { { -1.0f, -1.0f }, { 0.0f, 0.0f } },
-    { {  1.0f, -1.0f }, { 1.0f, 0.0f } },
-    { { -1.0f,  1.0f }, { 0.0f, 1.0f } },
-    { { -1.0f,  1.0f }, { 0.0f, 1.0f } },
-    { {  1.0f, -1.0f }, { 1.0f, 0.0f } },
-    { {  1.0f,  1.0f }, { 1.0f, 1.0f } },
-  };
-  GLsizei num_fsq_verts = sizeof(fsq_verts) / sizeof(vertex);
-  
-  LE::vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(fsq_verts), fsq_verts, GL_STATIC_DRAW);
-
-  ///////////////////////
-
   glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 
+  game_hack game;
   p_is_running = true;
   while(p_is_running)
   {
@@ -81,7 +58,23 @@ void engine::run()
     // TODO - Move once graphics framework is in place
     glClear(GL_COLOR_BUFFER_BIT);
 
-    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, num_fsq_verts);
+    try
+    {
+      game.update();
+    }
+    catch(LE::resource_exception const& e)
+    {
+      e.print("Game");
+      LE_ERROR("Uncaught resource exception!");
+      return;
+    }
+    catch(LE::message_exception const& e)
+    {
+      e.print("Game");
+      LE_ERROR("Uncaught message exception!");
+      return;
+    }
+
     p_window.update();
   }
 }

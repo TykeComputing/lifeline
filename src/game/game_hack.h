@@ -30,6 +30,8 @@ class game_hack
 public:
   game_hack();
 
+  void update();
+
 private:
 };
 
