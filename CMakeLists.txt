@@ -52,6 +52,9 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 
 # Header files are added so they will show up in all IDEs
+#
+# Files are currently ordered by modules from lowest to highest level to make a change to
+# a multi-project setup easier.
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp
 
@@ -73,6 +76,13 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/resource_exception.cpp
   src/common/resource_exception.h
 
+  src/math/mat3.cpp
+  src/math/mat3.h
+  src/math/vec2.cpp
+  src/math/vec2.h
+  src/math/vec3.cpp
+  src/math/vec3.h
+
   src/graphics/error_checking.cpp
   src/graphics/error_checking.h
   src/graphics/shader.cpp
@@ -90,12 +100,20 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/vertex_buffer.cpp
   src/graphics/vertex_buffer.h
 
+  src/engine/component_base.cpp
+  src/engine/component_base.h
   src/engine/engine.cpp
   src/engine/engine.h
+  src/engine/entity.cpp
+  src/engine/entity.h
+  src/engine/entity_manager.cpp
+  src/engine/entity_manager.h
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
+  src/engine/transform_component.h
+  src/engine/transform_component.h
   src/engine/window.cpp
   src/engine/window.h
 
