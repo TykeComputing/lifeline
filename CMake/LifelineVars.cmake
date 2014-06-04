@@ -31,7 +31,7 @@ set(LE_RUN_WORKING_DIR "${CMAKE_BINARY_DIR}"
   CACHE PATH
   "The default working directory application will be run from by when working with certain IDEs. Supported: ${LE_RUN_SETTINGS_SUPPORTED_IDES}.")
 
-set(LE_RESOURCE_DIR "${CMAKE_SOURCE_DIR}")
+set(LE_RESOURCE_DIR "${CMAKE_SOURCE_DIR}/resources")
 
 # Windows specific vars
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")

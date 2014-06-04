@@ -37,6 +37,10 @@ public:
   void run();
 
   void set_is_running(bool val);
+  
+  // TODO - Move to more appropriate place once there is one
+  void set_resource_dir(std::string const& val);
+  std::string const& get_resource_dir() const;
 
 private:
   OS_interface p_os_interface;
@@ -44,6 +48,9 @@ private:
   graphics_context p_graphics_context;
 
   bool p_is_running = true;
+
+  // TODO - Move to more appropriate place once there is one
+  std::string p_resource_dir = "resources/";
 };
 
 } // namespace LE

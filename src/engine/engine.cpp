@@ -25,6 +25,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/glew.h>
 
 #include <common/LE_printf.h>
+#include <common/error.h>
 
 // TODO - Remove when done testing
 #include <graphics/vertex.h>
@@ -83,7 +84,6 @@ void engine::run()
     glClear(GL_COLOR_BUFFER_BIT);
 
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, num_fsq_verts);
-
     p_window.update();
   }
 }
@@ -91,6 +91,28 @@ void engine::run()
 void engine::set_is_running(bool val)
 {
   p_is_running = val;
+}
+
+void engine::set_resource_dir(std::string const& val)
+{
+  if(val.empty())
+  {
+    LE_ERROR("Empty resource directory provided, ignoring.");
+    return;
+  }
+
+  p_resource_dir = val;
+  if(p_resource_dir.back() != '\\' && p_resource_dir.back() != '/')
+  {
+    p_resource_dir.append(1, '/');
+  }
+
+  LE_printf("Engine: Resource directory set to \"%s\"\n", p_resource_dir.c_str());
+}
+
+std::string const& engine::get_resource_dir() const
+{
+  return p_resource_dir;
 }
 
 } // namespace LE
