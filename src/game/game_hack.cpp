@@ -21,6 +21,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "game_hack.h"
 
+#include <memory>
+#include <vector>
+
 #include <graphics/vertex.h>
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
@@ -28,14 +31,39 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+//////////////////////////////////////////////////////////////////////////
 template<typename comp_t>
 class vec2_t
 {
 public:
 
-  comp_t
+  static size_t const num_components = 2;
+
+  union
+  {
+    struct
+    {
+      comp_t x, y;
+    };
+
+    comp_t v[num_components]
+  };
 };
 
+typedef vec2_t<float> vec2;
+
+//////////////////////////////////////////////////////////////////////////
+class entity;
+
+class component_base
+{
+public:
+
+private:
+
+};
+
+//////////////////////////////////////////////////////////////////////////
 class transform_component
 {
 public:
@@ -43,8 +71,11 @@ public:
 	~transform_component();
 	
 private:
+  vec2 pos;
+  vec2 scale;
 };
 
+//////////////////////////////////////////////////////////////////////////
 class graphics_component
 {
 public:
@@ -93,6 +124,26 @@ private:
   GLsizei num_verts = 0;
 };
 
+//////////////////////////////////////////////////////////////////////////
+class graphics_system
+{
+public:
+
+
+private:
+  std::vector<graphics_component *> components;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// 
+class entity
+{
+public:
+  std::unique_ptr<graphics_component> graphics;
+  std::unique_ptr<transform_component> transform;
+};
+
+//////////////////////////////////////////////////////////////////////////
 game_hack::game_hack()
 {
   
