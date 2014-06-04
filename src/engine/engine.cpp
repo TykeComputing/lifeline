@@ -52,19 +52,17 @@ void engine::run()
   LE::vertex_array::bind(fsq_VAO);
   LE::vertex_buffer::bind(GL_ARRAY_BUFFER, fsq_VBO);
 
-  //vertex v = { 1.0f, 2.0f, 3.0f, 4.0f };
   vertex::specify_vertex_attributes();
-  float fsq_verts[] =
+  vertex fsq_verts[] =
   {
-    -1.0f, -1.0f, /**/ 0.0f, 0.0f,
-     1.0f, -1.0f, /**/ 1.0f, 0.0f,
-    -1.0f,  1.0f, /**/ 0.0f, 1.0f,
-
-    -1.0f,  1.0f, /**/ 0.0f, 1.0f,
-     1.0f, -1.0f, /**/ 1.0f, 0.0f,
-     1.0f,  1.0f, /**/ 1.0f, 1.0f
+    { { -1.0f, -1.0f }, { 0.0f, 0.0f } },
+    { {  1.0f, -1.0f }, { 1.0f, 0.0f } },
+    { { -1.0f,  1.0f }, { 0.0f, 1.0f } },
+    { { -1.0f,  1.0f }, { 0.0f, 1.0f } },
+    { {  1.0f, -1.0f }, { 1.0f, 0.0f } },
+    { {  1.0f,  1.0f }, { 1.0f, 1.0f } },
   };
-  GLsizei num_fsq_verts = sizeof(fsq_verts) / (sizeof(float) * 4);
+  GLsizei num_fsq_verts = sizeof(fsq_verts) / sizeof(vertex);
   
   LE::vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(fsq_verts), fsq_verts, GL_STATIC_DRAW);
 
