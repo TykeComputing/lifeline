@@ -22,6 +22,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_ENGINE_TRANSFORM_COMPONENT_H
 #define LE_ENGINE_TRANSFORM_COMPONENT_H
 
+#include <math/vec2.h>
+
 namespace LE
 {
 

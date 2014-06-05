@@ -19,41 +19,20 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_ENGINE_COMPONENT_BASE_H
-#define LE_ENGINE_COMPONENT_BASE_H
-
-#include <common/macros.h>
+#ifndef LE_ENGINE_GRAPHICS_COMPONENT_H
+#define LE_ENGINE_GRAPHICS_COMPONENT_H
 
 namespace LE
 {
 
-// TODO - UNHACK & Search for find better solution
-LE_ENUM_3(component_type,
-  transform_component,
-  sprite_component,
-  logic_component);
-
-class entity;
-
-// TODO - UNHACK
-class component_base
+class graphics_component
 {
 public:
-  component_base();
-
-  entity const* get_owner() const;
-  entity * get_owner();
-
-  virtual component_type::value get_type() = 0;
+  graphics_component();
 
 private:
-  void set_owner(entity * new_owner);
-
-  entity * p_owner;
-
-  friend class entity_manager;
 };
 
 } // namespace LE
 
-#endif // LE_ENGINE_COMPONENT_BASE_H
+#endif // LE_ENGINE_GRAPHICS_COMPONENT_H

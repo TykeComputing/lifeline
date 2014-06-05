@@ -22,7 +22,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_ENGINE_ENTITY_H
 #define LE_ENGINE_ENTITY_H
 
-#include <vector>
+#include <memory>
+#include <unordered_map>
 
 #include <engine/component_base.h>
 
@@ -34,8 +35,15 @@ class entity
 {
 public:
   entity();
+  
+  template<typename comp_t>
+  comp_t * get_component()
+  {
+    
+  }
 
 private:
+  std::vector<std::pair<, std::unique_ptr<component_base>>> components;
 };
 
 } // namespace LE
