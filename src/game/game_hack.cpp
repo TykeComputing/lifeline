@@ -120,9 +120,9 @@ game_hack::game_hack(engine & game_engine)
   shaders.clear();
   LE::shader_program::use(*p_shader_prog);
 
-  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("player"), 100.0f, vec4{ 0.0f, 1.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
-  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
-  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
+  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("player"), 100.0f, vec4{ 0.0f, 1.0f, 0.0f, 1.0f }, vec2{  0.0f,  0.5f }, vec2{ 0.1f, 0.1f }));
+  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{  0.5f, -0.5f }, vec2{ 0.1f, 0.1f }));
+  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ -0.5f, -0.5f }, vec2{ 0.1f, 0.1f }));
 }
 
 
@@ -144,13 +144,13 @@ void game_hack::update()
     {
       entity_it->m_scale.x,                 0.0f, entity_it->m_pos.x,
                       0.0f, entity_it->m_scale.y, entity_it->m_pos.y,
-                      0.0f,                 0.0f,               1.0f
+                      0.0f,                 0.0f,               1.0f  // TODO: mat2x3 instead?
     };
 
     auto const& curr_g_comp = entity_it->m_g_comp;
     glUniform4fv(color_ul, 1, curr_g_comp.m_color.v);
 
-    glUniformMatrix3fv(model_to_world_ul, 1, GL_FALSE, model_to_world.a);
+    glUniformMatrix3fv(model_to_world_ul, 1, GL_TRUE, model_to_world.a);
 
     curr_g_comp.bind();
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp.get_num_verts());
