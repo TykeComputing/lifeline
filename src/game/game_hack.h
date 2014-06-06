@@ -43,7 +43,7 @@ public:
   }
   
   vec4_t(comp_t x, comp_t y, comp_t z, comp_t w) :
-    v{x, y, z, w}
+    x(x), y(y), z(z), w(w)
   {
   }
 
@@ -77,7 +77,7 @@ public:
   }
 
   vec2_t(comp_t x, comp_t y) :
-    v{x, y}
+    x(x), y(y)
   {
   }
 
@@ -124,8 +124,9 @@ private:
 //////////////////////////////////////////////////////////////////////////
 class entity_hack
 {
-  entity_hack(std::string const& name, float health, vec2 const& pos, vec2 const& scale);
-  entity_hack(std::string const& name, float health, vec2 && pos, vec2 && scale);
+public:
+  entity_hack(std::string const& name, float health, vec4 const& color,  vec2 const& pos, vec2 const& scale);
+  entity_hack(std::string && name, float health, vec4 && color, vec2 && pos, vec2 && scale);
 
   graphics_component_hack m_g_comp;
   vec2 m_pos;

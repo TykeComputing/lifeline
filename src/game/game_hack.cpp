@@ -77,14 +77,16 @@ GLsizei graphics_component_hack::get_num_verts() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-entity_hack::entity_hack(std::string const& name, float health, vec2 const& pos, vec2 const& scale) :
-  m_name(name), m_health(health), m_pos(pos), m_scale(scale)
+entity_hack::entity_hack(std::string const& name, float health, vec4 const& color, vec2 const& pos, vec2 const& scale) :
+  m_name(name), m_health(health), m_pos(pos), m_scale(scale),
+  m_g_comp(color)
 {
 
 }
 
-entity_hack::entity_hack(std::string const& name, float health, vec2 && pos, vec2 && scale) :
-  m_name(name), m_health(health), m_pos(std::move(pos)), m_scale(std::move(scale))
+entity_hack::entity_hack(std::string && name, float health, vec4 && color, vec2 && pos, vec2 && scale) :
+  m_name(std::move(name)), m_health(health), m_pos(std::move(pos)), m_scale(std::move(scale)),
+  m_g_comp(color)
 {
 
 }
@@ -93,9 +95,11 @@ entity_hack::entity_hack(std::string const& name, float health, vec2 && pos, vec
 game_hack::game_hack() :
   p_player()
 {
-  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("player"), 100.0f, vec2{ 0.0f, 0.0f }, vec2{ 0.0f, 0.0f }));
-  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("enemy"), 50.0f, vec2{ 0.0f, 0.0f }, vec2{ 0.0f, 0.0f }));
-  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("enemy"), 50.0f, vec2{ 0.0f, 0.0f }, vec2{ 0.0f, 0.0f }));
+  auto lvalue = vec4{ 0.0f, 1.0f, 0.0f, 1.0f };
+  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("lvaluetest"), 100.0f, lvalue, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
+  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("player"), 100.0f, vec4{ 0.0f, 1.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
+  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
+  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
 }
 
 
