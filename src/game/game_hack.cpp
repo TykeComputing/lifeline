@@ -21,119 +21,107 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "game_hack.h"
 
-#include <memory>
-#include <vector>
-
-#include <graphics/vertex.h>
-#include <graphics/vertex_array.h>
-#include <graphics/vertex_buffer.h>
 
 namespace LE
 {
 
 //////////////////////////////////////////////////////////////////////////
-template<typename comp_t>
-class vec2_t
+graphics_component_hack::graphics_component_hack()
 {
-public:
+  LE::vertex_array::bind(p_VAO);
+  LE::vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
 
-  static size_t const num_components = 2;
-
-  union
+  vertex::specify_vertex_attributes();
+  vertex verts[] =
   {
-    struct
-    {
-      comp_t x, y;
-    };
+    { { -0.5f, -0.5f }, { 0.0f, 0.0f } },
+    { {  0.5f, -0.5f }, { 1.0f, 0.0f } },
+    { { -0.5f,  0.5f }, { 0.0f, 1.0f } },
 
-    comp_t v[num_components]
+    { { -0.5f,  0.5f }, { 0.0f, 1.0f } },
+    { {  0.5f, -0.5f }, { 1.0f, 0.0f } },
+    { {  0.5f,  0.5f }, { 1.0f, 1.0f } }
   };
-};
+  num_verts = sizeof(verts) / sizeof(vertex);
 
-typedef vec2_t<float> vec2;
+  LE::vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
 
-//////////////////////////////////////////////////////////////////////////
+  LE::vertex_array::unbind();
+}
 
-
-//////////////////////////////////////////////////////////////////////////
-class graphics_component
+graphics_component_hack::graphics_component_hack(vec4 const& color) :
+  graphics_component_hack()
 {
-public:
-  graphics_component()
-  {
-    LE::vertex_array::bind(p_VAO);
-    LE::vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
+  m_color = color;
+}
 
-    vertex::specify_vertex_attributes();
-    vertex verts[] =
-    {
-      { { -0.5f, -0.5f }, { 0.0f, 0.0f } },
-      { {  0.5f, -0.5f }, { 1.0f, 0.0f } },
-      { { -0.5f,  0.5f }, { 0.0f, 1.0f } },
+graphics_component_hack::graphics_component_hack(vec4 && color) :
+  graphics_component_hack()
+{
+  m_color = std::move(color);
+}
 
-      { { -0.5f,  0.5f }, { 0.0f, 1.0f } },
-      { {  0.5f, -0.5f }, { 1.0f, 0.0f } },
-      { {  0.5f,  0.5f }, { 1.0f, 1.0f } }
-    };
-    num_verts = sizeof(verts) / sizeof(vertex);
-
-    LE::vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-
-    LE::vertex_array::unbind();
-  }
-
-  void bind()
-  {
-    LE::vertex_array::bind(p_VAO);
-  }
+void graphics_component_hack::bind()
+{
+  LE::vertex_array::bind(p_VAO);
+}
    
-  void unbind()
-  {
-    LE::vertex_array::unbind();
-  }
+void graphics_component_hack::unbind()
+{
+  LE::vertex_array::unbind();
+}
 
-  GLsizei get_num_verts() const
-  {
-    return num_verts;
-  }
-
-private:
-  LE::vertex_array p_VAO;
-  LE::vertex_buffer p_VBO;
-  
-  GLsizei num_verts = 0;
-};
+GLsizei graphics_component_hack::get_num_verts() const
+{
+  return num_verts;
+}
 
 //////////////////////////////////////////////////////////////////////////
-class graphics_system
+entity_hack::entity_hack(std::string const& name, float health, vec2 const& pos, vec2 const& scale) :
+  m_name(name), m_health(health), m_pos(pos), m_scale(scale)
 {
-public:
 
+}
 
-private:
-  std::vector<graphics_component *> components;
-};
+entity_hack::entity_hack(std::string const& name, float health, vec2 && pos, vec2 && scale) :
+  m_name(name), m_health(health), m_pos(std::move(pos)), m_scale(std::move(scale))
+{
+
+}
 
 //////////////////////////////////////////////////////////////////////////
-// 
-class entity
+game_hack::game_hack() :
+  p_player()
 {
-public:
-  std::unique_ptr<graphics_component> graphics;
-  std::unique_ptr<transform_component> transform;
-};
+  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("player"), 100.0f, vec2{ 0.0f, 0.0f }, vec2{ 0.0f, 0.0f }));
+  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("enemy"), 50.0f, vec2{ 0.0f, 0.0f }, vec2{ 0.0f, 0.0f }));
+  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("enemy"), 50.0f, vec2{ 0.0f, 0.0f }, vec2{ 0.0f, 0.0f }));
+}
 
-//////////////////////////////////////////////////////////////////////////
-game_hack::game_hack()
+
+game_hack::~game_hack()
 {
-  
 }
 
 void game_hack::update()
 {
+  
+  
+  //LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, g_comp.get_num_verts());
+}
 
-  graphics_component g_comp;
-  LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, g_comp.get_num_verts());
+void game_hack::kill_player()
+{
+  p_player.reset(nullptr);
+}
+
+void game_hack::kill_enemy(std::unique_ptr<entity_hack> const& enemy)
+{
+  auto enemy_find_it = std::find(p_enemies.begin(), p_enemies.end(), enemy);
+  if(enemy_find_it != p_enemies.end())
+  {
+    p_enemies.erase(enemy_find_it);
+  }
 }
 
 } // namespace LE

@@ -31,20 +31,20 @@ namespace LE
 {
 
 // TODO - UNHACK
-class entity
-{
-public:
-  entity();
-  
-  template<typename comp_t>
-  comp_t * get_component()
-  {
-    
-  }
-
-private:
-  std::vector<std::pair<, std::unique_ptr<component_base>>> components;
-};
+// class entity
+// {
+// public:
+//   entity();
+//   
+//   template<typename comp_t>
+//   comp_t * get_component()
+//   {
+//     
+//   }
+// 
+// private:
+//   std::vector<std::pair<, std::unique_ptr<component_base>>> components;
+// };
 
 } // namespace LE
 

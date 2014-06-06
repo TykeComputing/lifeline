@@ -25,13 +25,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-class vec2
-{
-public:
-  vec2();
 
-private:
-};
 
 } // namespace LE
 

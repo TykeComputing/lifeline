@@ -100,22 +100,22 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/vertex_buffer.cpp
   src/graphics/vertex_buffer.h
 
-  src/engine/component_base.cpp
-  src/engine/component_base.h
+  #src/engine/component_base.cpp
+  #src/engine/component_base.h
   src/engine/engine.cpp
   src/engine/engine.h
-  src/engine/entity.cpp
-  src/engine/entity.h
-  src/engine/entity_manager.cpp
-  src/engine/entity_manager.h
-  src/engine/graphics_component.cpp
-  src/engine/graphics_component.h
+  #src/engine/entity.cpp
+  #src/engine/entity.h
+  #src/engine/entity_manager.cpp
+  #src/engine/entity_manager.h
+  #src/engine/graphics_component.cpp
+  #src/engine/graphics_component.h
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
-  src/engine/transform_component.h
-  src/engine/transform_component.h
+  #src/engine/transform_component.h
+  #src/engine/transform_component.h
   src/engine/window.cpp
   src/engine/window.h
 
@@ -139,12 +139,20 @@ message(STATUS "${LE_MESSAGE_HEADER}")
 message(STATUS "Build warnings...")
 target_compile_options(${PROJECT_NAME}
   PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
+    # Enable
     /W4 /WX
+
+    # Disable
+    /wd4201
   >
 
   PUBLIC $<$<CXX_COMPILER_ID:GNU>:
+    # Enable
     -Wall -Wextra -Werror -Wfatal-errors
     -pedantic -pedantic-errors
+
+    # Disable
+
   >
 )
 
