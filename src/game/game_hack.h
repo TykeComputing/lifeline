@@ -103,6 +103,41 @@ public:
 typedef vec2_t<float> vec2;
 
 //////////////////////////////////////////////////////////////////////////
+template<typename comp_t>
+class mat3_t
+{
+public:
+
+  static size_t const num_rows = 3;
+  static size_t const num_columns = 3;
+  static size_t const num_components = num_rows * num_columns;
+
+  mat3_t(comp_t m00, comp_t m01, comp_t m02,
+         comp_t m10, comp_t m11, comp_t m12,
+         comp_t m20, comp_t m21, comp_t m22)
+    : m00(m00), m01(m01), m02(m02),
+      m10(m10), m11(m11), m12(m12),
+      m20(m20), m21(m21), m22(m22)
+  {
+  }
+
+  union
+  {
+    struct
+    {
+      comp_t m00, m01, m02,
+             m10, m11, m12,
+             m20, m21, m22;
+    };
+
+    comp_t a[num_components];
+    comp_t m[num_rows][num_columns];
+  };
+};
+
+typedef mat3_t<float> mat3;
+
+//////////////////////////////////////////////////////////////////////////
 class graphics_component_hack
 {
 public:
@@ -110,8 +145,8 @@ public:
   graphics_component_hack(vec4 const& color);
   graphics_component_hack(vec4 && color);
 
-  void bind();
-  void unbind();
+  void bind() const;
+  void unbind() const;
 
   GLsizei get_num_verts() const;
 

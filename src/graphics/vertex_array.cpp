@@ -36,7 +36,7 @@ vertex_array::~vertex_array()
   glDeleteVertexArrays(1, &p_raw_name);
 }
 
-void vertex_array::bind(vertex_array & VAO)
+void vertex_array::bind(vertex_array const& VAO)
 {
   glBindVertexArray(VAO.p_raw_name);
 }

@@ -71,12 +71,12 @@ graphics_component_hack::graphics_component_hack(vec4 && color) :
   m_color = std::move(color);
 }
 
-void graphics_component_hack::bind()
+void graphics_component_hack::bind() const
 {
   LE::vertex_array::bind(p_VAO);
 }
    
-void graphics_component_hack::unbind()
+void graphics_component_hack::unbind() const
 {
   LE::vertex_array::unbind();
 }
@@ -134,16 +134,27 @@ void game_hack::update()
 {
 
   // DRAW
-  GLint color_uniform_location = p_shader_prog->get_unform_location("color");
+  GLint color_ul = p_shader_prog->get_unform_location("color");
+  GLint model_to_world_ul = p_shader_prog->get_unform_location("model_to_world");
 
   // Terrible game loop, HACK HACK HACK
   for(auto & entity_it : p_entities)
   {
-    glUniform4fv(color_uniform_location, 1, entity_it->m_g_comp.m_color.v);
+    mat3 model_to_world
+    {
+      entity_it->m_scale.x,                 0.0f, entity_it->m_pos.x,
+                      0.0f, entity_it->m_scale.y, entity_it->m_pos.y,
+                      0.0f,                 0.0f,               1.0f
+    };
 
-    entity_it->m_g_comp.bind();
-    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, entity_it->m_g_comp.get_num_verts());
-    entity_it->m_g_comp.unbind();
+    auto const& curr_g_comp = entity_it->m_g_comp;
+    glUniform4fv(color_ul, 1, curr_g_comp.m_color.v);
+
+    glUniformMatrix3fv(model_to_world_ul, 1, GL_FALSE, model_to_world.a);
+
+    curr_g_comp.bind();
+    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp.get_num_verts());
+    curr_g_comp.unbind();
   }
 }
 

@@ -37,7 +37,7 @@ public:
   vertex_array();
   ~vertex_array();
 
-  static void bind(vertex_array & VAO);
+  static void bind(vertex_array const& VAO);
   static void unbind();
 
 private:
