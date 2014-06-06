@@ -29,6 +29,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
 
+#include <graphics/shader_program.h>
+
 namespace LE
 {
   
@@ -135,20 +137,21 @@ public:
   std::string m_name;
 };
 
+class engine;
+
 class game_hack
 {
 public:
-  game_hack();
+  game_hack(engine & game_engine);
   ~game_hack();
 
   void update();
 
-  void kill_player();
-  void kill_enemy(std::unique_ptr<entity_hack> const& enemy);
+  void kill_entity(std::unique_ptr<entity_hack> const& enemy);
 
 private:
-  std::unique_ptr<entity_hack> p_player = nullptr;
-  std::vector<std::unique_ptr<entity_hack>> p_enemies;
+  std::vector<std::unique_ptr<entity_hack>> p_entities;
+  std::unique_ptr<shader_program> p_shader_prog;
 };
 
 } // namespace LE

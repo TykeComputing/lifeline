@@ -44,9 +44,20 @@ engine::engine() :
 
 void engine::run()
 {
-  glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-  game_hack game;
+  std::unique_ptr<game_hack> game;
+  try
+  {
+    game = std::make_unique<game_hack>(*this);
+  }
+  catch(LE::resource_exception const& e)
+  {
+    e.print("Game Construction");
+    LE_ERROR("ERROR"); // Give time to look at error
+    return;
+  }
+
   p_is_running = true;
   while(p_is_running)
   {
@@ -60,7 +71,7 @@ void engine::run()
 
     try
     {
-      game.update();
+      game->update();
     }
     catch(LE::resource_exception const& e)
     {

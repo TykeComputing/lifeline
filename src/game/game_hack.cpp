@@ -21,6 +21,16 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "game_hack.h"
 
+#include <common/fatal_construction_exception.h>
+
+#include <graphics/shader_program.h>
+#include <string>
+#include <vector>
+#include <common/resource_exception.h>
+#include <graphics/vertex.h>
+#include <graphics/vertex_array.h>
+#include <graphics/vertex_buffer.h>
+#include <engine/engine.h>
 
 namespace LE
 {
@@ -92,14 +102,27 @@ entity_hack::entity_hack(std::string && name, float health, vec4 && color, vec2 
 }
 
 //////////////////////////////////////////////////////////////////////////
-game_hack::game_hack() :
-  p_player()
+game_hack::game_hack(engine & game_engine)
 {
-  auto lvalue = vec4{ 0.0f, 1.0f, 0.0f, 1.0f };
-  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("lvaluetest"), 100.0f, lvalue, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
-  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("player"), 100.0f, vec4{ 0.0f, 1.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
-  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
-  p_enemies.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
+  // TODO - Move shader loading to someplace that makes more sense once resources exist
+  // Load shaders
+  std::vector<std::unique_ptr<shader>> shaders;
+  shaders.reserve(2);
+  shaders.emplace_back(std::make_unique<shader>(
+    GL_VERTEX_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + "shaders/solid_color.vert") ));
+  shaders.emplace_back(std::make_unique<shader>(
+    GL_FRAGMENT_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + "shaders/solid_color.frag") ));
+
+  // Load shader_program
+  std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
+  p_shader_prog = std::move(std::make_unique<shader_program>(shader_prog_input));
+ 
+  shaders.clear();
+  LE::shader_program::use(*p_shader_prog);
+
+  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("player"), 100.0f, vec4{ 0.0f, 1.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
+  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
+  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ 0.0f, 0.0f }, vec2{ 0.1f, 0.1f }));
 }
 
 
@@ -109,22 +132,27 @@ game_hack::~game_hack()
 
 void game_hack::update()
 {
-  
-  
-  //LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, g_comp.get_num_verts());
-}
 
-void game_hack::kill_player()
-{
-  p_player.reset(nullptr);
-}
+  // DRAW
+  GLint color_uniform_location = p_shader_prog->get_unform_location("color");
 
-void game_hack::kill_enemy(std::unique_ptr<entity_hack> const& enemy)
-{
-  auto enemy_find_it = std::find(p_enemies.begin(), p_enemies.end(), enemy);
-  if(enemy_find_it != p_enemies.end())
+  // Terrible game loop, HACK HACK HACK
+  for(auto & entity_it : p_entities)
   {
-    p_enemies.erase(enemy_find_it);
+    glUniform4fv(color_uniform_location, 1, entity_it->m_g_comp.m_color.v);
+
+    entity_it->m_g_comp.bind();
+    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, entity_it->m_g_comp.get_num_verts());
+    entity_it->m_g_comp.unbind();
+  }
+}
+
+void game_hack::kill_entity(std::unique_ptr<entity_hack> const& enemy)
+{
+  auto enemy_find_it = std::find(p_entities.begin(), p_entities.end(), enemy);
+  if(enemy_find_it != p_entities.end())
+  {
+    p_entities.erase(enemy_find_it);
   }
 }
 

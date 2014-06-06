@@ -104,6 +104,29 @@ shader_program::~shader_program()
   glDeleteProgram(p_raw_name);
 }
 
+GLint shader_program::get_unform_location(char const* uniform_name) const
+{
+  auto find_it = p_uniform_locations.find(uniform_name);
+  if(find_it != p_uniform_locations.end())
+  {
+    // uniform index already known
+    return find_it->second;
+  }
+  else
+  {
+    // uniform index not known yet, find it and store it (if it exists)
+    GLint uniform_index = glGetUniformLocation(p_raw_name, uniform_name);
+    p_uniform_locations.insert(std::make_pair(uniform_name, uniform_index));
+
+    if(uniform_index == -1)
+    {
+      LE_printf("Uniform named \"%s\" not found!", uniform_name);
+    }
+
+    return uniform_index;
+  }
+}
+
 void shader_program::use(shader_program & sp)
 {
   glUseProgram(sp.p_raw_name);

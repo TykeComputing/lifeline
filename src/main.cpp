@@ -30,15 +30,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/macros.h>
 #include <engine/engine.h>
 
-// TODO - REMOVE AFTER TESTING
-#include <graphics/shader_program.h>
-#include <string>
-#include <vector>
-#include <common/resource_exception.h>
-#include <graphics/vertex.h>
-#include <graphics/vertex_array.h>
-#include <graphics/vertex_buffer.h>
-
 typedef void(*handle_arg_func)(LE::engine & game_engine, std::string const& val);
 
 void handle_set_resource_dir(LE::engine & game_engine, std::string const& val)
@@ -88,39 +79,6 @@ int main(int arg_count, char *args[])
     LE::engine game_engine;
 
     handle_args(game_engine,  arg_count, args);
-
-    // TODO - Move shader loading to someplace that makes more sense once resources exist
-    // Load shaders
-    std::vector<LE::shader *> shaders;
-    try
-    {      
-      shaders.emplace_back(
-        new LE::shader(GL_VERTEX_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + "shaders/solid_color.vert")) );
-      shaders.emplace_back(
-        new LE::shader(GL_FRAGMENT_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + "shaders/solid_color.frag")));
-    }
-    catch(LE::resource_exception const& e)
-    {
-      e.print("Shader Loading");
-      LE_ERROR("Unable to compile shaders!"); // TODO - Remove
-      return -1;
-    }
-
-    // Load shader_program
-    LE::shader_program * solid_color = nullptr;
-    try
-    {
-      solid_color = new LE::shader_program(shaders);
-    }
-    catch (LE::resource_exception const& e)
-    {
-      e.print("Shader Program Loading");
-      LE_ERROR("Unable to link shaders!"); // TODO - Remove
-      return -1;
-    }
-
-    shaders.clear();
-    LE::shader_program::use(*solid_color);
 
     game_engine.run();
   }
