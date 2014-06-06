@@ -126,12 +126,77 @@ game_hack::game_hack(engine & game_engine)
 }
 
 
+
+void game_hack::kill_entity(std::unique_ptr<entity_hack> const& enemy)
+{
+  auto enemy_find_it = std::find(p_entities.begin(), p_entities.end(), enemy);
+  if(enemy_find_it != p_entities.end())
+  {
+    p_entities.erase(enemy_find_it);
+  }
+}
+
 game_hack::~game_hack()
 {
 }
 
+entity_hack* game_hack::get_entity(std::string const& name)
+{
+  for(auto & it : p_entities)
+  {
+    if(p_entities.)
+  }
+}
+
 void game_hack::update()
 {
+  SDL_Event curr_event;
+  while(SDL_PollEvent(&curr_event))
+  {
+    switch(curr_event.type)
+    {
+
+    case SDL_KEYDOWN:
+    {
+      switch(curr_event.key.keysym.sym)
+      {
+
+      case SDLK_w:
+      {
+
+      }
+      break;
+
+      case SDLK_s:
+      {
+
+      }
+      break;
+
+      case SDLK_a:
+      {
+
+      }
+      break;
+
+      case SDLK_d:
+      {
+
+      }
+      break;
+
+      }
+    }
+    break;
+
+    case SDL_KEYUP:
+    {
+     
+    }
+    break;
+    }
+  }
+
 
   // DRAW
   GLint color_ul = p_shader_prog->get_unform_location("color");
@@ -155,15 +220,6 @@ void game_hack::update()
     curr_g_comp.bind();
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp.get_num_verts());
     curr_g_comp.unbind();
-  }
-}
-
-void game_hack::kill_entity(std::unique_ptr<entity_hack> const& enemy)
-{
-  auto enemy_find_it = std::find(p_entities.begin(), p_entities.end(), enemy);
-  if(enemy_find_it != p_entities.end())
-  {
-    p_entities.erase(enemy_find_it);
   }
 }
 

@@ -180,9 +180,9 @@ public:
   game_hack(engine & game_engine);
   ~game_hack();
 
-  void update();
-
   void kill_entity(std::unique_ptr<entity_hack> const& enemy);
+
+  void update();
 
 private:
   std::vector<std::unique_ptr<entity_hack>> p_entities;
