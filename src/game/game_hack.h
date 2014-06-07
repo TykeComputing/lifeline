@@ -185,7 +185,8 @@ public:
   entity_hack_ptr & find_entity(std::string const& name);
   void kill_entity(entity_hack_ptr & target);
 
-  bool update();
+  bool update(float dt);
+  void draw();
 
 private:
   std::vector<entity_hack_ptr> p_entities;

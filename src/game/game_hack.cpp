@@ -154,10 +154,8 @@ void game_hack::kill_entity(entity_hack_ptr & target)
   }
 }
 
-bool game_hack::update()
+bool game_hack::update(float dt)
 {
-  glClear(GL_COLOR_BUFFER_BIT);
-
   //////////////////////////////////////////////////////////////////////////
   // UPDATE
   entity_hack_ptr & player = find_entity("player");
@@ -174,21 +172,21 @@ bool game_hack::update()
     {
       if(curr_event.key.repeat == false)
       {
-        switch(curr_event.key.keysym.sym)
+        /*switch(curr_event.key.keysym.sym)
         {
 
-        }
+        }*/
       }
     }
     break;
 
     case SDL_KEYUP:
     {
-      switch(curr_event.key.keysym.sym)
-      {
+      //switch(curr_event.key.keysym.sym)
+      //{
 
 
-      }
+      //}
     }
     break;
     //////////////////////////////////////////////////////////////////////////
@@ -206,25 +204,32 @@ bool game_hack::update()
   int num_SDL_keys;
   Uint8 * SDL_keys = SDL_GetKeyboardState(&num_SDL_keys);
   // 1 = Key pressed, 2 = key not pressed
+  float const movement_speed = 0.8f;
   if(SDL_keys[SDL_SCANCODE_W])
-  {
-    player->m_pos.y += 0.01f;
+  {    
+    player->m_pos.y += movement_speed * dt;
+    LE_printf("Curr y pos = %f\n", player->m_pos.y);
   }
   if(SDL_keys[SDL_SCANCODE_S])
   {
-    player->m_pos.y -= 0.01f;
+    player->m_pos.y -= movement_speed * dt;
   }
   if(SDL_keys[SDL_SCANCODE_A])
   {
-    player->m_pos.x -= 0.01f;
+    player->m_pos.x -= movement_speed * dt;
   }
   if(SDL_keys[SDL_SCANCODE_D])
   {
-    player->m_pos.x += 0.01f;
+    player->m_pos.x += movement_speed * dt;
   }
 
-  //////////////////////////////////////////////////////////////////////////
-  // DRAW
+  return true;
+}
+
+void game_hack::draw()
+{
+  glClear(GL_COLOR_BUFFER_BIT);
+
   GLint color_ul = p_shader_prog->get_unform_location("color");
   GLint model_to_world_ul = p_shader_prog->get_unform_location("model_to_world");
 
@@ -233,9 +238,9 @@ bool game_hack::update()
   {
     mat3 model_to_world
     {
-      entity_it->m_scale.x,                 0.0f, entity_it->m_pos.x,
-                      0.0f, entity_it->m_scale.y, entity_it->m_pos.y,
-                      0.0f,                 0.0f,               1.0f  // TODO: mat2x3 instead?
+      entity_it->m_scale.x, 0.0f, entity_it->m_pos.x,
+      0.0f, entity_it->m_scale.y, entity_it->m_pos.y,
+      0.0f, 0.0f, 1.0f  // TODO: mat2x3 instead?
     };
 
     auto const& curr_g_comp = entity_it->m_g_comp;
@@ -245,10 +250,8 @@ bool game_hack::update()
 
     curr_g_comp.bind();
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp.get_num_verts());
-    curr_g_comp.unbind();    
+    curr_g_comp.unbind();
   }
-
-  return true;
 }
 
 } // namespace LE
