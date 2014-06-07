@@ -272,26 +272,31 @@ public:
   std::string m_name = "unnamed";
 };
 
+//////////////////////////////////////////////////////////////////////////
+template<typename T>
+bool operator==(std::unique_ptr<T> const& lhs, T const* rhs)
+{
+  return lhs.get() == rhs;
+}
+
+//////////////////////////////////////////////////////////////////////////
 class engine;
 
 class game_hack
 {
 public:
-  typedef std::unique_ptr<entity_hack> entity_hack_ptr;
-
   game_hack(engine & game_engine);
   ~game_hack();
 
-  entity_hack_ptr & create_entity(std::string const& name);
-  entity_hack_ptr & find_entity(std::string const& name);
-  void kill_entity(entity_hack_ptr & target);
+  entity_hack * create_entity(std::string const& name);
+  entity_hack * find_entity(std::string const& name);
+  void kill_entity(entity_hack * target);
 
   bool update(float dt);
   void draw();
 
 private:
-  std::vector<entity_hack_ptr> p_entities;
-  entity_hack_ptr p_null_entity = entity_hack_ptr(nullptr);
+  std::vector<std::unique_ptr<entity_hack>> p_entities;
   std::unique_ptr<shader_program> p_shader_prog;
 };
 

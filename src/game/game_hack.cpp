@@ -122,17 +122,17 @@ game_hack::game_hack(engine & game_engine)
   LE::shader_program::use(*p_shader_prog);
   
   {
-    auto & new_ent = create_entity("player");
+    auto * new_ent = create_entity("player");
     new_ent->m_pos.set(0.0f, 0.5f);
     new_ent->m_g_comp.m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
   }
   {
-    auto & new_ent = create_entity("enemy");
+    auto * new_ent = create_entity("enemy");
     new_ent->m_pos.set(0.5f, -0.5f);
     new_ent->m_g_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
   {
-    auto & new_ent = create_entity("enemy");
+    auto * new_ent = create_entity("enemy");
     new_ent->m_pos.set(-0.5f, -0.5f);
     new_ent->m_g_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
@@ -142,26 +142,26 @@ game_hack::~game_hack()
 {
 }
 
-game_hack::entity_hack_ptr & game_hack::create_entity(std::string const& name)
+entity_hack * game_hack::create_entity(std::string const& name)
 {
   p_entities.emplace_back(std::make_unique<entity_hack>(name));
-  return p_entities.back();
+  return p_entities.back().get();
 }
 
-game_hack::entity_hack_ptr & game_hack::find_entity(std::string const& name)
+entity_hack * game_hack::find_entity(std::string const& name)
 {
   for(auto & it : p_entities)
   {
     if(it->m_name == name)
     {
-      return it;
+      return it.get();
     }
   }
 
-  return p_null_entity;
+  return nullptr;
 }
 
-void game_hack::kill_entity(entity_hack_ptr & target)
+void game_hack::kill_entity(entity_hack * target)
 {
   auto enemy_find_it = std::find(p_entities.begin(), p_entities.end(), target);
   if(enemy_find_it != p_entities.end())
@@ -174,7 +174,7 @@ bool game_hack::update(float dt)
 {
   //////////////////////////////////////////////////////////////////////////
   // UPDATE
-  entity_hack_ptr & player = find_entity("player");
+  entity_hack * player = find_entity("player");
   float const player_movement_speed = 0.8f;
   float const bullet_movement_speed = 2.0f;
 
@@ -193,10 +193,18 @@ bool game_hack::update(float dt)
     {
       if(curr_event.key.repeat == false)
       {
-        /*switch(curr_event.key.keysym.sym)
+        switch(curr_event.key.keysym.sym)
         {
 
-        }*/
+        case SDLK_SPACE:
+        {
+          auto * new_bullet = create_entity("bullet");
+          new_bullet->m_pos = player->m_pos;
+          new_bullet->m_scale.set(0.05f, 0.05f);
+          new_bullet->m_g_comp.m_color.set(1.0f, 0.5f, 0.0f, 1.0f);
+        }
+
+        }
       }
     }
     break;
@@ -222,9 +230,12 @@ bool game_hack::update(float dt)
   }
 
   // Hacky handling of pressed key states
+  // Per SDL2 documentation, (https://wiki.libsdl.org/SDL_GetKeyboardState) pointer returned by 
+  //   SDL_GetKeyboardState is valid for lifetime of program, thus I only get it once.
   int num_SDL_keys;
-  Uint8 * SDL_keys = SDL_GetKeyboardState(&num_SDL_keys);
-  // 1 = Key pressed, 2 = key not pressed
+  static Uint8 const* const SDL_keys = SDL_GetKeyboardState(&num_SDL_keys);
+
+  // 1 = key pressed, 0 = key not pressed
   if(SDL_keys[SDL_SCANCODE_W])
   {    
     player->m_pos.y += player_movement_speed * dt;
