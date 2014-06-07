@@ -200,6 +200,18 @@ float dot(vec2_t<comp_t> const& lhs, vec2_t<comp_t> const& rhs)
   return (lhs.x * rhs.x) + (lhs.y * rhs.y);
 }
 
+template<typename comp_t>
+float get_length(vec2_t<comp_t> const& lhs)
+{
+  return lhs.get_length();
+}
+
+template<typename comp_t>
+float get_length_sq(vec2_t<comp_t> const& lhs)
+{
+  return lhs.get_length_sq();
+}
+
 typedef vec2_t<float> vec2;
 
 //////////////////////////////////////////////////////////////////////////
@@ -252,10 +264,17 @@ public:
 
   vec4 m_color = { 1.0f, 1.0f, 1.0f, 1.0f }; // TODO: Move and change method of representing colors (RGBA8?)
 private:
-  LE::vertex_array p_VAO;
-  LE::vertex_buffer p_VBO;
+  vertex_array p_VAO;
+  vertex_buffer p_VBO;
 
   GLsizei num_verts = 0;
+};
+
+//////////////////////////////////////////////////////////////////////////
+class physics_component_hack
+{
+public:
+  vec2 m_velocity = { 0.0f, 0.0f };
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -265,7 +284,9 @@ public:
   entity_hack(std::string const& name);
   entity_hack(char const* name);
 
-  graphics_component_hack m_g_comp;
+  graphics_component_hack m_gfx_comp;
+  physics_component_hack m_phx_comp;
+
   vec2 m_pos = { 0.0f, 0.0f };
   vec2 m_scale = { 0.1f, 0.1f };
   float m_health = 100.0f;

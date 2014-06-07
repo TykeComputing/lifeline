@@ -124,17 +124,17 @@ game_hack::game_hack(engine & game_engine)
   {
     auto * new_ent = create_entity("player");
     new_ent->m_pos.set(0.0f, 0.5f);
-    new_ent->m_g_comp.m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
+    new_ent->m_gfx_comp.m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
   }
   {
     auto * new_ent = create_entity("enemy");
     new_ent->m_pos.set(0.5f, -0.5f);
-    new_ent->m_g_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
+    new_ent->m_gfx_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
   {
     auto * new_ent = create_entity("enemy");
     new_ent->m_pos.set(-0.5f, -0.5f);
-    new_ent->m_g_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
+    new_ent->m_gfx_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
 }
 
@@ -198,11 +198,21 @@ bool game_hack::update(float dt)
 
         case SDLK_SPACE:
         {
-          auto * new_bullet = create_entity("bullet");
-          new_bullet->m_pos = player->m_pos;
-          new_bullet->m_scale.set(0.05f, 0.05f);
-          new_bullet->m_g_comp.m_color.set(1.0f, 0.5f, 0.0f, 1.0f);
+          if(player)
+          {
+            auto * new_bullet = create_entity("bullet");
+            new_bullet->m_pos = player->m_pos;
+            new_bullet->m_scale.set(0.05f, 0.05f);
+            new_bullet->m_gfx_comp.m_color.set(1.0f, 0.5f, 0.0f, 1.0f);
+          }
         }
+        break;
+
+        case SDLK_ESCAPE:
+        {
+          return false;
+        }
+        break;
 
         }
       }
@@ -235,41 +245,112 @@ bool game_hack::update(float dt)
   int num_SDL_keys;
   static Uint8 const* const SDL_keys = SDL_GetKeyboardState(&num_SDL_keys);
 
-  // 1 = key pressed, 0 = key not pressed
-  if(SDL_keys[SDL_SCANCODE_W])
-  {    
-    player->m_pos.y += player_movement_speed * dt;
-    LE_printf("Curr y pos = %f\n", player->m_pos.y);
-  }
-  if(SDL_keys[SDL_SCANCODE_S])
+  if(player)
   {
-    player->m_pos.y -= player_movement_speed * dt;
-  }
-  if(SDL_keys[SDL_SCANCODE_A])
-  {
-    player->m_pos.x -= player_movement_speed * dt;
-  }
-  if(SDL_keys[SDL_SCANCODE_D])
-  {
-    player->m_pos.x += player_movement_speed * dt;
-  }
-
-  for(auto & entity_it : p_entities)
-  {
-    if(entity_it->m_name == "enemy")
+    // 1 = key pressed, 0 = key not pressed
+    if(SDL_keys[SDL_SCANCODE_W])
+    {    
+      player->m_pos.y += player_movement_speed * dt;
+    }
+    if(SDL_keys[SDL_SCANCODE_S])
     {
-      vec2 dir_to_player = player->m_pos - entity_it->m_pos; LE_UNUSED_VAR(dir_to_player);
-      float dist_to_player = dir_to_player.normalize();
-      if(dist_to_player <= enemy_seek_radius)
+      player->m_pos.y -= player_movement_speed * dt;
+    }
+    if(SDL_keys[SDL_SCANCODE_A])
+    {
+      player->m_pos.x -= player_movement_speed * dt;
+    }
+    if(SDL_keys[SDL_SCANCODE_D])
+    {
+      player->m_pos.x += player_movement_speed * dt;
+    }
+
+    // Enemy seeking
+    for(auto & entity_it : p_entities)
+    {
+      if(entity_it->m_name == "enemy")
       {
-        entity_it->m_pos += dir_to_player * enemy_movement_speed * dt;      
+        vec2 dir_to_player = player->m_pos - entity_it->m_pos;
+        float dist_to_player = dir_to_player.normalize();
+        if(dist_to_player <= enemy_seek_radius)
+        {
+          entity_it->m_pos += dir_to_player * enemy_movement_speed * dt;      
+        }
+      }
+      else if(entity_it->m_name == "bullet")
+      {
+        // TODO velocity
+        entity_it->m_pos.y -= bullet_movement_speed * dt;
       }
     }
-    else if(entity_it->m_name == "bullet")
+  }
+
+  std::vector<entity_hack *> ents_to_kill;
+
+  // TODO - Stick to actual naming conventions when unhacking this
+  // n^2 collision detection using circles based on pos/scale
+  for(auto ent_outer_it = p_entities.begin(); ent_outer_it != p_entities.end(); ++ent_outer_it)
+  {
+    // Don't consider this object or ones before it for testing (they've already been tested).
+    for(auto ent_inner_it = p_entities.begin() + 1; ent_inner_it != p_entities.end(); ++ent_inner_it)
     {
-      // TODO velocity
-      entity_it->m_pos.y -= bullet_movement_speed * dt;      
+      auto & ent_outer = (*ent_outer_it);
+      auto & ent_inner = (*ent_inner_it);
+      float dist_sq = get_length_sq(ent_inner->m_pos - ent_outer->m_pos);
+      float r_sum = ent_outer->m_scale.x + ent_inner->m_scale.x;
+      r_sum *= 0.5f; // use half of scale as radius
+      float r_sum_sq = r_sum * r_sum;
+      if(dist_sq <= r_sum_sq)
+      {
+        entity_hack * ents[2] = { ent_outer.get(), ent_inner.get() };
+
+        auto ent_involved_in_collision = 
+          [](std::string const& name, 
+            entity_hack * (&ents)[2],
+            unsigned & index, 
+            unsigned & other_index)->bool
+        {
+          if(ents[0]->m_name == name)
+          {
+            index = 0;
+            other_index = 1;
+            return true;
+          }
+          else if(ents[1]->m_name == name)
+          {
+            index = 1;
+            other_index = 0;
+            return true;
+          }
+
+          return false;
+        };
+
+        unsigned index;
+        unsigned other_index;
+        // Hacky collision logic
+        if(ent_involved_in_collision("player", ents, index, other_index))
+        {
+          if(ents[other_index]->m_name == "enemy")
+          {
+            ents_to_kill.emplace_back(ents[index]);            
+          }
+        }
+        if(ent_involved_in_collision("enemy", ents, index, other_index))
+        {
+          if(ents[other_index]->m_name == "bullet")
+          {
+            ents_to_kill.emplace_back(ents[index]);
+            ents_to_kill.emplace_back(ents[other_index]);
+          }
+        }
+      }
     }
+  }
+
+  for(auto const& kill_it : ents_to_kill)
+  {
+    kill_entity(kill_it);
   }
 
   return true;
@@ -292,7 +373,7 @@ void game_hack::draw()
       0.0f, 0.0f, 1.0f  // TODO: mat2x3 instead?
     };
 
-    auto const& curr_g_comp = entity_it->m_g_comp;
+    auto const& curr_g_comp = entity_it->m_gfx_comp;
     glUniform4fv(color_ul, 1, curr_g_comp.m_color.v);
 
     glUniformMatrix3fv(model_to_world_ul, 1, GL_TRUE, model_to_world.a);
