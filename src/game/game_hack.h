@@ -49,6 +49,14 @@ public:
   {
   }
 
+  void set(comp_t new_x, comp_t new_y, comp_t new_z, comp_t new_w)
+  {
+    x = new_x;
+    y = new_y;
+    z = new_z;
+    w = new_w;
+  }
+
   static size_t const num_components = 4;
 
   union
@@ -81,6 +89,12 @@ public:
   vec2_t(comp_t x, comp_t y) :
     x(x), y(y)
   {
+  }
+
+  void set(comp_t new_x, comp_t new_y)
+  {
+    x = new_x;
+    y = new_y;
   }
 
   vec2_t<comp_t> operator+(vec2_t<comp_t> const& rhs)
@@ -236,7 +250,7 @@ public:
 
   GLsizei get_num_verts() const;
 
-  vec4 m_color = { 1.0f, 1.0f, 1.0f, 1.0f };
+  vec4 m_color = { 1.0f, 1.0f, 1.0f, 1.0f }; // TODO: Move and change method of representing colors (RGBA8?)
 private:
   LE::vertex_array p_VAO;
   LE::vertex_buffer p_VBO;
@@ -248,14 +262,14 @@ private:
 class entity_hack
 {
 public:
-  entity_hack(std::string const& name, float health, vec4 const& color,  vec2 const& pos, vec2 const& scale);
-  entity_hack(std::string && name, float health, vec4 && color, vec2 && pos, vec2 && scale);
+  entity_hack(std::string const& name);
+  entity_hack(char const* name);
 
   graphics_component_hack m_g_comp;
-  vec2 m_pos;
-  vec2 m_scale;
-  float m_health;
-  std::string m_name;
+  vec2 m_pos = { 0.0f, 0.0f };
+  vec2 m_scale = { 0.1f, 0.1f };
+  float m_health = 100.0f;
+  std::string m_name = "unnamed";
 };
 
 class engine;
@@ -268,6 +282,7 @@ public:
   game_hack(engine & game_engine);
   ~game_hack();
 
+  entity_hack_ptr & create_entity(std::string const& name);
   entity_hack_ptr & find_entity(std::string const& name);
   void kill_entity(entity_hack_ptr & target);
 

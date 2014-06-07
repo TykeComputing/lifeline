@@ -88,16 +88,14 @@ GLsizei graphics_component_hack::get_num_verts() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-entity_hack::entity_hack(std::string const& name, float health, vec4 const& color, vec2 const& pos, vec2 const& scale) :
-  m_name(name), m_health(health), m_pos(pos), m_scale(scale),
-  m_g_comp(color)
+entity_hack::entity_hack(std::string const& name) :
+  entity_hack(name.c_str()) // TODO - Change
 {
 
 }
 
-entity_hack::entity_hack(std::string && name, float health, vec4 && color, vec2 && pos, vec2 && scale) :
-  m_name(std::move(name)), m_health(health), m_pos(std::move(pos)), m_scale(std::move(scale)),
-  m_g_comp(color)
+entity_hack::entity_hack(char const* name) :
+  m_name(name)
 {
 
 }
@@ -122,14 +120,32 @@ game_hack::game_hack(engine & game_engine)
  
   shaders.clear();
   LE::shader_program::use(*p_shader_prog);
-
-  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("player"), 100.0f, vec4{ 0.0f, 1.0f, 0.0f, 1.0f }, vec2{  0.0f,  0.5f }, vec2{ 0.1f, 0.1f }));
-  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{  0.5f, -0.5f }, vec2{ 0.1f, 0.1f }));
-  p_entities.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ -0.5f, -0.5f }, vec2{ 0.1f, 0.1f }));
+  
+  {
+    auto & new_ent = create_entity("player");
+    new_ent->m_pos.set(0.0f, 0.5f);
+    new_ent->m_g_comp.m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
+  }
+  {
+    auto & new_ent = create_entity("enemy");
+    new_ent->m_pos.set(0.5f, -0.5f);
+    new_ent->m_g_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
+  }
+  {
+    auto & new_ent = create_entity("enemy");
+    new_ent->m_pos.set(-0.5f, -0.5f);
+    new_ent->m_g_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
+  }
 }
 
 game_hack::~game_hack()
 {
+}
+
+game_hack::entity_hack_ptr & game_hack::create_entity(std::string const& name)
+{
+  p_entities.emplace_back(std::make_unique<entity_hack>(name));
+  return p_entities.back();
 }
 
 game_hack::entity_hack_ptr & game_hack::find_entity(std::string const& name)
@@ -160,8 +176,10 @@ bool game_hack::update(float dt)
   // UPDATE
   entity_hack_ptr & player = find_entity("player");
   float const player_movement_speed = 0.8f;
-  float const enemy_movement_speed = 0.4f;
+  float const bullet_movement_speed = 2.0f;
+
   float const enemy_seek_radius = 1.0f;
+  float const enemy_movement_speed = 0.4f;
 
   SDL_Event curr_event;
   while(SDL_PollEvent(&curr_event))
@@ -235,6 +253,11 @@ bool game_hack::update(float dt)
       {
         entity_it->m_pos += dir_to_player * enemy_movement_speed * dt;      
       }
+    }
+    else if(entity_it->m_name == "bullet")
+    {
+      // TODO velocity
+      entity_it->m_pos.y -= bullet_movement_speed * dt;      
     }
   }
 
