@@ -177,15 +177,19 @@ class engine;
 class game_hack
 {
 public:
+  typedef std::unique_ptr<entity_hack> entity_hack_ptr;
+
   game_hack(engine & game_engine);
   ~game_hack();
 
-  void kill_entity(std::unique_ptr<entity_hack> const& enemy);
+  entity_hack_ptr & find_entity(std::string const& name);
+  void kill_entity(entity_hack_ptr & target);
 
-  void update();
+  bool update();
 
 private:
-  std::vector<std::unique_ptr<entity_hack>> p_entities;
+  std::vector<entity_hack_ptr> p_entities;
+  entity_hack_ptr p_null_entity = entity_hack_ptr(nullptr);
   std::unique_ptr<shader_program> p_shader_prog;
 };
 

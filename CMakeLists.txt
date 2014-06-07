@@ -75,6 +75,8 @@ set(LE_EXECUTABLE_SRC_LIST
   #src/common/resource_manager.h
   src/common/resource_exception.cpp
   src/common/resource_exception.h
+  src/common/timer.h
+  src/common/timer.cpp
 
   src/math/mat3.cpp
   src/math/mat3.h

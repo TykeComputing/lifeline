@@ -21,11 +21,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "engine.h"
 
-// TODO - Remove once graphics framework is in place
-#include <GL/glew.h>
-
-#include <common/LE_printf.h>
 #include <common/error.h>
+#include <common/LE_printf.h>
+#include <common/timer.h>
 
 // TODO - Remove when done hacking
 #include <game/game_hack.h>
@@ -44,7 +42,7 @@ engine::engine() :
 
 void engine::run()
 {
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  
 
   std::unique_ptr<game_hack> game;
   try
@@ -65,13 +63,9 @@ void engine::run()
     // Temp hack to allow quiting
     set_is_running(p_os_interface.update());
 
-    // Render
-    // TODO - Move once graphics framework is in place
-    glClear(GL_COLOR_BUFFER_BIT);
-
     try
     {
-      game->update();
+      p_is_running = game->update();
     }
     catch(LE::resource_exception const& e)
     {

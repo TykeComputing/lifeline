@@ -31,6 +31,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
 #include <engine/engine.h>
+#include <common/LE_printf.h>
 
 namespace LE
 {
@@ -104,6 +105,8 @@ entity_hack::entity_hack(std::string && name, float health, vec4 && color, vec2 
 //////////////////////////////////////////////////////////////////////////
 game_hack::game_hack(engine & game_engine)
 {
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
   // TODO - Move shader loading to someplace that makes more sense once resources exist
   // Load shaders
   std::vector<std::unique_ptr<shader>> shaders;
@@ -125,79 +128,102 @@ game_hack::game_hack(engine & game_engine)
   p_entities.emplace_back(std::make_unique<entity_hack>(std::string("enemy"),   50.0f, vec4{ 1.0f, 0.0f, 0.0f, 1.0f }, vec2{ -0.5f, -0.5f }, vec2{ 0.1f, 0.1f }));
 }
 
-
-
-void game_hack::kill_entity(std::unique_ptr<entity_hack> const& enemy)
+game_hack::~game_hack()
 {
-  auto enemy_find_it = std::find(p_entities.begin(), p_entities.end(), enemy);
+}
+
+game_hack::entity_hack_ptr & game_hack::find_entity(std::string const& name)
+{
+  for(auto & it : p_entities)
+  {
+    if(it->m_name == name)
+    {
+      return it;
+    }
+  }
+
+  return p_null_entity;
+}
+
+void game_hack::kill_entity(entity_hack_ptr & target)
+{
+  auto enemy_find_it = std::find(p_entities.begin(), p_entities.end(), target);
   if(enemy_find_it != p_entities.end())
   {
     p_entities.erase(enemy_find_it);
   }
 }
 
-game_hack::~game_hack()
+bool game_hack::update()
 {
-}
+  glClear(GL_COLOR_BUFFER_BIT);
 
-entity_hack* game_hack::get_entity(std::string const& name)
-{
-  for(auto & it : p_entities)
-  {
-    if(p_entities.)
-  }
-}
+  //////////////////////////////////////////////////////////////////////////
+  // UPDATE
+  entity_hack_ptr & player = find_entity("player");
 
-void game_hack::update()
-{
   SDL_Event curr_event;
   while(SDL_PollEvent(&curr_event))
   {
     switch(curr_event.type)
     {
 
+    //////////////////////////////////////////////////////////////////////////
+    // Hacky handling of triggered/release key states
     case SDL_KEYDOWN:
     {
-      switch(curr_event.key.keysym.sym)
+      if(curr_event.key.repeat == false)
       {
+        switch(curr_event.key.keysym.sym)
+        {
 
-      case SDLK_w:
-      {
-
-      }
-      break;
-
-      case SDLK_s:
-      {
-
-      }
-      break;
-
-      case SDLK_a:
-      {
-
-      }
-      break;
-
-      case SDLK_d:
-      {
-
-      }
-      break;
-
+        }
       }
     }
     break;
 
     case SDL_KEYUP:
     {
-     
+      switch(curr_event.key.keysym.sym)
+      {
+
+
+      }
     }
     break;
+    //////////////////////////////////////////////////////////////////////////
+
+    case SDL_QUIT:
+    {
+      return false;
+    }
+    break;
+    
     }
   }
 
+  // Hacky handling of pressed key states
+  int num_SDL_keys;
+  Uint8 * SDL_keys = SDL_GetKeyboardState(&num_SDL_keys);
+  // 1 = Key pressed, 2 = key not pressed
+  if(SDL_keys[SDL_SCANCODE_W])
+  {
+    player->m_pos.y += 0.01f;
+  }
+  if(SDL_keys[SDL_SCANCODE_S])
+  {
+    player->m_pos.y -= 0.01f;
+  }
+  if(SDL_keys[SDL_SCANCODE_A])
+  {
+    player->m_pos.x -= 0.01f;
+  }
+  if(SDL_keys[SDL_SCANCODE_D])
+  {
+    player->m_pos.x += 0.01f;
+  }
 
+  //////////////////////////////////////////////////////////////////////////
   // DRAW
   GLint color_ul = p_shader_prog->get_unform_location("color");
   GLint model_to_world_ul = p_shader_prog->get_unform_location("model_to_world");
@@ -219,8 +245,10 @@ void game_hack::update()
 
     curr_g_comp.bind();
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp.get_num_verts());
-    curr_g_comp.unbind();
+    curr_g_comp.unbind();    
   }
+
+  return true;
 }
 
 } // namespace LE
