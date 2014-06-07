@@ -161,6 +161,7 @@ bool game_hack::update(float dt)
   entity_hack_ptr & player = find_entity("player");
   float const player_movement_speed = 0.8f;
   float const enemy_movement_speed = 0.4f;
+  float const enemy_seek_radius = 1.0f;
 
   SDL_Event curr_event;
   while(SDL_PollEvent(&curr_event))
@@ -229,8 +230,11 @@ bool game_hack::update(float dt)
     if(entity_it->m_name == "enemy")
     {
       vec2 dir_to_player = player->m_pos - entity_it->m_pos; LE_UNUSED_VAR(dir_to_player);
-      dir_to_player.normalize();
-      entity_it->m_pos += dir_to_player * enemy_movement_speed * dt;      
+      float dist_to_player = dir_to_player.normalize();
+      if(dist_to_player <= enemy_seek_radius)
+      {
+        entity_it->m_pos += dir_to_player * enemy_movement_speed * dt;      
+      }
     }
   }
 
