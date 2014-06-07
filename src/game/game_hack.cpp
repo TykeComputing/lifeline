@@ -159,6 +159,8 @@ bool game_hack::update(float dt)
   //////////////////////////////////////////////////////////////////////////
   // UPDATE
   entity_hack_ptr & player = find_entity("player");
+  float const player_movement_speed = 0.8f;
+  float const enemy_movement_speed = 0.4f;
 
   SDL_Event curr_event;
   while(SDL_PollEvent(&curr_event))
@@ -204,23 +206,32 @@ bool game_hack::update(float dt)
   int num_SDL_keys;
   Uint8 * SDL_keys = SDL_GetKeyboardState(&num_SDL_keys);
   // 1 = Key pressed, 2 = key not pressed
-  float const movement_speed = 0.8f;
   if(SDL_keys[SDL_SCANCODE_W])
   {    
-    player->m_pos.y += movement_speed * dt;
+    player->m_pos.y += player_movement_speed * dt;
     LE_printf("Curr y pos = %f\n", player->m_pos.y);
   }
   if(SDL_keys[SDL_SCANCODE_S])
   {
-    player->m_pos.y -= movement_speed * dt;
+    player->m_pos.y -= player_movement_speed * dt;
   }
   if(SDL_keys[SDL_SCANCODE_A])
   {
-    player->m_pos.x -= movement_speed * dt;
+    player->m_pos.x -= player_movement_speed * dt;
   }
   if(SDL_keys[SDL_SCANCODE_D])
   {
-    player->m_pos.x += movement_speed * dt;
+    player->m_pos.x += player_movement_speed * dt;
+  }
+
+  for(auto & entity_it : p_entities)
+  {
+    if(entity_it->m_name == "enemy")
+    {
+      vec2 dir_to_player = player->m_pos - entity_it->m_pos; LE_UNUSED_VAR(dir_to_player);
+      dir_to_player.normalize();
+      entity_it->m_pos += dir_to_player * enemy_movement_speed * dt;      
+    }
   }
 
   return true;

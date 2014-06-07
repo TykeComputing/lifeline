@@ -83,6 +83,86 @@ public:
   {
   }
 
+  vec2_t<comp_t> operator+(vec2_t<comp_t> const& rhs)
+  {    
+    return {
+      x + rhs.x,
+      y + rhs.y
+    };
+  }
+
+  vec2_t<comp_t> const& operator+=(vec2_t<comp_t> const& rhs)
+  {
+    x += rhs.x;
+    y += rhs.y;
+    return *this;
+  }
+
+  vec2_t<comp_t> operator-(vec2_t<comp_t> const& rhs)
+  {    
+    return {
+      x - rhs.x,
+      y - rhs.y
+    };
+  }
+
+  vec2_t<comp_t> const& operator-=(vec2_t<comp_t> const& rhs)
+  {
+    x -= rhs.x;
+    y -= rhs.y;
+    return *this;
+  }
+
+  vec2_t<comp_t> operator*(comp_t rhs)
+  {    
+    return {
+      x * rhs,
+      y * rhs
+    };
+  }
+
+  vec2_t<comp_t> const& operator*=(comp_t rhs)
+  {
+    x *= rhs;
+    y *= rhs;
+    return *this;
+  }
+
+  vec2_t<comp_t> operator/(comp_t rhs)
+  {    
+    return {
+      x / rhs,
+      y / rhs
+    };
+  }
+
+  vec2_t<comp_t> const& operator/=(comp_t rhs)
+  {
+    x /= rhs;
+    y /= rhs;
+    return *this;
+  }
+
+  comp_t get_length() const
+  {
+    return std::sqrt(get_length_sq());
+  }
+
+  comp_t get_length_sq() const
+  {
+    return dot(*this, *this);
+  }
+
+  // Returns old length
+  comp_t normalize()
+  {
+    comp_t length = get_length();
+    x /= length;
+    y /= length;
+
+    return length;
+  }
+
   static size_t const num_components = 2;
 
   union
@@ -99,6 +179,12 @@ public:
     comp_t v[num_components];
   };
 };
+
+template<typename comp_t>
+float dot(vec2_t<comp_t> const& lhs, vec2_t<comp_t> const& rhs)
+{
+  return (lhs.x * rhs.x) + (lhs.y * rhs.y);
+}
 
 typedef vec2_t<float> vec2;
 
