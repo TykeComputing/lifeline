@@ -32,7 +32,7 @@ namespace LE
 class vertex_buffer
 {
 public:
-  LE_NON_COPYABLE(vertex_buffer);
+  LE_NON_COPYABLE(vertex_buffer)
 
   vertex_buffer();
   ~vertex_buffer();

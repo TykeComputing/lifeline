@@ -37,7 +37,7 @@ namespace LE
 class shader_program
 {
 public:
-  LE_NON_COPYABLE(shader_program);
+  LE_NON_COPYABLE(shader_program)
 
   shader_program(std::vector<shader*> const& shaders);
   ~shader_program();

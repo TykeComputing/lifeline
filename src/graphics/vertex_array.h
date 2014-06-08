@@ -32,7 +32,7 @@ namespace LE
 class vertex_array
 {
 public:
-  LE_NON_COPYABLE(vertex_array);
+  LE_NON_COPYABLE(vertex_array)
 
   vertex_array();
   ~vertex_array();
