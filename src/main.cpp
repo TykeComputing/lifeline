@@ -50,7 +50,8 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
 
     // Transform input from `--<arg_name>=<value>` to `--<arg_name>` and `<value>`
     auto arg_value_separator_pos = curr_arg.find('=');
-    if(arg_value_separator_pos == std::string::npos || arg_value_separator_pos >= curr_arg.size())
+    if(arg_value_separator_pos == std::string::npos
+    || arg_value_separator_pos >= curr_arg.size())
     {
       LE_printf("Malformed option specified: \"%s\"\n", curr_arg.c_str());
       continue;
