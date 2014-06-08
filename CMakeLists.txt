@@ -91,6 +91,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/shader.h
   src/graphics/shader_program.cpp
   src/graphics/shader_program.h
+  src/graphics/stb_image.cpp
+  src/graphics/stb_image.h
   #src/graphics/shader_program_definition.cpp
   #src/graphics/shader_program_definition.h
   src/graphics/texture.cpp
@@ -125,6 +127,15 @@ set(LE_EXECUTABLE_SRC_LIST
   src/game/game_hack.h
 )
 
+# File specific compile options
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  set_source_files_properties(
+    ${CMAKE_SOURCE_DIR}/src/graphics/stb_image.cpp
+      PROPERTIES
+        COMPILE_FLAGS "-Wno-unused-but-set-variable -Wno-missing-field-initializers"
+  )
+endif()
+
 add_executable(${PROJECT_NAME} ${LE_EXECUTABLE_SRC_LIST})
 
 ################################
@@ -154,10 +165,9 @@ target_compile_options(${PROJECT_NAME}
     -pedantic -pedantic-errors
 
     # Disable
-
+    -fms-extensions # unnamed struct/union
   >
 )
-
 
 message(STATUS "C++ runtime libraries...")
 target_compile_options(${PROJECT_NAME}
@@ -173,7 +183,7 @@ target_compile_options(${PROJECT_NAME}
       /MDd
     >
   >
-) 
+)
 
 message(STATUS "General compile flags...")
 target_compile_options(${PROJECT_NAME}
@@ -210,18 +220,18 @@ option(LE_RUN_WRITE_SETTINGS_FILE_OVERWRITE
   "Force the existing existing runtime settings file to be overwritten a generated one"
   OFF)
 
-# Optionally create a IDE specific file that contains runtime settings (working dir, command 
+# Optionally create a IDE specific file that contains runtime settings (working dir, command
 #   line arguments, etc.). File is only created if it does not exist already.
 if(LE_RUN_WRITE_SETTINGS_FILE)
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(LE_RUN_SETTINGS_FILE_IN "${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in")
     set(LE_RUN_SETTINGS_FILE_OUT "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
     if(NOT EXISTS "${LE_RUN_SETTINGS_FILE_OUT}" OR LE_RUN_WRITE_SETTINGS_FILE_OVERWRITE)
-      set(LE_RUN_COMMAND_LINE_ARGS 
+      set(LE_RUN_COMMAND_LINE_ARGS
         "--resource-dir=\"${LE_RESOURCE_DIR}\""
         CACHE PATH
         "The default arguments that will be passed to the application when run when working with certain IDEs. Supported:${LE_RUN_SETTINGS_SUPPORTED_IDES}")
-      
+
       if(NOT LE_RUN_WRITE_SETTINGS_FILE_OVERWRITE)
         message(STATUS "Project runtime settings file not found, creating...")
       else()

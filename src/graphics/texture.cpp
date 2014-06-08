@@ -24,8 +24,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/resource_exception.h>
 
 #include <graphics/error_checking.h>
-#define STB_IMAGE_IMPLEMENTATION
-#define STBI_FAILURE_USERMSG
 #include <graphics/stb_image.h>
 
 namespace LE

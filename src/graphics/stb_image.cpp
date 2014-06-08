@@ -19,31 +19,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_TEXTURE_H
-#define LE_GRAPHICS_TEXTURE_H
-
-#include <string>
-#include <GL/glew.h>
-
-namespace LE
-{
-
-// TODO - URGENT Refactor interface to follow conventions established by vertex_buffer.
-class texture
-{
-public:
-  texture(std::string const& texture_file_name);
-  ~texture();
-
-  static void set_active_texture_unit(GLuint unit_index);
-
-  static void bind(GLenum target, texture const& tex);
-  static void unbind(GLenum target);
-
-private:
-  GLuint p_raw_name = 0;
-};
-
-} // namespace LE
-
-#endif // LE_GRAPHICS_TEXTURE_H
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_FAILURE_USERMSG
+#include "stb_image.h"
