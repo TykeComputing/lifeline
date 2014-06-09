@@ -36,7 +36,21 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+//template<typename comp_t, size_t comp_n>
 //////////////////////////////////////////////////////////////////////////
+
+#if defined __GNUC__
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+
+#elif defined _MSC_VER
+
+#pragma warning( push )
+#pragma warning( disable : 4201 )
+
+#endif
+
 template<typename comp_t>
 class vec4_t
 {
@@ -251,12 +265,18 @@ public:
 
 typedef mat3_t<float> mat3;
 
+#if defined __GNUC__
+#pragma GCC diagnostic pop
+#elif defined _MSC_VER
+#pragma warning( pop )
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 class graphics_component_hack
 {
 public:
   graphics_component_hack();
-  graphics_component_hack(vec4 const& color);
+  explicit graphics_component_hack(vec4 const& color);
   graphics_component_hack(vec4 && color);
 
   void bind() const;
@@ -295,8 +315,8 @@ struct unique_id_gen
 class entity_hack
 {
 public:
-  entity_hack(std::string const& name);
-  entity_hack(char const* name);
+  explicit entity_hack(std::string const& name);
+  explicit entity_hack(char const* name);
 
   graphics_component_hack m_gfx_comp;
   physics_component_hack m_phx_comp;
@@ -324,7 +344,7 @@ public:
   //typedef std::shared_ptr<entity_hack> entity_owning_ptr;
   //typedef std::weak_ptr<entity_hack> entity_borrowed_ptr;
 
-  game_hack(engine & game_engine);
+  explicit game_hack(engine & game_engine);
   ~game_hack();
 
   std::weak_ptr<entity_hack> create_entity(std::string const& name);
@@ -342,3 +362,4 @@ private:
 } // namespace LE
 
 #endif // LE_GAME_GAME_HACK_H
+

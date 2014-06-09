@@ -27,10 +27,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <SDL2/SDL.h>
 
-#ifdef __GNUC__
+#if defined __GNUC__
 #include<sys/signal.h>
 #define LE_HALT_PROGRAM() raise(SIGTRAP);
-#elif _MSC_VER
+#elif defined _MSC_VER
 #define LE_HALT_PROGRAM() __debugbreak();
 #else
 #define LE_HALT_PROGRAM()

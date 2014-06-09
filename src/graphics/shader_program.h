@@ -39,7 +39,7 @@ class shader_program
 public:
   LE_NON_COPYABLE(shader_program)
 
-  shader_program(std::vector<shader*> const& shaders);
+  explicit shader_program(std::vector<shader*> const& shaders);
   ~shader_program();
 
   GLint get_unform_location(char const* uniform_name) const;

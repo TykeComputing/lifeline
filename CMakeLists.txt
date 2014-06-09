@@ -154,17 +154,11 @@ target_compile_options(${PROJECT_NAME}
   PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
     # Enable
     /W4 /WX
-
-    # Disable
-    /wd4201
   >
 
   PUBLIC $<$<CXX_COMPILER_ID:GNU>:
     # Enable
-    -Wall -Wextra -Werror -Wfatal-errors #-Wpedantic
-
-    # Disable
-    -fms-extensions # unnamed struct/union
+    -Wall -Wextra -Werror -Wfatal-errors -Wpedantic
   >
 )
 

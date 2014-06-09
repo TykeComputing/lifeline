@@ -33,7 +33,7 @@ class window;
 class graphics_context
 {
 public:
-  graphics_context(window & target_window);
+  explicit graphics_context(window & target_window);
   ~graphics_context();
 
 private:
