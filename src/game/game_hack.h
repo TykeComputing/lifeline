@@ -22,7 +22,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_GAME_GAME_HACK_H
 #define LE_GAME_GAME_HACK_H
 
+#include <cmath>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 #include <graphics/vertex.h>
@@ -33,7 +35,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace LE
 {
-  
+
 //////////////////////////////////////////////////////////////////////////
 template<typename comp_t>
 class vec4_t
@@ -43,7 +45,7 @@ public:
   {
     // Do nothing
   }
-  
+
   vec4_t(comp_t x, comp_t y, comp_t z, comp_t w) :
     x(x), y(y), z(z), w(w)
   {
@@ -98,7 +100,7 @@ public:
   }
 
   vec2_t<comp_t> operator+(vec2_t<comp_t> const& rhs)
-  {    
+  {
     return {
       x + rhs.x,
       y + rhs.y
@@ -113,7 +115,7 @@ public:
   }
 
   vec2_t<comp_t> operator-(vec2_t<comp_t> const& rhs)
-  {    
+  {
     return {
       x - rhs.x,
       y - rhs.y
@@ -128,7 +130,7 @@ public:
   }
 
   vec2_t<comp_t> operator*(comp_t rhs)
-  {    
+  {
     return {
       x * rhs,
       y * rhs
@@ -143,7 +145,7 @@ public:
   }
 
   vec2_t<comp_t> operator/(comp_t rhs)
-  {    
+  {
     return {
       x / rhs,
       y / rhs
@@ -184,12 +186,12 @@ public:
      struct
      {
        comp_t x, y;
-     }; 
+     };
      struct
      {
        comp_t s, t;
      };
-    
+
     comp_t v[num_components];
   };
 };
@@ -278,6 +280,18 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
+typedef unsigned unique_id_t;
+
+struct unique_id_gen
+{
+  unique_id_t generate()
+  {
+    static unique_id_t curr_id = 1;
+    return curr_id++;
+  }
+};
+
+//////////////////////////////////////////////////////////////////////////
 class entity_hack
 {
 public:
@@ -291,6 +305,7 @@ public:
   vec2 m_scale = { 0.1f, 0.1f };
   float m_health = 100.0f;
   std::string m_name = "unnamed";
+  unique_id_t m_id;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -306,18 +321,21 @@ class engine;
 class game_hack
 {
 public:
+  //typedef std::shared_ptr<entity_hack> entity_owning_ptr;
+  //typedef std::weak_ptr<entity_hack> entity_borrowed_ptr;
+
   game_hack(engine & game_engine);
   ~game_hack();
 
-  entity_hack * create_entity(std::string const& name);
-  entity_hack * find_entity(std::string const& name);
-  void kill_entity(entity_hack * target);
+  std::weak_ptr<entity_hack> create_entity(std::string const& name);
+  std::weak_ptr<entity_hack> find_entity(std::string const& name);
+  void kill_entity(std::weak_ptr<entity_hack> target);
 
   bool update(float dt);
   void draw();
 
 private:
-  std::vector<std::unique_ptr<entity_hack>> p_entities;
+  std::unordered_map<unique_id_t, std::shared_ptr<entity_hack>> p_entities;
   std::unique_ptr<shader_program> p_shader_prog;
 };
 

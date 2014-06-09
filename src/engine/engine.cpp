@@ -44,70 +44,67 @@ engine::engine() :
 
 void engine::run()
 {
-  
-
-  std::unique_ptr<game_hack> game;
   try
   {
-    game = std::make_unique<game_hack>(*this);
+    std::unique_ptr<game_hack> game{new game_hack{*this}};
+
+
+    // Credit for method of fixed time stepping:
+    // http://ludobloom.com/tutorials/timestep.html
+    // TODO - Test and improve.
+    unsigned const max_frame_rate = 60;
+    unsigned const min_frame_rate = 15;
+    float const update_dt = 1.0f / max_frame_rate;
+    float const max_iterations_per_frame = max_frame_rate / min_frame_rate;
+
+    float current_dt = update_dt;
+    timer frame_timer;
+
+    p_is_running = true;
+    while(p_is_running)
+    {
+      // Cap maximum number of iterations per frame. If there is a massive spike
+      //   in frame time for any reason this will prevent the game from completely
+      //   stalling while trying to update too many times.
+      current_dt = std::min(current_dt, max_iterations_per_frame * update_dt);
+
+      while(current_dt > update_dt)
+      {
+        // Temp hack to allow quiting
+        set_is_running(p_os_interface.update());
+
+        try
+        {
+          p_is_running = game->update(update_dt);
+        }
+        catch(LE::resource_exception const& e)
+        {
+          e.print("Game");
+          LE_ERROR("Uncaught resource exception!");
+          return;
+        }
+        catch(LE::message_exception const& e)
+        {
+          e.print("Game");
+          LE_ERROR("Uncaught message exception!");
+          return;
+        }
+
+        current_dt -= update_dt;
+      }
+
+      game->draw();
+      p_window.update();
+
+      // Add the new dt to any leftover dt from updating.
+      current_dt += frame_timer.poll();
+      frame_timer.reset();
+    }
   }
   catch(LE::resource_exception const& e)
   {
     e.print("Game Construction");
     LE_ERROR("ERROR"); // Give time to look at error
-    return;
-  }
-
-  // Credit for method of fixed time stepping:
-  // http://ludobloom.com/tutorials/timestep.html
-  // TODO - Test and improve.
-  unsigned const max_frame_rate = 60;
-  unsigned const min_frame_rate = 15;
-  float const update_dt = 1.0f / max_frame_rate;
-  float const max_iterations_per_frame = max_frame_rate / min_frame_rate;
-
-  float current_dt = update_dt;
-  timer frame_timer;
-
-  p_is_running = true;
-  while(p_is_running)
-  {
-    // Cap maximum number of iterations per frame. If there is a massive spike
-    //   in frame time for any reason this will prevent the game from completely
-    //   stalling while trying to update too many times.
-    current_dt = std::min(current_dt, max_iterations_per_frame * update_dt);
-
-    while(current_dt > update_dt)
-    {
-      // Temp hack to allow quiting
-      set_is_running(p_os_interface.update());
-
-      try
-      {
-        p_is_running = game->update(update_dt);
-      }
-      catch(LE::resource_exception const& e)
-      {
-        e.print("Game");
-        LE_ERROR("Uncaught resource exception!");
-        return;
-      }
-      catch(LE::message_exception const& e)
-      {
-        e.print("Game");
-        LE_ERROR("Uncaught message exception!");
-        return;
-      }
-
-      current_dt -= update_dt;
-    }    
-    
-    game->draw();
-    p_window.update();
-
-    // Add the new dt to any leftover dt from updating.
-    current_dt += frame_timer.poll();
-    frame_timer.reset();
   }
 }
 

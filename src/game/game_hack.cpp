@@ -76,7 +76,7 @@ void graphics_component_hack::bind() const
 {
   LE::vertex_array::bind(p_VAO);
 }
-   
+
 void graphics_component_hack::unbind() const
 {
   LE::vertex_array::unbind();
@@ -91,7 +91,8 @@ GLsizei graphics_component_hack::get_num_verts() const
 entity_hack::entity_hack(std::string const& name) :
   entity_hack(name.c_str()) // TODO - Change
 {
-
+  static unique_id_gen id_gen;
+  m_id = id_gen.generate();
 }
 
 entity_hack::entity_hack(char const* name) :
@@ -107,32 +108,35 @@ game_hack::game_hack(engine & game_engine)
 
   // TODO - Move shader loading to someplace that makes more sense once resources exist
   // Load shaders
-  std::vector<std::unique_ptr<shader>> shaders;
+  std::vector<std::shared_ptr<shader>> shaders;
   shaders.reserve(2);
-  shaders.emplace_back(std::make_unique<shader>(
+  shaders.emplace_back(std::make_shared<shader>(
     GL_VERTEX_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + "shaders/solid_color.vert") ));
-  shaders.emplace_back(std::make_unique<shader>(
+  shaders.emplace_back(std::make_shared<shader>(
     GL_FRAGMENT_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + "shaders/solid_color.frag") ));
 
   // Load shader_program
   std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
-  p_shader_prog = std::move(std::make_unique<shader_program>(shader_prog_input));
- 
+  p_shader_prog = std::unique_ptr<shader_program>{new shader_program{shader_prog_input}};
+
   shaders.clear();
   LE::shader_program::use(*p_shader_prog);
-  
+
   {
-    auto * new_ent = create_entity("player");
+    auto new_ent_ref = create_entity("player");
+    auto new_ent = new_ent_ref.lock();
     new_ent->m_pos.set(0.0f, 0.5f);
     new_ent->m_gfx_comp.m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
   }
   {
-    auto * new_ent = create_entity("enemy");
+    auto new_ent_ref = create_entity("enemy");
+    auto new_ent = new_ent_ref.lock();
     new_ent->m_pos.set(0.5f, -0.5f);
     new_ent->m_gfx_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
   {
-    auto * new_ent = create_entity("enemy");
+    auto new_ent_ref = create_entity("enemy");
+    auto new_ent = new_ent_ref.lock();
     new_ent->m_pos.set(-0.5f, -0.5f);
     new_ent->m_gfx_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
@@ -142,31 +146,36 @@ game_hack::~game_hack()
 {
 }
 
-entity_hack * game_hack::create_entity(std::string const& name)
+std::weak_ptr<entity_hack> game_hack::create_entity(std::string const& name)
 {
-  p_entities.emplace_back(std::make_unique<entity_hack>(name));
-  return p_entities.back().get();
+  auto new_ent = std::make_shared<entity_hack>(name);
+  p_entities.emplace(std::make_pair(new_ent->m_id, new_ent));
+  return new_ent;
 }
 
-entity_hack * game_hack::find_entity(std::string const& name)
+std::weak_ptr<entity_hack> game_hack::find_entity(std::string const& name)
 {
   for(auto & it : p_entities)
   {
-    if(it->m_name == name)
+    if(it.second->m_name == name)
     {
-      return it.get();
+      return it.second;
     }
   }
 
-  return nullptr;
+  return {};
 }
 
-void game_hack::kill_entity(entity_hack * target)
+void game_hack::kill_entity(std::weak_ptr<entity_hack> target)
 {
-  auto enemy_find_it = std::find(p_entities.begin(), p_entities.end(), target);
-  if(enemy_find_it != p_entities.end())
+  auto owned_target = target.lock();
+  if(owned_target)
   {
-    p_entities.erase(enemy_find_it);
+    auto enemy_find_it = p_entities.find(owned_target->m_id);
+    if(enemy_find_it != p_entities.end())
+    {
+      p_entities.erase(enemy_find_it);
+    }
   }
 }
 
@@ -174,7 +183,8 @@ bool game_hack::update(float dt)
 {
   //////////////////////////////////////////////////////////////////////////
   // UPDATE
-  entity_hack * player = find_entity("player");
+  auto player_ref = find_entity("player");
+  auto player = player_ref.lock();
   float const player_movement_speed = 0.8f;
   float const bullet_movement_speed = 2.0f;
 
@@ -200,7 +210,8 @@ bool game_hack::update(float dt)
         {
           if(player)
           {
-            auto * new_bullet = create_entity("bullet");
+            auto new_bullet_ref = create_entity("bullet");
+            auto new_bullet = new_bullet_ref.lock();
             new_bullet->m_pos = player->m_pos;
             new_bullet->m_scale.set(0.05f, 0.05f);
             new_bullet->m_gfx_comp.m_color.set(1.0f, 0.5f, 0.0f, 1.0f);
@@ -235,12 +246,12 @@ bool game_hack::update(float dt)
       return false;
     }
     break;
-    
+
     }
   }
 
   // Hacky handling of pressed key states
-  // Per SDL2 documentation, (https://wiki.libsdl.org/SDL_GetKeyboardState) pointer returned by 
+  // Per SDL2 documentation, (https://wiki.libsdl.org/SDL_GetKeyboardState) pointer returned by
   //   SDL_GetKeyboardState is valid for lifetime of program, thus I only get it once.
   int num_SDL_keys;
   static Uint8 const* const SDL_keys = SDL_GetKeyboardState(&num_SDL_keys);
@@ -249,7 +260,7 @@ bool game_hack::update(float dt)
   {
     // 1 = key pressed, 0 = key not pressed
     if(SDL_keys[SDL_SCANCODE_W])
-    {    
+    {
       player->m_pos.y += player_movement_speed * dt;
     }
     if(SDL_keys[SDL_SCANCODE_S])
@@ -268,55 +279,71 @@ bool game_hack::update(float dt)
     // Enemy seeking
     for(auto & entity_it : p_entities)
     {
-      if(entity_it->m_name == "enemy")
+      auto & curr_entity = entity_it.second;
+      if(curr_entity->m_name == "enemy")
       {
-        vec2 dir_to_player = player->m_pos - entity_it->m_pos;
+        vec2 dir_to_player = player->m_pos - curr_entity->m_pos;
         float dist_to_player = dir_to_player.normalize();
         if(dist_to_player <= enemy_seek_radius)
         {
-          entity_it->m_pos += dir_to_player * enemy_movement_speed * dt;      
+          curr_entity->m_pos += dir_to_player * enemy_movement_speed * dt;
         }
       }
-      else if(entity_it->m_name == "bullet")
+      else if(curr_entity->m_name == "bullet")
       {
         // TODO velocity
-        entity_it->m_pos.y -= bullet_movement_speed * dt;
+        curr_entity->m_pos.y -= bullet_movement_speed * dt;
       }
     }
   }
 
-  std::vector<entity_hack *> ents_to_kill;
+  std::vector<std::weak_ptr<entity_hack>> ents_to_kill;
+
+  // Quick and oh so dirty hack, going to unhack soon anyway, just need to get compiling on
+  //   GCC.
+  std::vector<std::weak_ptr<entity_hack>> curr_ents;
+  curr_ents.reserve(p_entities.size());
+  for(auto & ent_it : p_entities)
+  {
+    curr_ents.emplace_back(ent_it.second);
+  }
 
   // TODO - Stick to actual naming conventions when unhacking this
   // n^2 collision detection using circles based on pos/scale
-  for(auto ent_outer_it = p_entities.begin(); ent_outer_it != p_entities.end(); ++ent_outer_it)
+  for(auto ent_outer_it = curr_ents.begin(); ent_outer_it != curr_ents.end(); ++ent_outer_it)
   {
     // Don't consider this object or ones before it for testing (they've already been tested).
-    for(auto ent_inner_it = p_entities.begin() + 1; ent_inner_it != p_entities.end(); ++ent_inner_it)
+    for(auto ent_inner_it = curr_ents.begin() + 1; ent_inner_it != curr_ents.end(); ++ent_inner_it)
     {
-      auto & ent_outer = (*ent_outer_it);
-      auto & ent_inner = (*ent_inner_it);
+      auto ent_outer = (*ent_outer_it).lock();
+      auto ent_inner = (*ent_inner_it).lock();
+      if(!ent_outer || !ent_inner)
+      {
+        continue;
+      }
+
       float dist_sq = get_length_sq(ent_inner->m_pos - ent_outer->m_pos);
       float r_sum = ent_outer->m_scale.x + ent_inner->m_scale.x;
       r_sum *= 0.5f; // use half of scale as radius
       float r_sum_sq = r_sum * r_sum;
       if(dist_sq <= r_sum_sq)
       {
-        entity_hack * ents[2] = { ent_outer.get(), ent_inner.get() };
+        std::shared_ptr<entity_hack> * ents[2] = { &ent_outer, &ent_inner };
+        entity_hack * ents_raw[2] = { ents[0]->get(), ents[1]->get() };
 
-        auto ent_involved_in_collision = 
-          [](std::string const& name, 
-            entity_hack * (&ents)[2],
-            unsigned & index, 
+        auto ent_involved_in_collision =
+          [](std::string const& name,
+            entity_hack * (&ents_raw)[2],
+            unsigned & index,
             unsigned & other_index)->bool
         {
-          if(ents[0]->m_name == name)
+          if(ents_raw[0]->m_name == name)
           {
             index = 0;
             other_index = 1;
             return true;
           }
-          else if(ents[1]->m_name == name)
+          else if(ents_raw[1]->m_name == name)
           {
             index = 1;
             other_index = 0;
@@ -329,19 +356,19 @@ bool game_hack::update(float dt)
         unsigned index;
         unsigned other_index;
         // Hacky collision logic
-        if(ent_involved_in_collision("player", ents, index, other_index))
+        if(ent_involved_in_collision("player", ents_raw, index, other_index))
         {
-          if(ents[other_index]->m_name == "enemy")
+          if(ents_raw[other_index]->m_name == "enemy")
           {
-            ents_to_kill.emplace_back(ents[index]);            
+            ents_to_kill.emplace_back(*ents[index]);
           }
         }
-        if(ent_involved_in_collision("enemy", ents, index, other_index))
+        if(ent_involved_in_collision("enemy", ents_raw, index, other_index))
         {
-          if(ents[other_index]->m_name == "bullet")
+          if(ents_raw[other_index]->m_name == "bullet")
           {
-            ents_to_kill.emplace_back(ents[index]);
-            ents_to_kill.emplace_back(ents[other_index]);
+            ents_to_kill.emplace_back(*ents[index]);
+            ents_to_kill.emplace_back(*ents[other_index]);
           }
         }
       }
@@ -366,14 +393,15 @@ void game_hack::draw()
   // Terrible game loop, HACK HACK HACK
   for(auto & entity_it : p_entities)
   {
+    auto & curr_ent = entity_it.second;
     mat3 model_to_world
     {
-      entity_it->m_scale.x, 0.0f, entity_it->m_pos.x,
-      0.0f, entity_it->m_scale.y, entity_it->m_pos.y,
+      curr_ent->m_scale.x, 0.0f, curr_ent->m_pos.x,
+      0.0f, curr_ent->m_scale.y, curr_ent->m_pos.y,
       0.0f, 0.0f, 1.0f  // TODO: mat2x3 instead?
     };
 
-    auto const& curr_g_comp = entity_it->m_gfx_comp;
+    auto const& curr_g_comp = curr_ent->m_gfx_comp;
     glUniform4fv(color_ul, 1, curr_g_comp.m_color.v);
 
     glUniformMatrix3fv(model_to_world_ul, 1, GL_TRUE, model_to_world.a);
