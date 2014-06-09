@@ -19,20 +19,14 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_TEXTURE2D_H
-#define LE_GRAPHICS_TEXTURE2D_H
+#include "transform_component.h"
 
 namespace LE
 {
 
-class texture2D
+transform_component::transform_component()
 {
-public:
-  texture2D();
-
-private:
-};
+  
+}
 
 } // namespace LE
-
-#endif // LE_GRAPHICS_TEXTURE2D_H

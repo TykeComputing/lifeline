@@ -52,6 +52,9 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 
 # Header files are added so they will show up in all IDEs
+#
+# Files are currently ordered by modules from lowest to highest level to make a change to
+# a multi-project setup easier.
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp
 
@@ -72,6 +75,15 @@ set(LE_EXECUTABLE_SRC_LIST
   #src/common/resource_manager.h
   src/common/resource_exception.cpp
   src/common/resource_exception.h
+  src/common/timer.h
+  src/common/timer.cpp
+
+  src/math/mat3.cpp
+  src/math/mat3.h
+  src/math/vec2.cpp
+  src/math/vec2.h
+  src/math/vec3.cpp
+  src/math/vec3.h
 
   src/graphics/error_checking.cpp
   src/graphics/error_checking.h
@@ -79,10 +91,12 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/shader.h
   src/graphics/shader_program.cpp
   src/graphics/shader_program.h
+  src/graphics/stb_image.cpp
+  src/graphics/stb_image.h
   #src/graphics/shader_program_definition.cpp
   #src/graphics/shader_program_definition.h
-  #src/graphics/texture2D.cpp
-  #src/graphics/texture2D.h
+  src/graphics/texture.cpp
+  src/graphics/texture.h
   src/graphics/vertex.cpp
   src/graphics/vertex.h
   src/graphics/vertex_array.cpp
@@ -90,15 +104,37 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/vertex_buffer.cpp
   src/graphics/vertex_buffer.h
 
+  #src/engine/component_base.cpp
+  #src/engine/component_base.h
   src/engine/engine.cpp
   src/engine/engine.h
+  #src/engine/entity.cpp
+  #src/engine/entity.h
+  #src/engine/entity_manager.cpp
+  #src/engine/entity_manager.h
+  #src/engine/graphics_component.cpp
+  #src/engine/graphics_component.h
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
+  #src/engine/transform_component.h
+  #src/engine/transform_component.h
   src/engine/window.cpp
   src/engine/window.h
+
+  src/game/game_hack.cpp
+  src/game/game_hack.h
 )
+
+# File specific compile options
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  set_source_files_properties(
+    ${CMAKE_SOURCE_DIR}/src/graphics/stb_image.cpp
+      PROPERTIES
+        COMPILE_FLAGS "-Wno-unused-but-set-variable -Wno-missing-field-initializers"
+  )
+endif()
 
 add_executable(${PROJECT_NAME} ${LE_EXECUTABLE_SRC_LIST})
 
@@ -116,15 +152,21 @@ message(STATUS "${LE_MESSAGE_HEADER}")
 message(STATUS "Build warnings...")
 target_compile_options(${PROJECT_NAME}
   PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
+    # Enable
     /W4 /WX
+
+    # Disable
+    /wd4201
   >
 
   PUBLIC $<$<CXX_COMPILER_ID:GNU>:
-    -Wall -Wextra -Werror -Wfatal-errors
-    -pedantic -pedantic-errors
+    # Enable
+    -Wall -Wextra -Werror -Wfatal-errors #-Wpedantic
+
+    # Disable
+    -fms-extensions # unnamed struct/union
   >
 )
-
 
 message(STATUS "C++ runtime libraries...")
 target_compile_options(${PROJECT_NAME}
@@ -140,7 +182,7 @@ target_compile_options(${PROJECT_NAME}
       /MDd
     >
   >
-) 
+)
 
 message(STATUS "General compile flags...")
 target_compile_options(${PROJECT_NAME}
@@ -177,18 +219,18 @@ option(LE_RUN_WRITE_SETTINGS_FILE_OVERWRITE
   "Force the existing existing runtime settings file to be overwritten a generated one"
   OFF)
 
-# Optionally create a IDE specific file that contains runtime settings (working dir, command 
+# Optionally create a IDE specific file that contains runtime settings (working dir, command
 #   line arguments, etc.). File is only created if it does not exist already.
 if(LE_RUN_WRITE_SETTINGS_FILE)
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(LE_RUN_SETTINGS_FILE_IN "${LE_CMAKE_DIR}/ConfigureFileTemplates/project.vcxproj.user.in")
     set(LE_RUN_SETTINGS_FILE_OUT "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.vcxproj.user")
     if(NOT EXISTS "${LE_RUN_SETTINGS_FILE_OUT}" OR LE_RUN_WRITE_SETTINGS_FILE_OVERWRITE)
-      set(LE_RUN_COMMAND_LINE_ARGS 
+      set(LE_RUN_COMMAND_LINE_ARGS
         "--resource-dir=\"${LE_RESOURCE_DIR}\""
         CACHE PATH
         "The default arguments that will be passed to the application when run when working with certain IDEs. Supported:${LE_RUN_SETTINGS_SUPPORTED_IDES}")
-      
+
       if(NOT LE_RUN_WRITE_SETTINGS_FILE_OVERWRITE)
         message(STATUS "Project runtime settings file not found, creating...")
       else()

@@ -44,18 +44,18 @@ class_name const& operator=(class_name && rhs) = default;
 #endif
 
 // TODO - Consider using strongly typed enumerations(C++11)?
-#define LE_ENUM_INTERNAL_1(a                                 ) enum value { e_start = 0, a = 0, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_2(a, b                              ) enum value { e_start = 0, a = 0, b, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_3(a, b, c                           ) enum value { e_start = 0, a = 0, b, c, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_4(a, b, c, d                        ) enum value { e_start = 0, a = 0, b, c, d, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_5(a, b, c, d, e                     ) enum value { e_start = 0, a = 0, b, c, d, e, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_6(a, b, c, d, e, f                  ) enum value { e_start = 0, a = 0, b, c, d, e, f, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_7(a, b, c, d, e, f, g               ) enum value { e_start = 0, a = 0, b, c, d, e, f, g, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_8(a, b, c, d, e, f, g, h            ) enum value { e_start = 0, a = 0, b, c, d, e, f, g, h, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_9(a, b, c, d, e, f, g, h, i         ) enum value { e_start = 0, a = 0, b, c, d, e, f, g, h, i, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_10(a, b, c, d, e, f, g, h, i, j      ) enum value { e_start = 0, a = 0, b, c, d, e, f, g, h, i, j, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_11(a, b, c, d, e, f, g, h, i, j, k   ) enum value { e_start = 0, a = 0, b, c, d, e, f, g, h, i, j, k, e_num_vals, e_end = e_num_vals - 1 };
-#define LE_ENUM_INTERNAL_12(a, b, c, d, e, f, g, h, i, j, k, l) enum value { e_start = 0, a = 0, b, c, d, e, f, g, h, i, j, k, l, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_1(a                                 ) enum value { e_start = 0, a = e_start, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_2(a, b                              ) enum value { e_start = 0, a = e_start, b, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_3(a, b, c                           ) enum value { e_start = 0, a = e_start, b, c, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_4(a, b, c, d                        ) enum value { e_start = 0, a = e_start, b, c, d, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_5(a, b, c, d, e                     ) enum value { e_start = 0, a = e_start, b, c, d, e, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_6(a, b, c, d, e, f                  ) enum value { e_start = 0, a = e_start, b, c, d, e, f, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_7(a, b, c, d, e, f, g               ) enum value { e_start = 0, a = e_start, b, c, d, e, f, g, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_8(a, b, c, d, e, f, g, h            ) enum value { e_start = 0, a = e_start, b, c, d, e, f, g, h, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_9(a, b, c, d, e, f, g, h, i         ) enum value { e_start = 0, a = e_start, b, c, d, e, f, g, h, i, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_10(a, b, c, d, e, f, g, h, i, j      ) enum value { e_start = 0, a = e_start, b, c, d, e, f, g, h, i, j, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_11(a, b, c, d, e, f, g, h, i, j, k   ) enum value { e_start = 0, a = e_start, b, c, d, e, f, g, h, i, j, k, e_num_vals, e_end = e_num_vals - 1 };
+#define LE_ENUM_INTERNAL_12(a, b, c, d, e, f, g, h, i, j, k, l) enum value { e_start = 0, a = e_start, b, c, d, e, f, g, h, i, j, k, l, e_num_vals, e_end = e_num_vals - 1 };
 
 #define LE_ENUM_STR_INTERNAL_1(a                                 ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a };
 #define LE_ENUM_STR_INTERNAL_2(a, b                              ) static const char * c_str[] LE_VAR_ATTR_UNUSED = { #a, #b };

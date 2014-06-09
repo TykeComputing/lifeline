@@ -19,31 +19,28 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_VERTEX_ARRAY_H
-#define LE_GRAPHICS_VERTEX_ARRAY_H
+#ifndef LE_ENGINE_ENTITY_MANAGER_H
+#define LE_ENGINE_ENTITY_MANAGER_H
 
-#include <GL/glew.h>
+#include <memory>
+#include <vector>
 
-#include <common/macros.h>
+#include <engine/entity.h>
 
 namespace LE
 {
 
-class vertex_array
+// TODO - UNHACK
+class entity_manager
 {
 public:
-  LE_NON_COPYABLE(vertex_array)
+  entity * create_entity();
 
-  vertex_array();
-  ~vertex_array();
-
-  static void bind(vertex_array const& VAO);
-  static void unbind();
 
 private:
-  GLuint p_raw_name = 0;
+  std::vector<std::unique_ptr<entity>> entities;
 };
 
 } // namespace LE
 
-#endif // LE_GRAPHICS_VERTEX_ARRAY_H
+#endif // LE_ENGINE_ENTITY_MANAGER_H

@@ -21,16 +21,15 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "engine.h"
 
-// TODO - Remove once graphics framework is in place
-#include <GL/glew.h>
+#include <algorithm>
 
-#include <common/LE_printf.h>
 #include <common/error.h>
+#include <common/LE_printf.h>
+#include <common/timer.h>
 
-// TODO - Remove when done testing
-#include <graphics/vertex.h>
-#include <graphics/vertex_array.h>
-#include <graphics/vertex_buffer.h>
+// TODO - Remove when done hacking
+#include <game/game_hack.h>
+#include <common/resource_exception.h>
 
 namespace LE
 {
@@ -40,51 +39,73 @@ engine::engine() :
   p_window(),
   p_graphics_context(p_window)
 {
-  LE_printf("Working Directory: %s\n", p_os_interface.get_working_dir().c_str());
+  LE_printf("Base Directory: %s\n", p_os_interface.get_base_dir().c_str());
+  //LE_printf("Preferred Directory: %s\n", p_os_interface.get_preferred_dir().c_str());
 }
 
 void engine::run()
 {
-  // TODO - Remove when done testing
-  LE::vertex_array fsq_VAO;
-  LE::vertex_buffer fsq_VBO;
-
-  LE::vertex_array::bind(fsq_VAO);
-  LE::vertex_buffer::bind(GL_ARRAY_BUFFER, fsq_VBO);
-
-  //vertex v = { 1.0f, 2.0f, 3.0f, 4.0f };
-  vertex::specify_vertex_attributes();
-  float fsq_verts[] =
+  try
   {
-    -1.0f, -1.0f, /**/ 0.0f, 0.0f,
-     1.0f, -1.0f, /**/ 1.0f, 0.0f,
-    -1.0f,  1.0f, /**/ 0.0f, 1.0f,
+    std::unique_ptr<game_hack> game{new game_hack{*this}};
 
-    -1.0f,  1.0f, /**/ 0.0f, 1.0f,
-     1.0f, -1.0f, /**/ 1.0f, 0.0f,
-     1.0f,  1.0f, /**/ 1.0f, 1.0f
-  };
-  GLsizei num_fsq_verts = sizeof(fsq_verts) / (sizeof(float) * 4);
-  
-  LE::vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(fsq_verts), fsq_verts, GL_STATIC_DRAW);
 
-  ///////////////////////
+    // Credit for method of fixed time stepping:
+    // http://ludobloom.com/tutorials/timestep.html
+    // TODO - Test and improve.
+    unsigned const max_frame_rate = 60;
+    unsigned const min_frame_rate = 15;
+    float const update_dt = 1.0f / max_frame_rate;
+    float const max_iterations_per_frame = max_frame_rate / min_frame_rate;
 
-  glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+    float current_dt = update_dt;
+    timer frame_timer;
 
-  p_is_running = true;
-  while(p_is_running)
+    p_is_running = true;
+    while(p_is_running)
+    {
+      // Cap maximum number of iterations per frame. If there is a massive spike
+      //   in frame time for any reason this will prevent the game from completely
+      //   stalling while trying to update too many times.
+      current_dt = std::min(current_dt, max_iterations_per_frame * update_dt);
+
+      while(current_dt > update_dt)
+      {
+        // Temp hack to allow quiting
+        set_is_running(p_os_interface.update());
+
+        try
+        {
+          p_is_running = game->update(update_dt);
+        }
+        catch(LE::resource_exception const& e)
+        {
+          e.print("Game");
+          LE_ERROR("Uncaught resource exception!");
+          return;
+        }
+        catch(LE::message_exception const& e)
+        {
+          e.print("Game");
+          LE_ERROR("Uncaught message exception!");
+          return;
+        }
+
+        current_dt -= update_dt;
+      }
+
+      game->draw();
+      p_window.update();
+
+      // Add the new dt to any leftover dt from updating.
+      current_dt += frame_timer.poll();
+      frame_timer.reset();
+    }
+  }
+  catch(LE::resource_exception const& e)
   {
-    // Update
-    // Temp hack to allow quiting
-    set_is_running(p_os_interface.update());
-
-    // Render
-    // TODO - Move once graphics framework is in place
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, num_fsq_verts);
-    p_window.update();
+    e.print("Game Construction");
+    LE_ERROR("ERROR"); // Give time to look at error
   }
 }
 

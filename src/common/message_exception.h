@@ -28,6 +28,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+// TODO - Look at avoiding needless copies of exceptions when thrown
 class message_exception
 {
 public:

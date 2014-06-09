@@ -19,31 +19,28 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_VERTEX_ARRAY_H
-#define LE_GRAPHICS_VERTEX_ARRAY_H
+#ifndef LE_COMMON_TIMER_H
+#define LE_COMMON_TIMER_H
 
-#include <GL/glew.h>
-
-#include <common/macros.h>
+#include <SDL2/SDL_timer.h>
 
 namespace LE
 {
 
-class vertex_array
+// SDL_Init must be called before constructing a timer
+class timer
 {
 public:
-  LE_NON_COPYABLE(vertex_array)
+  timer(void);
 
-  vertex_array();
-  ~vertex_array();
-
-  static void bind(vertex_array const& VAO);
-  static void unbind();
+  void reset(void);
+  float poll(void) const;
 
 private:
-  GLuint p_raw_name = 0;
+  Uint64 p_perf_count_start = 0u;
+  Uint64 p_perf_freq = 0u;
 };
 
 } // namespace LE
 
-#endif // LE_GRAPHICS_VERTEX_ARRAY_H
+#endif // LE_COMMON_TIMER_H

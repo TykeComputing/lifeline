@@ -39,7 +39,8 @@ public:
   OS_interface();
   ~OS_interface();
 
-  std::string get_working_dir(void) const;
+  std::string get_base_dir(void) const;
+  std::string get_preferred_dir(void) const; // UNIMPL - TODO
 
   bool update();
 

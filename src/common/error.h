@@ -37,7 +37,12 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 
-#define LE_ERROR(msg) { LE_display_error_message(__FILE__, __FUNCTION__, __LINE__, msg); LE_HALT_PROGRAM(); }
+#define LE_ERROR(msg) \
+{ \
+  LE_display_error_message(__FILE__, __FUNCTION__, __LINE__, msg);\
+  std::cout.flush(); \
+  LE_HALT_PROGRAM(); \
+}
 #define LE_ERRORIF(cond, msg) { if(cond) { LE_ERROR(msg); } }
 
 void LE_display_error_message(

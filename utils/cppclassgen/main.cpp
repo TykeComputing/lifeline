@@ -92,7 +92,7 @@ void toupper(std::string & s)
 {
   std::transform(s.begin(), s.end(),
                  s.begin(),
-                 [](char c) ->char { return std::toupper(c); });
+                 [](char c) ->char { return static_cast<char>(std::toupper(c)); });
 }
 
 int main(int arg_count, char *args[])

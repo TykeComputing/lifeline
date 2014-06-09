@@ -19,31 +19,33 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_VERTEX_ARRAY_H
-#define LE_GRAPHICS_VERTEX_ARRAY_H
+#include "timer.h"
 
-#include <GL/glew.h>
-
-#include <common/macros.h>
+#include <common/error.h>
 
 namespace LE
 {
 
-class vertex_array
+
+timer::timer(void)
 {
-public:
-  LE_NON_COPYABLE(vertex_array)
+  reset();
+}
 
-  vertex_array();
-  ~vertex_array();
+void timer::reset(void)
+{
+  p_perf_freq = SDL_GetPerformanceFrequency();
+  p_perf_count_start = SDL_GetPerformanceCounter();
+}
 
-  static void bind(vertex_array const& VAO);
-  static void unbind();
-
-private:
-  GLuint p_raw_name = 0;
-};
+float timer::poll(void) const
+{
+  Uint64 perf_count_end = SDL_GetPerformanceCounter();
+  Uint64 perf_count_elapsed = perf_count_end - p_perf_count_start;
+  
+  LE_ERRORIF(p_perf_freq != SDL_GetPerformanceFrequency(),
+    "Timer error, frequency when polled is different from frequency when reset!");
+  return static_cast<float>(perf_count_elapsed) / p_perf_freq;
+}
 
 } // namespace LE
-
-#endif // LE_GRAPHICS_VERTEX_ARRAY_H

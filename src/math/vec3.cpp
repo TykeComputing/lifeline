@@ -19,31 +19,14 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_VERTEX_ARRAY_H
-#define LE_GRAPHICS_VERTEX_ARRAY_H
-
-#include <GL/glew.h>
-
-#include <common/macros.h>
+#include "vec3.h"
 
 namespace LE
 {
 
-class vertex_array
+vec3::vec3()
 {
-public:
-  LE_NON_COPYABLE(vertex_array)
-
-  vertex_array();
-  ~vertex_array();
-
-  static void bind(vertex_array const& VAO);
-  static void unbind();
-
-private:
-  GLuint p_raw_name = 0;
-};
+  
+}
 
 } // namespace LE
-
-#endif // LE_GRAPHICS_VERTEX_ARRAY_H

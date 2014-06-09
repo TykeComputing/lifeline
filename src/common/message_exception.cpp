@@ -26,22 +26,19 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-message_exception::message_exception()
-  : p_message("No message provided.")
+message_exception::message_exception() :
+  p_message("No message provided.")
 {
-
 }
 
-message_exception::message_exception(char const* message)
-  : p_message(message)
+message_exception::message_exception(char const* message) :
+  p_message(message)
 {
-
 }
 
-message_exception::message_exception(std::string const& message)
-  : p_message(message)
+message_exception::message_exception(std::string const& message) :
+  p_message(message)
 {
-
 }
 
 void message_exception::print(std::string const& prefix) const

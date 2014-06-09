@@ -22,8 +22,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_COMMON_RESOURCE_EXCEPTION_H
 #define LE_COMMON_RESOURCE_EXCEPTION_H
 
-#include <string>
-
 #include <common/message_exception.h>
 
 namespace LE
