@@ -82,7 +82,7 @@ bool OS_interface::update()
   return true;
 }
 
-std::string OS_interface::get_working_dir(void) const
+std::string OS_interface::get_base_dir(void) const
 {
   char * cwd_c_str = SDL_GetBasePath();
   if(cwd_c_str)
@@ -97,6 +97,24 @@ std::string OS_interface::get_working_dir(void) const
     SDL_ClearError();
     return std::string("Unable to get working directory.");
   }
+}
+
+std::string OS_interface::get_preferred_dir(void) const
+{
+//  char * cwd_c_str = SDL_GetPrefPath();
+//  if(cwd_c_str)
+//  {
+//    std::string cwd(cwd_c_str);
+//    SDL_free(cwd_c_str);
+//    return cwd;
+//  }
+//  else
+//  {
+//    LE_ERROR(SDL_GetError());
+//    SDL_ClearError();
+//    return std::string("Unable to get working directory.");
+//  }
+  return {};
 }
 
 } // namespace LE

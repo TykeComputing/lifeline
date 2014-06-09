@@ -161,8 +161,7 @@ target_compile_options(${PROJECT_NAME}
 
   PUBLIC $<$<CXX_COMPILER_ID:GNU>:
     # Enable
-    -Wall -Wextra -Werror -Wfatal-errors
-    -pedantic -pedantic-errors
+    -Wall -Wextra -Werror -Wfatal-errors #-Wpedantic
 
     # Disable
     -fms-extensions # unnamed struct/union

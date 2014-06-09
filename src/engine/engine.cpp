@@ -39,7 +39,8 @@ engine::engine() :
   p_window(),
   p_graphics_context(p_window)
 {
-  LE_printf("Working Directory: %s\n", p_os_interface.get_working_dir().c_str());
+  LE_printf("Base Directory: %s\n", p_os_interface.get_base_dir().c_str());
+  //LE_printf("Preferred Directory: %s\n", p_os_interface.get_preferred_dir().c_str());
 }
 
 void engine::run()
