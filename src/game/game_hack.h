@@ -27,11 +27,13 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <unordered_map>
 #include <vector>
 
+#include <graphics/shader_program.h>
 #include <graphics/vertex.h>
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
 
-#include <graphics/shader_program.h>
+#include <math/vec.h>
+#include <math/mat.h>
 
 namespace LE
 {

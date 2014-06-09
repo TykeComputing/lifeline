@@ -78,12 +78,10 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/timer.h
   src/common/timer.cpp
 
-  src/math/mat3.cpp
-  src/math/mat3.h
-  src/math/vec2.cpp
-  src/math/vec2.h
-  src/math/vec3.cpp
-  src/math/vec3.h
+  src/math/mat.hpp
+  src/math/mat.h
+  src/math/vec.hpp
+  src/math/vec.h
 
   src/graphics/error_checking.cpp
   src/graphics/error_checking.h

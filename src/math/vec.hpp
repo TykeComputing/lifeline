@@ -19,14 +19,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include "mat3.h"
-
 namespace LE
 {
 
-mat3::mat3()
-{
-  
-}
 
 } // namespace LE

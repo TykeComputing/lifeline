@@ -19,14 +19,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include "vec3.h"
-
 namespace LE
 {
-
-vec3::vec3()
-{
-  
-}
 
 } // namespace LE

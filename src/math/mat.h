@@ -19,7 +19,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include "vec2.h"
+#ifndef LE_MATH_MAT_H
+#define LE_MATH_MAT_H
 
 namespace LE
 {
@@ -27,3 +28,7 @@ namespace LE
 
 
 } // namespace LE
+
+#include "mat.hpp"
+
+#endif // LE_MATH_MAT_H
