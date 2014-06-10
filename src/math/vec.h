@@ -53,6 +53,10 @@ typedef vecn<2> vec2;
 typedef vecn<3> vec3;
 typedef vecn<4> vec4;
 
+static vec2 const zero_vec2;
+static vec3 const zero_vec3;
+static vec4 const zero_vec4;
+
 /**********************************************************************************************/
 /* Vector Arithmatic Operators */
 /**********************************************************************************************/

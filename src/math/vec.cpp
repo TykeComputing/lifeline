@@ -19,28 +19,13 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_ENGINE_TRANSFORM_COMPONENT_H
-#define LE_ENGINE_TRANSFORM_COMPONENT_H
-
-#include <math/vec.h>
+#include "vec.h"
 
 namespace LE
 {
 
-class transform_component
-{
-public:
-  transform_component()
-  {
-    p_transform.set_scale(0.01f, 0.01f);
-  }
+vec2 const zero_vec2 = vec2({0.0f, 0.0f});
+vec3 const zero_vec3 = vec2({0.0f, 0.0f, 0.0f});
+vec4 const zero_vec4 = vec2({0.0f, 0.0f, 0.0f, 0.0f});
 
-  ~transform_component();
-
-
-private:
-};
-
-} // namespace LE
-
-#endif // LE_ENGINE_TRANSFORM_COMPONENT_H
+}

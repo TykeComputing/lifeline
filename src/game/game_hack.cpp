@@ -74,7 +74,7 @@ game_hack::game_hack(engine & game_engine)
   {
     auto new_ent_ref = create_entity("player");
     auto new_ent = new_ent_ref.lock();
-    new_ent->m_pos.set({0.0f, 0.5f});
+    new_ent->transform..set({0.0f, 0.5f});
     new_ent->m_gfx_comp.m_color.set({0.0f, 1.0f, 0.0f, 1.0f});
   }
   {

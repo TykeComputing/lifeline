@@ -66,8 +66,7 @@ public:
   sprite_component m_gfx_comp;
   physics_component_hack m_phx_comp;
 
-  vec2 m_pos = vec2({ 0.0f, 0.0f });
-  vec2 m_scale = vec2({ 0.1f, 0.1f });
+  transform_component transform;
   float m_health = 100.0f;
   std::string m_name = "unnamed";
   unique_id_t m_id;
