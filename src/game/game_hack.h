@@ -38,69 +38,13 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-//template<typename comp_t, size_t comp_n>
 //////////////////////////////////////////////////////////////////////////
-
-#if defined __GNUC__
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-
-#elif defined _MSC_VER
-
-#pragma warning( push )
-#pragma warning( disable : 4201 )
-
-#endif
-
-//////////////////////////////////////////////////////////////////////////
-template<typename comp_t>
-class mat3_t
+class sprite_component_hack
 {
 public:
-
-  static size_t const num_rows = 3;
-  static size_t const num_columns = 3;
-  static size_t const num_components = num_rows * num_columns;
-
-  mat3_t(comp_t m00, comp_t m01, comp_t m02,
-         comp_t m10, comp_t m11, comp_t m12,
-         comp_t m20, comp_t m21, comp_t m22)
-    : m00(m00), m01(m01), m02(m02),
-      m10(m10), m11(m11), m12(m12),
-      m20(m20), m21(m21), m22(m22)
-  {
-  }
-
-  union
-  {
-    struct
-    {
-      comp_t m00, m01, m02,
-             m10, m11, m12,
-             m20, m21, m22;
-    };
-
-    comp_t a[num_components];
-    comp_t m[num_rows][num_columns];
-  };
-};
-
-typedef mat3_t<float> mat3;
-
-#if defined __GNUC__
-#pragma GCC diagnostic pop
-#elif defined _MSC_VER
-#pragma warning( pop )
-#endif
-
-//////////////////////////////////////////////////////////////////////////
-class graphics_component_hack
-{
-public:
-  graphics_component_hack();
-  explicit graphics_component_hack(vec4 const& color);
-  graphics_component_hack(vec4 && color);
+  sprite_component_hack();
+  explicit sprite_component_hack(vec4 const& color);
+  sprite_component_hack(vec4 && color);
 
   void bind() const;
   void unbind() const;
@@ -141,7 +85,7 @@ public:
   explicit entity_hack(std::string const& name);
   explicit entity_hack(char const* name);
 
-  graphics_component_hack m_gfx_comp;
+  sprite_component_hack m_gfx_comp;
   physics_component_hack m_phx_comp;
 
   vec2 m_pos = vec2({ 0.0f, 0.0f });

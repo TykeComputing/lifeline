@@ -37,7 +37,7 @@ namespace LE
 {
 
 //////////////////////////////////////////////////////////////////////////
-graphics_component_hack::graphics_component_hack()
+sprite_component_hack::sprite_component_hack()
 {
   LE::vertex_array::bind(p_VAO);
   LE::vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
@@ -60,29 +60,29 @@ graphics_component_hack::graphics_component_hack()
   LE::vertex_array::unbind();
 }
 
-graphics_component_hack::graphics_component_hack(vec4 const& color) :
-  graphics_component_hack()
+sprite_component_hack::sprite_component_hack(vec4 const& color) :
+  sprite_component_hack()
 {
   m_color = color;
 }
 
-graphics_component_hack::graphics_component_hack(vec4 && color) :
-  graphics_component_hack()
+sprite_component_hack::sprite_component_hack(vec4 && color) :
+  sprite_component_hack()
 {
   m_color = std::move(color);
 }
 
-void graphics_component_hack::bind() const
+void sprite_component_hack::bind() const
 {
   LE::vertex_array::bind(p_VAO);
 }
 
-void graphics_component_hack::unbind() const
+void sprite_component_hack::unbind() const
 {
   LE::vertex_array::unbind();
 }
 
-GLsizei graphics_component_hack::get_num_verts() const
+GLsizei sprite_component_hack::get_num_verts() const
 {
   return num_verts;
 }
