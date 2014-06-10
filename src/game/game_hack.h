@@ -107,7 +107,7 @@ public:
 
   GLsizei get_num_verts() const;
 
-  vec4 m_color = { 1.0f, 1.0f, 1.0f, 1.0f }; // TODO: Move and change method of representing colors (RGBA8?)
+  vec4 m_color = vec4({ 1.0f, 1.0f, 1.0f, 1.0f }); // TODO: Move and change method of representing colors (RGBA8?)
 private:
   vertex_array p_VAO;
   vertex_buffer p_VBO;
@@ -119,7 +119,7 @@ private:
 class physics_component_hack
 {
 public:
-  vec2 m_velocity = { 0.0f, 0.0f };
+  vec2 m_velocity = vec2({ 0.0f, 0.0f });
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -144,8 +144,8 @@ public:
   graphics_component_hack m_gfx_comp;
   physics_component_hack m_phx_comp;
 
-  vec2 m_pos = { 0.0f, 0.0f };
-  vec2 m_scale = { 0.1f, 0.1f };
+  vec2 m_pos = vec2({ 0.0f, 0.0f });
+  vec2 m_scale = vec2({ 0.1f, 0.1f });
   float m_health = 100.0f;
   std::string m_name = "unnamed";
   unique_id_t m_id;

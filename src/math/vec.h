@@ -22,7 +22,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_MATH_VEC_H
 #define LE_MATH_VEC_H
 
-#include <initializer_list>
+#include <array>
 #include <type_traits>
 
 #include <common/error.h>
@@ -49,14 +49,18 @@ struct vecn
   }
 
   // Likely too expensive for something as commonly used as a vector, will worry about later.
-  vecn(std::initializer_list<COMP_T> values)
+  vecn(std::array<COMP_T, SIZE> const& values)
   {
-    LE_ERRORIF(values.size() != SIZE, "Invalid number of arguments to vector");
-    comp_t * init_it = data;
-    for(auto value : values)
+    set(values);
+  }
+
+  void set(std::array<COMP_T, SIZE> const& values)
+  {
+    auto values_it = std::begin(values);
+    for(auto data_it = std::begin(data); data_it != std::end(data); ++data_it)
     {
-      *init_it = value;
-      ++init_it;
+      *data_it = *values_it;
+      ++values_it;
     }
   }
 

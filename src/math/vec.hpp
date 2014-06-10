@@ -132,7 +132,7 @@ operator/(
 
 
 template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T> & 
+vecn<SIZE, COMP_T> &
 operator/=(
   vecn<SIZE, COMP_T> & lhs,
   vecn<SIZE, COMP_T> const& rhs)
@@ -243,7 +243,7 @@ COMP_T
 length(
   vecn<SIZE, COMP_T> const& v)
 {
-  return std::sqrt(get_length_sq(v));
+  return std::sqrt(length_sq(v));
 }
 
 template<size_t SIZE, typename COMP_T>
@@ -259,11 +259,21 @@ vecn<SIZE, COMP_T> &
 normalize(
   vecn<SIZE, COMP_T> & v)
 {
-  COMP_T length = get_length(v);
+  COMP_T length;
+  return normalize(v, length);
+}
+
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T> &
+normalize(
+  vecn<SIZE, COMP_T> & v, COMP_T & old_length)
+{
+  old_length = length(v);
   for(size_t i = 0; i < SIZE; ++i)
   {
-    v[i] /= length;
+    v[i] /= old_length;
   }
+  return v;
 }
 
 template<size_t SIZE, typename COMP_T>
