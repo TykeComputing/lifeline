@@ -25,10 +25,12 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-template<size_t dim, typename comp_t>
-class vec_t
+template<size_t SIZE, typename COMP_T = float>
+class vecn
 {
 public:
+  typedef COMP_T comp_t;
+
   comp_t & operator[](size_t index)
   {
     return data[index];
@@ -39,213 +41,151 @@ public:
     return data[index];
   }
 
-  static size_t const num_components = dim;
+  static size_t const size = SIZE;
 
-  comp_t data[num_components];
+  comp_t data[SIZE];
 };
 
+typedef vecn<2> vec2;
+typedef vecn<3> vec3;
+typedef vecn<4> vec4;
+
 /**********************************************************************************************/
-/* Vector Operations */
+/* Vector Arithmatic Operators */
 /**********************************************************************************************/
 
 /**********************************************/
 /* Addition & Subtraction */
 /**********************************************/
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> operator+(
-  vec_t<dim, comp_t> const& lhs,
-  vec_t<dim, comp_t> const& rhs)
-{
-  vec_t<dim, comp_t> result;
-  for(size_t i = 0; i < dim; ++i)
-  {
-    result[i] = lhs[i] + rhs[i];
-  }
-  return result;
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T>
+operator+(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> const& operator+=(
-  vec_t<dim, comp_t> const& lhs,
-  vec_t<dim, comp_t> const& rhs)
-{
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T>
+operator+(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
 
-  for(size_t i = 0; i < dim; ++i)
-  {
-    lhs[i] += rhs[i];
-  }
-  return lhs;
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T> &
+operator+=(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> operator-(
-  vec_t<dim, comp_t> const& lhs,
-  vec_t<dim, comp_t> const& rhs)
-{
-  vec_t<dim, comp_t> result;
-  for(size_t i = 0; i < dim; ++i)
-  {
-    result[i] = lhs[i] - rhs[i];
-  }
-  return result;
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T>
+operator-(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> const& operator-=(
-  vec_t<dim, comp_t> const& lhs,
-  vec_t<dim, comp_t> const& rhs)
-{
-  for(size_t i = 0; i < dim; ++i)
-  {
-    lhs[i] -= rhs[i];
-  }
-  return lhs;
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T> &
+operator-=(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
 
 /**********************************************/
 /* Piecewise Multiplication & Division */
 /**********************************************/
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> operator*(
-  vec_t<dim, comp_t> const& lhs,
-  vec_t<dim, comp_t> const& rhs)
-{
-  vec_t<dim, comp_t> result;
-  for(size_t i = 0; i < dim; ++i)
-  {
-    result[i] = lhs[i] * rhs[i];
-  }
-  return result;
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T>
+operator*(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> const& operator*=(
-  vec_t<dim, comp_t> const& lhs,
-  vec_t<dim, comp_t> const& rhs)
-{
-  for(size_t i = 0; i < dim; ++i)
-  {
-    lhs[i] *= rhs[i];
-  }
-  return lhs;
-}
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> operator/(
-  vec_t<dim, comp_t> const& lhs,
-  vec_t<dim, comp_t> const& rhs)
-{
-  vec_t<dim, comp_t> result;
-  for(size_t i = 0; i < dim; ++i)
-  {
-    result[i] = lhs[i] / rhs[i];
-  }
-  return result;
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T> &
+operator*=(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> const& operator/=(
-  vec_t<dim, comp_t> const& lhs,
-  vec_t<dim, comp_t> const& rhs)
-{
-  for(size_t i = 0; i < dim; ++i)
-  {
-    lhs[i] /= rhs[i];
-  }
-  return lhs;
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T>
+operator/(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
+
+
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T> &
+operator/=(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
 
 /**********************************************************************************************/
-/* Scalar Operations */
+/* Scalar  Arithmatic Operators */
 /**********************************************************************************************/
 
 /**********************************************/
 /* Multiplication & Division */
 /**********************************************/
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> operator*(
-  vec_t<dim, comp_t> const& lhs,
-  comp_t rhs)
-{
-  return {
-    lhs.x * rhs,
-    lhs.y * rhs
-  };
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T>
+operator*(
+  vecn<SIZE, COMP_T> const& lhs,
+  COMP_T rhs);
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> const& operator*=(
-  vec_t<dim, comp_t> const& lhs,
-  comp_t rhs)
-{
-  lhs.x *= rhs;
-  lhs.y *= rhs;
-  return *this;
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T> &
+operator*=(
+  vecn<SIZE, COMP_T> const& lhs,
+  COMP_T rhs);
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> operator/(
-  vec_t<dim, comp_t> const& lhs,
-  comp_t rhs)
-{
-  return {
-    lhs.x / rhs,
-    lhs.y / rhs
-  };
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T>
+operator/(
+  vecn<SIZE, COMP_T> const& lhs,
+  COMP_T rhs);
 
-template<size_t dim, typename comp_t>
-vec_t<dim, comp_t> const& operator/=(
-  vec_t<dim, comp_t> const& lhs,
-  comp_t rhs)
-{
-  lhs.x /= rhs;
-  lhs.y /= rhs;
-  return *this;
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T> &
+operator/=(
+  vecn<SIZE, COMP_T> const& lhs,
+  COMP_T rhs);
 
-comp_t get_length() const
-{
-  return std::sqrt(get_length_sq());
-}
+/**********************************************************************************************/
+/* Vector Operations */
+/**********************************************************************************************/
 
-comp_t get_length_sq() const
-{
-  return dot(*this, *this);
-}
+template<size_t SIZE, typename COMP_T>
+COMP_T
+dot(
+  vecn<SIZE, COMP_T> const& lhs,
+  vecn<SIZE, COMP_T> const& rhs);
 
-// Returns old length
-comp_t normalize()
-{
-  comp_t length = get_length();
-  x /= length;
-  y /= length;
+// Only valid for 3D
+template<typename COMP_T>
+vecn<3, COMP_T>
+cross(
+  vecn<3, COMP_T> const& lhs,
+  vecn<3, COMP_T> const& rhs);
 
-  return length;
-}
+template<size_t SIZE, typename COMP_T>
+COMP_T
+length(
+  vecn<SIZE, COMP_T> const& v);
 
-template<typename comp_t>
-float dot(vec_t<dim, comp_t> const& lhs, vec_t<dim, comp_t> const& rhs)
-{
-  return (lhs.x * rhs.x) + (lhs.y * rhs.y);
-}
+template<size_t SIZE, typename COMP_T>
+COMP_T
+length_sq(
+  vecn<SIZE, COMP_T> const& v);
 
-template<typename comp_t>
-float get_length(vec_t<dim, comp_t> const& lhs)
-{
-  return lhs.get_length();
-}
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T> &
+normalize(
+  vecn<SIZE, COMP_T> & v);
 
-template<typename comp_t>
-float get_length_sq(vec_t<dim, comp_t> const& lhs)
-{
-  return lhs.get_length_sq();
-}
-
-typedef vec_t<float> vec2;
+template<size_t SIZE, typename COMP_T>
+vecn<SIZE, COMP_T>
+get_normalized(
+  vecn<SIZE, COMP_T> const& v);
 
 } // namespace LE
 
