@@ -125,20 +125,20 @@ game_hack::game_hack(engine & game_engine)
   {
     auto new_ent_ref = create_entity("player");
     auto new_ent = new_ent_ref.lock();
-    new_ent->m_pos.set(0.0f, 0.5f);
-    new_ent->m_gfx_comp.m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
+    new_ent->m_pos = {0.0f, 0.5f};
+    new_ent->m_gfx_comp.m_color = {0.0f, 1.0f, 0.0f, 1.0f};
   }
   {
     auto new_ent_ref = create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
-    new_ent->m_pos.set(0.5f, -0.5f);
-    new_ent->m_gfx_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
+    new_ent->m_pos = {0.5f, -0.5f};
+    new_ent->m_gfx_comp.m_color = {1.0f, 0.0f, 0.0f, 1.0f};
   }
   {
     auto new_ent_ref = create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
-    new_ent->m_pos.set(-0.5f, -0.5f);
-    new_ent->m_gfx_comp.m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
+    new_ent->m_pos.set = {-0.5f, -0.5f};
+    new_ent->m_gfx_comp.m_color = {1.0f, 0.0f, 0.0f, 1.0f};
   }
 }
 
