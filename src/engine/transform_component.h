@@ -22,6 +22,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_ENGINE_TRANSFORM_COMPONENT_H
 #define LE_ENGINE_TRANSFORM_COMPONENT_H
 
+#include <math/transform.h>
 #include <math/vec.h>
 
 namespace LE
@@ -32,13 +33,12 @@ class transform_component
 public:
   transform_component()
   {
-    p_transform.set_scale(0.01f, 0.01f);
+    m_local.set_scale(0.1f, 0.1f);
   }
 
-  ~transform_component();
-
-
-private:
+  // TODO - Figure out how I'm going to handle transformation heirarchies and then decide on
+  //          final transform/transform_component design.
+  transform m_local;
 };
 
 } // namespace LE

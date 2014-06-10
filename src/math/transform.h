@@ -22,8 +22,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_MATH_TRANSFORM_H
 #define LE_MATH_TRANSFORM_H
 
-#include <math/vec.h>
 #include <math/mat.h>
+#include <math/vec.h>
 
 namespace LE
 {
@@ -46,7 +46,7 @@ public:
   void set_z_order(float value);
 
   vec2 const& translate(float x, float y);
-  vec2 const& translate(vec3 const& value);
+  vec2 const& translate(vec2 const& value);
 
   /**********************************************/
   /* Scale */
@@ -55,22 +55,33 @@ public:
   float get_scale_x() const { return p_scale[0]; }
   float get_scale_y() const { return p_scale[1]; }
 
+  void set_scale(float x, float y);
   void set_scale(vec2 const& value);
   void set_scale_x(float value);
   void set_scale_y(float value);
 
   vec2 const& scale_by(float value);
   vec2 const& scale_by(float x, float y);
-  vec2 const& scale_by(vec3 const& value);
+  vec2 const& scale_by(vec2 const& value);
+
+  /**********************************************/
+  /* Matrix */
+  /**********************************************/
+  mat3 const& get_matrix() const;
 
 private:
+  void mark_as_dirty() const;
+  void mark_as_clean() const;
+
   vec2 p_pos = zero_vec2;
   float p_z_order = 0.0f;
-  vec2 p_scale = zero_vec2;
+  vec2 p_scale = vec2({1.0f, 1.0f});
 
   // TODO - Rotation
 
+
   mutable mat3 p_mat;
+  mutable bool p_is_dirty = true;
 };
 
 } // namespace LE

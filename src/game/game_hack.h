@@ -66,7 +66,7 @@ public:
   sprite_component m_gfx_comp;
   physics_component_hack m_phx_comp;
 
-  transform_component transform;
+  transform_component m_tf_comp;
   float m_health = 100.0f;
   std::string m_name = "unnamed";
   unique_id_t m_id;

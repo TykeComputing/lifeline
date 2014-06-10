@@ -74,19 +74,19 @@ game_hack::game_hack(engine & game_engine)
   {
     auto new_ent_ref = create_entity("player");
     auto new_ent = new_ent_ref.lock();
-    new_ent->transform..set({0.0f, 0.5f});
+    new_ent->m_tf_comp.m_local.set_pos(0.0f, 0.5f);
     new_ent->m_gfx_comp.m_color.set({0.0f, 1.0f, 0.0f, 1.0f});
   }
   {
     auto new_ent_ref = create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
-    new_ent->m_pos.set({0.5f, -0.5f});
+    new_ent->m_tf_comp.m_local.set_pos(0.5f, -0.5f);
     new_ent->m_gfx_comp.m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
   }
   {
     auto new_ent_ref = create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
-    new_ent->m_pos.set({-0.5f, -0.5f});
+    new_ent->m_tf_comp.m_local.set_pos(-0.5f, -0.5f);
     new_ent->m_gfx_comp.m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
   }
 }
@@ -161,8 +161,8 @@ bool game_hack::update(float dt)
           {
             auto new_bullet_ref = create_entity("bullet");
             auto new_bullet = new_bullet_ref.lock();
-            new_bullet->m_pos = player->m_pos;
-            new_bullet->m_scale.set({0.05f, 0.05f});
+            new_bullet->m_tf_comp.m_local.set_pos(player->m_tf_comp.m_local.get_pos());
+            new_bullet->m_tf_comp.m_local.set_scale(0.05f, 0.05f);
             new_bullet->m_gfx_comp.m_color.set({1.0f, 0.5f, 0.0f, 1.0f});
           }
         }
@@ -208,41 +208,46 @@ bool game_hack::update(float dt)
   if(player)
   {
     // 1 = key pressed, 0 = key not pressed
+    vec2 player_transl = zero_vec2;
     if(SDL_keys[SDL_SCANCODE_W])
     {
-      player->m_pos[1] += player_movement_speed * dt;
+      player_transl[1] = player_movement_speed * dt;
     }
     if(SDL_keys[SDL_SCANCODE_S])
     {
-      player->m_pos[1] -= player_movement_speed * dt;
+      player_transl[1] = -player_movement_speed * dt;
     }
     if(SDL_keys[SDL_SCANCODE_A])
     {
-      player->m_pos[0] -= player_movement_speed * dt;
+      player_transl[0] = -player_movement_speed * dt;
     }
     if(SDL_keys[SDL_SCANCODE_D])
     {
-      player->m_pos[0] += player_movement_speed * dt;
+      player_transl[0] = player_movement_speed * dt;
     }
+    player->m_tf_comp.m_local.translate(player_transl);
 
-    // Enemy seeking
+
     for(auto & entity_it : p_entities)
     {
+      // Enemy seeking
       auto & curr_entity = entity_it.second;
       if(curr_entity->m_name == "enemy")
       {
-        vec2 dir_to_player = player->m_pos - curr_entity->m_pos;
+        vec2 dir_to_player =
+            player->m_tf_comp.m_local.get_pos() - curr_entity->m_tf_comp.m_local.get_pos();
         float dist_to_player;
         normalize(dir_to_player, dist_to_player);
         if(dist_to_player <= enemy_seek_radius)
         {
-          curr_entity->m_pos += dir_to_player * enemy_movement_speed * dt;
+          curr_entity->m_tf_comp.m_local.translate(dir_to_player * enemy_movement_speed * dt);
         }
       }
+      // Bullet logic
       else if(curr_entity->m_name == "bullet")
       {
         // TODO velocity
-        curr_entity->m_pos[1] -= bullet_movement_speed * dt;
+        curr_entity->m_tf_comp.m_local.translate(0.0f, -bullet_movement_speed * dt);
       }
     }
   }
@@ -272,8 +277,10 @@ bool game_hack::update(float dt)
         continue;
       }
 
-      float dist_sq = length_sq(ent_inner->m_pos - ent_outer->m_pos);
-      float r_sum = ent_outer->m_scale[0] + ent_inner->m_scale[0];
+      float dist_sq =
+          length_sq(ent_inner->m_tf_comp.m_local.get_pos() - ent_outer->m_tf_comp.m_local.get_pos());
+      float r_sum =
+          ent_outer->m_tf_comp.m_local.get_scale_x() + ent_inner->m_tf_comp.m_local.get_scale_x();
       r_sum *= 0.5f; // use half of scale as radius
       float r_sum_sq = r_sum * r_sum;
       if(dist_sq <= r_sum_sq)
@@ -345,12 +352,7 @@ void game_hack::draw()
   {
     auto & curr_ent = entity_it.second;
 
-    mat3 model_to_world(
-    {
-      curr_ent->m_scale[0], 0.0f, curr_ent->m_pos[0],
-      0.0f, curr_ent->m_scale[1], curr_ent->m_pos[1],
-      0.0f, 0.0f, 1.0f
-    });
+    auto const& model_to_world = curr_ent->m_tf_comp.m_local.get_matrix();
 
     auto const& curr_g_comp = curr_ent->m_gfx_comp;
     glUniform4fv(color_ul, 1, curr_g_comp.m_color.data);

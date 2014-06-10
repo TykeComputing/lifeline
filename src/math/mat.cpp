@@ -19,12 +19,12 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include "vec.h"
+#include "mat.h"
 
 namespace LE
 {
 
-vec3 const identity_mat3 = vec3(
+mat3 const identity_mat3 = mat3(
 {
   1.f, 0.f, 0.f,
   0.f, 1.f, 0.f,

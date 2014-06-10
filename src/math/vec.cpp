@@ -25,7 +25,7 @@ namespace LE
 {
 
 vec2 const zero_vec2 = vec2({0.0f, 0.0f});
-vec3 const zero_vec3 = vec2({0.0f, 0.0f, 0.0f});
-vec4 const zero_vec4 = vec2({0.0f, 0.0f, 0.0f, 0.0f});
+vec3 const zero_vec3 = vec3({0.0f, 0.0f, 0.0f});
+vec4 const zero_vec4 = vec4({0.0f, 0.0f, 0.0f, 0.0f});
 
 }

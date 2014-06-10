@@ -59,6 +59,8 @@ typedef matn<2> mat2;
 typedef matn<3> mat3;
 typedef matn<4> mat4;
 
+extern mat3 const identity_mat3;
+
 template<typename COMP_T>
 matn<3, COMP_T>
 operator*(
