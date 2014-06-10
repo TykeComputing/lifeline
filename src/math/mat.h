@@ -30,53 +30,23 @@ namespace LE
 
 // N x N matrix
 template<size_t N, typename COMP_T = float>
-class matn
+struct matn
 {
-public:
   static_assert(std::is_floating_point<COMP_T>::value || std::is_integral<COMP_T>::value,
     "Only integral or floating point types may be used as components!");
 
   typedef COMP_T comp_t;
 
-  matn()
-  {
-    // Do nothing
-  }
+  matn();
+  explicit matn(std::array<COMP_T, N * N> const& values);
 
-  explicit matn(std::array<COMP_T, N * N> const& values)
-  {
-    set(values);
-  }
+  void set(std::array<COMP_T, N * N> const& values);
 
-  void set(std::array<COMP_T, N * N> const& values)
-  {
-    auto values_it = std::begin(values);
-    for(auto data_it = std::begin(data); data_it != std::end(data); ++data_it)
-    {
-      *data_it = *values_it;
-      ++values_it;
-    }
-  }
+  COMP_T & operator()(size_t row, size_t column);
+  COMP_T const& operator()(size_t row, size_t column) const;
 
-  COMP_T & operator()(size_t row, size_t column)
-  {
-    return data[(row * num_cols) + column];
-  }
-
-  COMP_T const& operator()(size_t row, size_t column) const
-  {
-    return data[(row * num_cols) + column];
-  }
-
-  COMP_T & operator[](size_t index)
-  {
-    return data[index];
-  }
-
-  COMP_T const& operator[](size_t index) const
-  {
-    return data[index];
-  }
+  COMP_T & operator[](size_t index);
+  COMP_T const& operator[](size_t index) const;
 
   static size_t const num_rows = N;
   static size_t const num_cols = N;

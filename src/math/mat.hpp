@@ -22,6 +22,64 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+template<size_t N, typename COMP_T>
+matn<N, COMP_T>::matn()
+{
+  // Do nothing
+}
+
+template<size_t N, typename COMP_T>
+matn<N, COMP_T>::matn(std::array<COMP_T, N * N> const& values)
+{
+  set(values);
+}
+
+template<size_t N, typename COMP_T>
+void 
+matn<N, COMP_T>::set(std::array<COMP_T, N * N> const& values)
+{
+  auto values_it = std::begin(values);
+  for(auto data_it = std::begin(data); data_it != std::end(data); ++data_it)
+  {
+    *data_it = *values_it;
+    ++values_it;
+  }
+}
+
+template<size_t N, typename COMP_T>
+COMP_T &
+matn<N, COMP_T>::operator()(
+  size_t row,
+  size_t column)
+{
+  return data[(row * num_cols) + column];
+}
+
+template<size_t N, typename COMP_T>
+COMP_T const& 
+matn<N, COMP_T>::operator()(
+  size_t row,
+  size_t col) const
+{
+  return data[(row * num_cols) + col];
+}
+
+template<size_t N, typename COMP_T>
+COMP_T &
+matn<N, COMP_T>::operator[](
+  size_t index)
+{
+  return data[index];
+}
+
+template<size_t N, typename COMP_T>
+COMP_T const& 
+matn<N, COMP_T>::operator[](
+  size_t index) const
+{
+  return data[index];
+}
+
 template<typename COMP_T>
 matn<3, COMP_T>
 operator*(
