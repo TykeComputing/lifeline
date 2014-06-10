@@ -395,17 +395,18 @@ void game_hack::draw()
   for(auto & entity_it : p_entities)
   {
     auto & curr_ent = entity_it.second;
-    mat3 model_to_world
+
+    mat3 model_to_world(
     {
       curr_ent->m_scale[0], 0.0f, curr_ent->m_pos[0],
       0.0f, curr_ent->m_scale[1], curr_ent->m_pos[1],
-      0.0f, 0.0f, 1.0f  // TODO: mat2x3 instead?
-    };
+      0.0f, 0.0f, 1.0f
+    });
 
     auto const& curr_g_comp = curr_ent->m_gfx_comp;
     glUniform4fv(color_ul, 1, curr_g_comp.m_color.data);
 
-    glUniformMatrix3fv(model_to_world_ul, 1, GL_TRUE, model_to_world.a);
+    glUniformMatrix3fv(model_to_world_ul, 1, GL_TRUE, model_to_world.data);
 
     curr_g_comp.bind();
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp.get_num_verts());

@@ -22,4 +22,37 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+template<typename COMP_T>
+matn<3, COMP_T>
+operator*(
+  matn<3, COMP_T> const& lhs,
+  matn<3, COMP_T> const& rhs)
+{
+    return mat3({
+    // -------------------------------------------------------------------
+    //          1         |           2           |           3          |
+    // row 0 -------------------------------------------------------------
+    rhs(0, 0) * lhs(0, 0) + rhs(0, 1) * lhs(1, 0) + rhs(0, 2) * lhs(2, 0),  // 00
+    rhs(0, 0) * lhs(0, 1) + rhs(0, 1) * lhs(1, 1) + rhs(0, 2) * lhs(2, 1),  // 01
+    rhs(0, 0) * lhs(0, 2) + rhs(0, 1) * lhs(1, 2) + rhs(0, 2) * lhs(2, 2),  // 02
+    // row 1 -------------------------------------------------------------
+    rhs(1, 0) * lhs(0, 0) + rhs(1, 1) * lhs(1, 0) + rhs(1, 2) * lhs(2, 0),  // 10
+    rhs(1, 0) * lhs(0, 1) + rhs(1, 1) * lhs(1, 1) + rhs(1, 2) * lhs(2, 1),  // 11
+    rhs(1, 0) * lhs(0, 2) + rhs(1, 1) * lhs(1, 2) + rhs(1, 2) * lhs(2, 2),  // 12
+    // row 2 -------------------------------------------------------------
+    rhs(2, 0) * lhs(0, 0) + rhs(2, 1) * lhs(1, 0) + rhs(2, 2) * lhs(2, 0),  // 20
+    rhs(2, 0) * lhs(0, 1) + rhs(2, 1) * lhs(1, 1) + rhs(2, 2) * lhs(2, 1),  // 21
+    rhs(2, 0) * lhs(0, 2) + rhs(2, 1) * lhs(1, 2) + rhs(2, 2) * lhs(2, 2)}); // 22
+}
+
+template<typename COMP_T>
+matn<3, COMP_T> const&
+operator*=(
+  matn<3, COMP_T> & lhs,
+  matn<3, COMP_T> const& rhs)
+{
+  lhs = lhs * rhs;
+  return lhs;
+}
+
 } // namespace LE

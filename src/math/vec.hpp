@@ -22,6 +22,42 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>::vecn()
+{
+  // Do nothing
+}
+
+// Likely too expensive for something as commonly used as a vector, will worry about later.
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>::vecn(std::array<COMP_T, N> const& values)
+{
+  set(values);
+}
+
+template<size_t N, typename COMP_T>
+void vecn<N, COMP_T>::set(std::array<COMP_T, N> const& values)
+{
+  auto values_it = std::begin(values);
+  for(auto data_it = std::begin(data); data_it != std::end(data); ++data_it)
+  {
+    *data_it = *values_it;
+    ++values_it;
+  }
+}
+
+template<size_t N, typename COMP_T>
+COMP_T & vecn<N, COMP_T>::operator[](size_t index)
+{
+  return data[index];
+}
+
+template<size_t N, typename COMP_T>
+COMP_T const& vecn<N, COMP_T>::operator[](size_t index) const
+{
+  return data[index];
+}
+
 /**********************************************************************************************/
 /* Vector Arithmatic Operators */
 /**********************************************************************************************/
@@ -30,54 +66,54 @@ namespace LE
 /* Addition & Subtraction */
 /**********************************************/
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T>
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
 operator+(
-  vecn<SIZE, COMP_T> const& lhs,
-  vecn<SIZE, COMP_T> const& rhs)
+  vecn<N, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& rhs)
 {
-  vecn<SIZE, COMP_T> result;
-  for(size_t i = 0; i < SIZE; ++i)
+  vecn<N, COMP_T> result;
+  for(size_t i = 0; i < N; ++i)
   {
     result[i] = lhs[i] + rhs[i];
   }
   return result;
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T> &
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T> &
 operator+=(
-  vecn<SIZE, COMP_T> & lhs,
-  vecn<SIZE, COMP_T> const& rhs)
+  vecn<N, COMP_T> & lhs,
+  vecn<N, COMP_T> const& rhs)
 {
-  for(size_t i = 0; i < SIZE; ++i)
+  for(size_t i = 0; i < N; ++i)
   {
     lhs[i] += rhs[i];
   }
   return lhs;
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T>
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
 operator-(
-  vecn<SIZE, COMP_T> const& lhs,
-  vecn<SIZE, COMP_T> const& rhs)
+  vecn<N, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& rhs)
 {
-  vecn<SIZE, COMP_T> result;
-  for(size_t i = 0; i < SIZE; ++i)
+  vecn<N, COMP_T> result;
+  for(size_t i = 0; i < N; ++i)
   {
     result[i] = lhs[i] - rhs[i];
   }
   return result;
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T> &
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T> &
 operator-=(
-  vecn<SIZE, COMP_T> & lhs,
-  vecn<SIZE, COMP_T> const& rhs)
+  vecn<N, COMP_T> & lhs,
+  vecn<N, COMP_T> const& rhs)
 {
-  for(size_t i = 0; i < SIZE; ++i)
+  for(size_t i = 0; i < N; ++i)
   {
     lhs[i] -= rhs[i];
   }
@@ -88,14 +124,14 @@ operator-=(
 /* Piecewise Multiplication & Division */
 /**********************************************/
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T>
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
 operator*(
-  vecn<SIZE, COMP_T> const& lhs,
-  vecn<SIZE, COMP_T> const& rhs)
+  vecn<N, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& rhs)
 {
-  vecn<SIZE, COMP_T> result;
-  for(size_t i = 0; i < SIZE; ++i)
+  vecn<N, COMP_T> result;
+  for(size_t i = 0; i < N; ++i)
   {
     result[i] = lhs[i] * rhs[i];
   }
@@ -103,27 +139,27 @@ operator*(
 }
 
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T> &
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T> &
 operator*=(
-  vecn<SIZE, COMP_T> & lhs,
-  vecn<SIZE, COMP_T> const& rhs)
+  vecn<N, COMP_T> & lhs,
+  vecn<N, COMP_T> const& rhs)
 {
-  for(size_t i = 0; i < SIZE; ++i)
+  for(size_t i = 0; i < N; ++i)
   {
     lhs[i] *= rhs[i];
   }
   return lhs;
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T>
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
 operator/(
-  vecn<SIZE, COMP_T> const& lhs,
-  vecn<SIZE, COMP_T> const& rhs)
+  vecn<N, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& rhs)
 {
-  vecn<SIZE, COMP_T> result;
-  for(size_t i = 0; i < SIZE; ++i)
+  vecn<N, COMP_T> result;
+  for(size_t i = 0; i < N; ++i)
   {
     result[i] = lhs[i] / rhs[i];
   }
@@ -131,13 +167,13 @@ operator/(
 }
 
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T> &
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T> &
 operator/=(
-  vecn<SIZE, COMP_T> & lhs,
-  vecn<SIZE, COMP_T> const& rhs)
+  vecn<N, COMP_T> & lhs,
+  vecn<N, COMP_T> const& rhs)
 {
-  for(size_t i = 0; i < SIZE; ++i)
+  for(size_t i = 0; i < N; ++i)
   {
     lhs[i] /= rhs[i];
   }
@@ -152,54 +188,54 @@ operator/=(
 /* Multiplication & Division */
 /**********************************************/
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T>
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
 operator*(
-  vecn<SIZE, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& lhs,
   COMP_T rhs)
 {
-  vecn<SIZE, COMP_T> result;
-  for(size_t i = 0; i < SIZE; ++i)
+  vecn<N, COMP_T> result;
+  for(size_t i = 0; i < N; ++i)
   {
     result[i] = lhs[i] * rhs;
   }
   return result;
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T> &
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T> &
 operator*=(
-  vecn<SIZE, COMP_T> & lhs,
+  vecn<N, COMP_T> & lhs,
   COMP_T rhs)
 {
-  for(size_t i = 0; i < SIZE; ++i)
+  for(size_t i = 0; i < N; ++i)
   {
     lhs[i] *= rhs;
   }
   return lhs;
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T>
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
 operator/(
-  vecn<SIZE, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& lhs,
   COMP_T rhs)
 {
-  vecn<SIZE, COMP_T> result;
-  for(size_t i = 0; i < SIZE; ++i)
+  vecn<N, COMP_T> result;
+  for(size_t i = 0; i < N; ++i)
   {
     result[i] = lhs[i] / rhs;
   }
   return result;
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T> &
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T> &
 operator/=(
-  vecn<SIZE, COMP_T> & lhs,
+  vecn<N, COMP_T> & lhs,
   COMP_T rhs)
 {
-  for(size_t i = 0; i < SIZE; ++i)
+  for(size_t i = 0; i < N; ++i)
   {
     lhs[i] /= rhs;
   }
@@ -210,14 +246,14 @@ operator/=(
 /* Vector Operations */
 /**********************************************************************************************/
 
-template<size_t SIZE, typename COMP_T>
+template<size_t N, typename COMP_T>
 COMP_T
 dot(
-  vecn<SIZE, COMP_T> const& lhs,
-  vecn<SIZE, COMP_T> const& rhs)
+  vecn<N, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& rhs)
 {
   COMP_T result = 0.0f;
-  for(size_t i = 0; i < SIZE; ++i)
+  for(size_t i = 0; i < N; ++i)
   {
     result += lhs[i] * rhs[i];
   }
@@ -238,50 +274,50 @@ cross(
   };
 }
 
-template<size_t SIZE, typename COMP_T>
+template<size_t N, typename COMP_T>
 COMP_T
 length(
-  vecn<SIZE, COMP_T> const& v)
+  vecn<N, COMP_T> const& v)
 {
   return std::sqrt(length_sq(v));
 }
 
-template<size_t SIZE, typename COMP_T>
+template<size_t N, typename COMP_T>
 COMP_T
 length_sq(
-  vecn<SIZE, COMP_T> const& v)
+  vecn<N, COMP_T> const& v)
 {
   return dot(v, v);
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T> &
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T> &
 normalize(
-  vecn<SIZE, COMP_T> & v)
+  vecn<N, COMP_T> & v)
 {
   COMP_T length;
   return normalize(v, length);
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T> &
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T> &
 normalize(
-  vecn<SIZE, COMP_T> & v, COMP_T & old_length)
+  vecn<N, COMP_T> & v, COMP_T & old_length)
 {
   old_length = length(v);
-  for(size_t i = 0; i < SIZE; ++i)
+  for(size_t i = 0; i < N; ++i)
   {
     v[i] /= old_length;
   }
   return v;
 }
 
-template<size_t SIZE, typename COMP_T>
-vecn<SIZE, COMP_T>
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
 get_normalized(
-  vecn<SIZE, COMP_T> const& v)
+  vecn<N, COMP_T> const& v)
 {
-  vecn<SIZE, COMP_T> result{v};
+  vecn<N, COMP_T> result{v};
   return normalize(result);
 }
 
