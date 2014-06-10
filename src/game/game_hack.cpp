@@ -37,57 +37,6 @@ namespace LE
 {
 
 //////////////////////////////////////////////////////////////////////////
-sprite_component_hack::sprite_component_hack()
-{
-  LE::vertex_array::bind(p_VAO);
-  LE::vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
-
-  vertex::specify_vertex_attributes();
-  vertex verts[] =
-  {
-    { { -0.5f, -0.5f }, { 0.0f, 0.0f } },
-    { {  0.5f, -0.5f }, { 1.0f, 0.0f } },
-    { { -0.5f,  0.5f }, { 0.0f, 1.0f } },
-
-    { { -0.5f,  0.5f }, { 0.0f, 1.0f } },
-    { {  0.5f, -0.5f }, { 1.0f, 0.0f } },
-    { {  0.5f,  0.5f }, { 1.0f, 1.0f } }
-  };
-  num_verts = sizeof(verts) / sizeof(vertex);
-
-  LE::vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-
-  LE::vertex_array::unbind();
-}
-
-sprite_component_hack::sprite_component_hack(vec4 const& color) :
-  sprite_component_hack()
-{
-  m_color = color;
-}
-
-sprite_component_hack::sprite_component_hack(vec4 && color) :
-  sprite_component_hack()
-{
-  m_color = std::move(color);
-}
-
-void sprite_component_hack::bind() const
-{
-  LE::vertex_array::bind(p_VAO);
-}
-
-void sprite_component_hack::unbind() const
-{
-  LE::vertex_array::unbind();
-}
-
-GLsizei sprite_component_hack::get_num_verts() const
-{
-  return num_verts;
-}
-
-//////////////////////////////////////////////////////////////////////////
 entity_hack::entity_hack(std::string const& name) :
   entity_hack(name.c_str()) // TODO - Change
 {

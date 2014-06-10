@@ -102,22 +102,22 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/vertex_buffer.cpp
   src/graphics/vertex_buffer.h
 
-  #src/engine/component_base.cpp
-  #src/engine/component_base.h
+  src/engine/component_base.cpp
+  src/engine/component_base.h
   src/engine/engine.cpp
   src/engine/engine.h
-  #src/engine/entity.cpp
-  #src/engine/entity.h
+  src/engine/entity.cpp
+  src/engine/entity.h
   #src/engine/entity_manager.cpp
   #src/engine/entity_manager.h
-  #src/engine/graphics_component.cpp
-  #src/engine/graphics_component.h
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
-  #src/engine/transform_component.h
-  #src/engine/transform_component.h
+  src/engine/sprite_component.cpp
+  src/engine/sprite_component.h
+  src/engine/transform_component.h
+  src/engine/transform_component.h
   src/engine/window.cpp
   src/engine/window.h
 

@@ -24,28 +24,22 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <common/macros.h>
 
+#include<math/vec.h>
+
 namespace LE
 {
 
-// TODO - Consider moving start, num, and end into macro definition.
 LE_ENUM_2(vertex_attrib_type,
   position,
   texcoord)
 
-// TODO - Remove when actual vec2 is implemented
-struct vec2f
-{
-  float x, y;
-
-  static unsigned const num_components = 2;
-};
 
 struct vertex
 {
   static void specify_vertex_attributes();
 
-  vec2f position;
-  vec2f texcoord;
+  vec2 position;
+  vec2 texcoord;
 };
 
 } // namespace LE

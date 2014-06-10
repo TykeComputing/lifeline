@@ -31,7 +31,7 @@ namespace LE
 LE_ENUM_3(component_type,
   transform_component,
   sprite_component,
-  logic_component);
+  logic_component)
 
 class entity;
 

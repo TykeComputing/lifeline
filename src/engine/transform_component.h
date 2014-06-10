@@ -22,7 +22,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_ENGINE_TRANSFORM_COMPONENT_H
 #define LE_ENGINE_TRANSFORM_COMPONENT_H
 
-#include <math/vec2.h>
+#include <math/vec.h>
 
 namespace LE
 {
@@ -30,9 +30,9 @@ namespace LE
 class transform_component
 {
 public:
-	transform_component();
-	~transform_component();
-	
+  transform_component();
+  ~transform_component();
+
 private:
   vec2 pos;
   vec2 scale;

@@ -22,42 +22,20 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_GAME_GAME_HACK_H
 #define LE_GAME_GAME_HACK_H
 
-#include <cmath>
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
 #include <graphics/shader_program.h>
-#include <graphics/vertex.h>
-#include <graphics/vertex_array.h>
-#include <graphics/vertex_buffer.h>
+
+#include <engine/sprite_component.h>
+#include <engine/transform_component.h>
 
 #include <math/vec.h>
 #include <math/mat.h>
 
 namespace LE
 {
-
-//////////////////////////////////////////////////////////////////////////
-class sprite_component_hack
-{
-public:
-  sprite_component_hack();
-  explicit sprite_component_hack(vec4 const& color);
-  sprite_component_hack(vec4 && color);
-
-  void bind() const;
-  void unbind() const;
-
-  GLsizei get_num_verts() const;
-
-  vec4 m_color = vec4({ 1.0f, 1.0f, 1.0f, 1.0f }); // TODO: Move and change method of representing colors (RGBA8?)
-private:
-  vertex_array p_VAO;
-  vertex_buffer p_VBO;
-
-  GLsizei num_verts = 0;
-};
 
 //////////////////////////////////////////////////////////////////////////
 class physics_component_hack
@@ -85,7 +63,7 @@ public:
   explicit entity_hack(std::string const& name);
   explicit entity_hack(char const* name);
 
-  sprite_component_hack m_gfx_comp;
+  sprite_component m_gfx_comp;
   physics_component_hack m_phx_comp;
 
   vec2 m_pos = vec2({ 0.0f, 0.0f });

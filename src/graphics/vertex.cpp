@@ -32,12 +32,12 @@ void vertex::specify_vertex_attributes()
 {
   vertex_buffer::specify_vertex_attrtibute(
     vertex_attrib_type::position,
-    decltype(position)::num_components, GL_FLOAT, GL_FALSE,
+    decltype(position)::size, GL_FLOAT, GL_FALSE,
     sizeof(vertex), offsetof(vertex, position));
 
   vertex_buffer::specify_vertex_attrtibute(
     vertex_attrib_type::texcoord,
-    decltype(texcoord)::num_components, GL_FLOAT, GL_FALSE,
+    decltype(texcoord)::size, GL_FLOAT, GL_FALSE,
     sizeof(vertex), offsetof(vertex, texcoord));
 }
 
