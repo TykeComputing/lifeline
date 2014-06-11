@@ -28,17 +28,17 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-class transform_component
+// TODO - Figure out how I'm going to handle transformation heirarchies and then decide on
+//          final transform/transform_component design.
+//      - Trying inheiritance based approch for now. I should evaluate if this is desirable
+//          when implementing parenting.
+class transform_component : public transform
 {
 public:
   transform_component()
   {
-    m_local.set_scale(0.1f, 0.1f);
+    set_scale(0.1f, 0.1f);
   }
-
-  // TODO - Figure out how I'm going to handle transformation heirarchies and then decide on
-  //          final transform/transform_component design.
-  transform m_local;
 };
 
 } // namespace LE
