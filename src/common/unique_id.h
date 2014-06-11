@@ -54,16 +54,20 @@ public:
   // TODO: Consider adding relational opertors instead?
 //  operator value_type() const;
 
-  value_type value() { return p_value;}
+  value_type value() const
+  {
+    return p_value;
+  }
 
-  bool operator==(unique_id const& rhs)
+  bool operator==(unique_id const& rhs) const
   {
     return p_value == rhs.p_value;
   }
 
 private:
   value_type const p_value;
-  static value_type p_curr_id;
+
+  static value_type get_next();
 };
 
 } // namespace LE

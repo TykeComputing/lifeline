@@ -77,7 +77,6 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/resource_exception.h
   src/common/timer.h
   src/common/timer.cpp
-  src/common/unique_id.cpp
   src/common/unique_id.hpp
   src/common/unique_id.h
 
@@ -123,7 +122,7 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/OS_interface.h
   src/engine/sprite_component.cpp
   src/engine/sprite_component.h
-  src/engine/transform_component.h
+  src/engine/transform_component.cpp
   src/engine/transform_component.h
   src/engine/window.cpp
   src/engine/window.h

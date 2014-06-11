@@ -37,10 +37,7 @@ namespace LE
 class transform_component : public component_base, public transform
 {
 public:
-  transform_component()
-  {
-    set_scale(0.1f, 0.1f);
-  }
+  transform_component();
 
   static unique_id<component_base> const type_id;
 };

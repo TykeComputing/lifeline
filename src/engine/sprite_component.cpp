@@ -26,6 +26,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+unique_id<component_base> const sprite_component::type_id;
+
 sprite_component::sprite_component()
 {
   LE::vertex_array::bind(p_VAO);

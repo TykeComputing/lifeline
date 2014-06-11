@@ -28,11 +28,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <graphics/shader_program.h>
 
-#include <engine/sprite_component.h>
-#include <engine/transform_component.h>
-
 #include <math/vec.h>
 #include <math/mat.h>
+
+#include <engine/entity.h>
 
 namespace LE
 {

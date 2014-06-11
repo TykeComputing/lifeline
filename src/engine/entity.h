@@ -45,14 +45,14 @@ public:
   COMP_T const*
   get_component() const
   {
-    auto find_it = p_components.find(COMP_T::comp_id);
+    auto find_it = p_components.find(COMP_T::type_id);
     if(find_it == p_components.end())
     {
       return nullptr;
     }
     else
     {
-      return *find_it.get();
+      return static_cast<COMP_T const*>(find_it->second.get());
     }
   }
 
@@ -66,14 +66,14 @@ public:
 
   template<typename COMP_T>
   COMP_T *
-  add_component()
+  create_component()
   {
     auto new_comp_it = p_components.emplace(
-      std::make_pair(COMP_T::comp_id, std::unique_ptr<COMP_T>{new COMP_T}));
+      std::make_pair(COMP_T::type_id, std::unique_ptr<COMP_T>{new COMP_T}));
 
     if(new_comp_it.second)
     {
-      return new_comp_it.first;
+      return static_cast<COMP_T *>(new_comp_it.first->second.get());
     }
     else
     {

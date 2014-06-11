@@ -31,10 +31,11 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
 #include <engine/engine.h>
-#include <engine/entity.h>
-#include <engine/sprite_component.h>
 #include <engine/transform_component.h>
 #include <common/LE_printf.h>
+
+#include <engine/sprite_component.h>
+#include <engine/transform_component.h>
 
 namespace LE
 {
@@ -87,9 +88,18 @@ game_hack::~game_hack()
 std::weak_ptr<entity> game_hack::create_entity(std::string const& name)
 {
   auto new_ent = std::make_shared<entity>(name);
-  new_ent.
-  p_entities.emplace(std::make_pair(new_ent->get_id(), new_ent));
-  return new_ent;
+  auto new_ent_it = p_entities.emplace(std::make_pair(new_ent->get_id(), new_ent));
+  if(new_ent_it.second)
+  {
+    new_ent->create_component<transform_component>();
+    new_ent->create_component<sprite_component>();
+    return new_ent_it.first->second;
+  }
+  else
+  {
+    LE_ERROR("Unable to create entity!");
+    return {};
+  }
 }
 
 std::weak_ptr<entity> game_hack::find_entity(std::string const& name)
@@ -110,7 +120,7 @@ void game_hack::kill_entity(std::weak_ptr<entity> target)
   auto owned_target = target.lock();
   if(owned_target)
   {
-    auto enemy_find_it = p_entities.find(owned_target->m_id);
+    auto enemy_find_it = p_entities.find(owned_target->get_id());
     if(enemy_find_it != p_entities.end())
     {
       p_entities.erase(enemy_find_it);
@@ -124,6 +134,8 @@ bool game_hack::update(float dt)
   // UPDATE
   auto player_ref = find_entity("player");
   auto player = player_ref.lock();
+  auto * player_t = player->get_component<transform_component>();
+
   float const player_movement_speed = 0.8f;
   float const bullet_movement_speed = 2.0f;
 
@@ -151,9 +163,10 @@ bool game_hack::update(float dt)
           {
             auto new_bullet_ref = create_entity("bullet");
             auto new_bullet = new_bullet_ref.lock();
-            new_bullet->get_component<transform_component>()->(player->get_pos());
-            new_bullet->get_component<transform_component>()->set_scale(0.05f, 0.05f);
-            new_bullet->get_component<sprite_component>()->.m_color.set({1.0f, 0.5f, 0.0f, 1.0f});
+            auto * new_bullet_t = new_bullet->get_component<transform_component>();
+            new_bullet_t->set_pos(player_t->get_pos());
+            new_bullet_t->set_scale(0.05f, 0.05f);
+            new_bullet->get_component<sprite_component>()->m_color.set({1.0f, 0.5f, 0.0f, 1.0f});
           }
         }
         break;
@@ -222,19 +235,21 @@ bool game_hack::update(float dt)
     {
       // Enemy seeking
       auto & curr_entity = entity_it.second;
-      if(curr_entity->m_name == "enemy")
+      if(curr_entity->get_name() == "enemy")
       {
+        auto * enemy_t = curr_entity->get_component<transform_component>();
+
         vec2 dir_to_player =
-            player->get_pos() - curr_entity->get_pos();
+            player_t->get_pos() - enemy_t->get_pos();
         float dist_to_player;
         normalize(dir_to_player, dist_to_player);
         if(dist_to_player <= enemy_seek_radius)
         {
-          curr_entity->get_component<transform_component>()->translate(dir_to_player * enemy_movement_speed * dt);
+          enemy_t->translate(dir_to_player * enemy_movement_speed * dt);
         }
       }
       // Bullet logic
-      else if(curr_entity->m_name == "bullet")
+      else if(curr_entity->get_name() == "bullet")
       {
         // TODO velocity
         curr_entity->get_component<transform_component>()->translate(0.0f, -bullet_movement_speed * dt);
@@ -267,10 +282,13 @@ bool game_hack::update(float dt)
         continue;
       }
 
+      auto * ent_outer_t = ent_outer->get_component<transform_component>();
+      auto * ent_inner_t = ent_inner->get_component<transform_component>();
+
       float dist_sq =
-          length_sq(ent_inner->get_pos() - ent_outer->get_pos());
+          length_sq(ent_inner_t->get_pos() - ent_outer_t->get_pos());
       float r_sum =
-          ent_outer->get_scale_x() + ent_inner->get_scale_x();
+          ent_outer_t->get_scale_x() + ent_inner_t->get_scale_x();
       r_sum *= 0.5f; // use half of scale as radius
       float r_sum_sq = r_sum * r_sum;
       if(dist_sq <= r_sum_sq)
@@ -284,13 +302,13 @@ bool game_hack::update(float dt)
             unsigned & index,
             unsigned & other_index)->bool
         {
-          if(ents_raw[0]->m_name == name)
+          if(ents_raw[0]->get_name() == name)
           {
             index = 0;
             other_index = 1;
             return true;
           }
-          else if(ents_raw[1]->m_name == name)
+          else if(ents_raw[1]->get_name() == name)
           {
             index = 1;
             other_index = 0;
@@ -305,14 +323,14 @@ bool game_hack::update(float dt)
         // Hacky collision logic
         if(ent_involved_in_collision("player", ents_raw, index, other_index))
         {
-          if(ents_raw[other_index]->m_name == "enemy")
+          if(ents_raw[other_index]->get_name() == "enemy")
           {
             ents_to_kill.emplace_back(*ents[index]);
           }
         }
         if(ent_involved_in_collision("enemy", ents_raw, index, other_index))
         {
-          if(ents_raw[other_index]->m_name == "bullet")
+          if(ents_raw[other_index]->get_name() == "bullet")
           {
             ents_to_kill.emplace_back(*ents[index]);
             ents_to_kill.emplace_back(*ents[other_index]);
@@ -341,17 +359,17 @@ void game_hack::draw()
   for(auto & entity_it : p_entities)
   {
     auto & curr_ent = entity_it.second;
+    auto const* curr_ent_t = curr_ent->get_component<transform_component>();
+    auto const& model_to_world = curr_ent_t->get_matrix();
 
-    auto const& model_to_world = curr_ent->get_matrix();
-
-    auto const& curr_g_comp = curr_ent->get_component<sprite_component>()->;
-    glUniform4fv(color_ul, 1, curr_g_comp.m_color.data);
+    auto const* curr_g_comp = curr_ent->get_component<sprite_component>();
+    glUniform4fv(color_ul, 1, curr_g_comp->m_color.data);
 
     glUniformMatrix3fv(model_to_world_ul, 1, GL_TRUE, model_to_world.data);
 
-    curr_g_comp.bind();
-    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp.get_num_verts());
-    curr_g_comp.unbind();
+    curr_g_comp->bind();
+    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp->get_num_verts());
+    curr_g_comp->unbind();
   }
 }
 
