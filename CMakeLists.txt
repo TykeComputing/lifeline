@@ -96,7 +96,6 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/shader_program.cpp
   src/graphics/shader_program.h
   src/graphics/stb_image.cpp
-  src/graphics/stb_image.h
   #src/graphics/shader_program_definition.cpp
   #src/graphics/shader_program_definition.h
   src/graphics/texture.cpp
@@ -260,6 +259,7 @@ message(STATUS "${LE_MESSAGE_LINE_BREAK}")
 target_include_directories(${PROJECT_NAME}
   PUBLIC ${GLEW_INCLUDE_PATH}
   PUBLIC ${SDL2_INCLUDE_DIR}
+  PUBLIC ${LE_EXTERNAL_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}

@@ -23,7 +23,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(LE_TARGET_ARCH "x86" CACHE STRING
-  "Determines if application 32 bit or 64 bit. This affects what external libs are used.")  
+  "Determines if application 32 bit or 64 bit. This affects what external libs are used.")
 
 set(LE_RUN_SETTINGS_SUPPORTED_IDES "VS2013")
 
@@ -33,14 +33,10 @@ set(LE_RUN_WORKING_DIR "${CMAKE_BINARY_DIR}"
 
 set(LE_RESOURCE_DIR "${CMAKE_SOURCE_DIR}/resources")
 
-# Windows specific vars
-if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-  set(LE_EXTERNAL_DEPEND_DIR
-   "${PROJECT_SOURCE_DIR}/external" 
-   CACHE PATH
-   "Controls the default directory that external dependencies are looked for on a fresh configurtation.")
+set(LE_EXTERNAL_DEPEND_DIR "${PROJECT_SOURCE_DIR}/external")
 
-  set(LE_EXTERNAL_LIB_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/lib/${LE_TARGET_ARCH}")
-  set(LE_EXTERNAL_DLL_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/dll/${LE_TARGET_ARCH}")
-  set(LE_EXTERNAL_INCLUDE_DIR "${LE_EXTERNAL_DEPEND_DIR}/windows/include")
-endif()
+set(LE_EXTERNAL_LIB_DIR "${LE_EXTERNAL_DEPEND_DIR}/${CMAKE_SYSTEM_NAME}/lib/${LE_TARGET_ARCH}")
+set(LE_EXTERNAL_DLL_DIR "${LE_EXTERNAL_DEPEND_DIR}/${CMAKE_SYSTEM_NAME}/dll/${LE_TARGET_ARCH}")
+
+set(LE_EXTERNAL_INCLUDE_DIR "${LE_EXTERNAL_DEPEND_DIR}/include")
+set(LE_EXTERNAL_SRC_DIR "${LE_EXTERNAL_DEPEND_DIR}/src")
