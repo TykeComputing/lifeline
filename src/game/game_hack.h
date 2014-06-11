@@ -44,13 +44,6 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
-template<typename T>
-bool operator==(std::unique_ptr<T> const& lhs, T const* rhs)
-{
-  return lhs.get() == rhs;
-}
-
-//////////////////////////////////////////////////////////////////////////
 class engine;
 
 class game_hack
@@ -62,19 +55,13 @@ public:
   explicit game_hack(engine & game_engine);
   ~game_hack();
 
-  std::weak_ptr<entity> create_entity(std::string const& name);
-  std::weak_ptr<entity> find_entity(std::string const& name);
-  void kill_entity(std::weak_ptr<entity> target);
-
   bool update(float dt);
   void draw();
 
 private:
-  std::unordered_map<unique_id<entity>, std::shared_ptr<entity>> p_entities;
   std::unique_ptr<shader_program> p_shader_prog;
 };
 
 } // namespace LE
 
 #endif // LE_GAME_GAME_HACK_H
-

@@ -85,49 +85,6 @@ game_hack::~game_hack()
 {
 }
 
-std::weak_ptr<entity> game_hack::create_entity(std::string const& name)
-{
-  auto new_ent = std::make_shared<entity>(name);
-  auto new_ent_it = p_entities.emplace(std::make_pair(new_ent->get_id(), new_ent));
-  if(new_ent_it.second)
-  {
-    new_ent->create_component<transform_component>();
-    new_ent->create_component<sprite_component>();
-    return new_ent_it.first->second;
-  }
-  else
-  {
-    LE_ERROR("Unable to create entity!");
-    return {};
-  }
-}
-
-std::weak_ptr<entity> game_hack::find_entity(std::string const& name)
-{
-  for(auto & it : p_entities)
-  {
-    if(it.second->get_name() == name)
-    {
-      return it.second;
-    }
-  }
-
-  return {};
-}
-
-void game_hack::kill_entity(std::weak_ptr<entity> target)
-{
-  auto owned_target = target.lock();
-  if(owned_target)
-  {
-    auto enemy_find_it = p_entities.find(owned_target->get_id());
-    if(enemy_find_it != p_entities.end())
-    {
-      p_entities.erase(enemy_find_it);
-    }
-  }
-}
-
 bool game_hack::update(float dt)
 {
   //////////////////////////////////////////////////////////////////////////

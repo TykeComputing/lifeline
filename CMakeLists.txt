@@ -114,8 +114,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/engine.h
   src/engine/entity.cpp
   src/engine/entity.h
-  #src/engine/entity_manager.cpp
-  #src/engine/entity_manager.h
+  src/engine/entity_manager.cpp
+  src/engine/entity_manager.h
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
   src/engine/OS_interface.cpp
