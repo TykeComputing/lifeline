@@ -62,19 +62,19 @@ game_hack::game_hack(engine & game_engine)
   LE::shader_program::use(*p_shader_prog);
 
   {
-    auto new_ent_ref = create_entity("player");
+    auto new_ent_ref = p_ent_mgr.create_entity("player");
     auto new_ent = new_ent_ref.lock();
     new_ent->get_component<transform_component>()->set_pos(0.0f, 0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({0.0f, 1.0f, 0.0f, 1.0f});
   }
   {
-    auto new_ent_ref = create_entity("enemy");
+    auto new_ent_ref = p_ent_mgr.create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
     new_ent->get_component<transform_component>()->set_pos(0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
   }
   {
-    auto new_ent_ref = create_entity("enemy");
+    auto new_ent_ref = p_ent_mgr.create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
     new_ent->get_component<transform_component>()->set_pos(-0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
@@ -89,9 +89,8 @@ bool game_hack::update(float dt)
 {
   //////////////////////////////////////////////////////////////////////////
   // UPDATE
-  auto player_ref = find_entity("player");
+  auto player_ref = p_ent_mgr.find_entity("player");
   auto player = player_ref.lock();
-  auto * player_t = player->get_component<transform_component>();
 
   float const player_movement_speed = 0.8f;
   float const bullet_movement_speed = 2.0f;
@@ -118,7 +117,9 @@ bool game_hack::update(float dt)
         {
           if(player)
           {
-            auto new_bullet_ref = create_entity("bullet");
+            auto * player_t = player->get_component<transform_component>();
+
+            auto new_bullet_ref = p_ent_mgr.create_entity("bullet");
             auto new_bullet = new_bullet_ref.lock();
             auto * new_bullet_t = new_bullet->get_component<transform_component>();
             new_bullet_t->set_pos(player_t->get_pos());
@@ -167,6 +168,8 @@ bool game_hack::update(float dt)
 
   if(player)
   {
+    auto * player_t = player->get_component<transform_component>();
+
     // 1 = key pressed, 0 = key not pressed
     vec2 player_transl = zero_vec2;
     if(SDL_keys[SDL_SCANCODE_W])
@@ -188,7 +191,7 @@ bool game_hack::update(float dt)
     player->get_component<transform_component>()->translate(player_transl);
 
 
-    for(auto & entity_it : p_entities)
+    for(auto & entity_it : p_ent_mgr.p_entities)
     {
       // Enemy seeking
       auto & curr_entity = entity_it.second;
@@ -219,8 +222,8 @@ bool game_hack::update(float dt)
   // Quick and oh so dirty hack, going to unhack soon anyway, just need to get compiling on
   //   GCC.
   std::vector<std::weak_ptr<entity>> curr_ents;
-  curr_ents.reserve(p_entities.size());
-  for(auto & ent_it : p_entities)
+  curr_ents.reserve(p_ent_mgr.p_entities.size());
+  for(auto & ent_it : p_ent_mgr.p_entities)
   {
     curr_ents.emplace_back(ent_it.second);
   }
@@ -299,7 +302,7 @@ bool game_hack::update(float dt)
 
   for(auto const& kill_it : ents_to_kill)
   {
-    kill_entity(kill_it);
+    p_ent_mgr.remove_entity(kill_it);
   }
 
   return true;
@@ -313,7 +316,7 @@ void game_hack::draw()
   GLint model_to_world_ul = p_shader_prog->get_unform_location("model_to_world");
 
   // Terrible game loop, HACK HACK HACK
-  for(auto & entity_it : p_entities)
+  for(auto & entity_it : p_ent_mgr.p_entities)
   {
     auto & curr_ent = entity_it.second;
     auto const* curr_ent_t = curr_ent->get_component<transform_component>();

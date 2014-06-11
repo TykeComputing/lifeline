@@ -50,9 +50,7 @@ public:
   typedef size_t value_type;
 
   unique_id();
-
-  // TODO: Consider adding relational opertors instead?
-//  operator value_type() const;
+  unique_id const& operator=(unique_id const& rhs) = delete;
 
   value_type value() const
   {

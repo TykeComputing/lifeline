@@ -24,7 +24,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/resource_exception.h>
 
 #include <graphics/error_checking.h>
-#include <graphics/stb_image.h>
+#include <stb/stb_image.h>
 
 namespace LE
 {

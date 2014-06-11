@@ -23,6 +23,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <common/LE_printf.h>
 
+#include <engine/sprite_component.h>
 #include <engine/transform_component.h>
 
 namespace LE
@@ -45,6 +46,7 @@ std::weak_ptr<entity> entity_manager::create_entity(std::string const& name)
   }
 }
 
+// TODO: Add more debug printing to all functions.
 std::weak_ptr<entity> entity_manager::find_entity(std::string const& name)
 {
   for(auto & it : p_entities)
@@ -64,7 +66,13 @@ bool entity_manager::remove_entity(std::weak_ptr<entity> target)
   if(owned_target)
   {
     auto result = remove_entity(owned_target->get_id());
+    if(result == false)
+    {
+      // TODO - Print name
+      LE_printf("Entity Manager: Unable to remove entity with name \"...\".");
+    }
 
+    return result;
   }
 
   LE_printf("Entity Manager: Unable to remove entity, no longer exists.");
@@ -73,14 +81,16 @@ bool entity_manager::remove_entity(std::weak_ptr<entity> target)
 
 bool entity_manager::remove_entity(const unique_id<entity> & id)
 {
-  auto enemy_find_it = p_entities.find();
+  auto enemy_find_it = p_entities.find(id);
   if(enemy_find_it != p_entities.end())
   {
     p_entities.erase(enemy_find_it);
+    return true;
   }
   else
   {
     LE_printf("Entity Manager: Unable to remove entity with id \"%d\".", id.value());
+    return false;
   }
 }
 

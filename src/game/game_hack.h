@@ -32,6 +32,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <math/mat.h>
 
 #include <engine/entity.h>
+#include <engine/entity_manager.h>
 
 namespace LE
 {
@@ -60,6 +61,7 @@ public:
 
 private:
   std::unique_ptr<shader_program> p_shader_prog;
+  entity_manager p_ent_mgr;
 };
 
 } // namespace LE

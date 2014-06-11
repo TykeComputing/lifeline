@@ -37,16 +37,19 @@ class entity_manager
 {
 public:
   std::weak_ptr<entity> create_entity(std::string const& name);
-  bool remove_entity(std::weak_ptr<entity> target);
-  bool remove_entity(unique_id<entity> const& id);
-
 
   std::weak_ptr<entity> find_entity(std::string const& name);
   std::weak_ptr<entity> find_entity(unique_id<entity> const& id);
 
+  // TODO - REMOVE and add kill method to entity, then remove at end of update.
+  //        Only provide ability to clear all in entity_manager as it owns all entities and
+  //        entities should only be removed by killing them.
+  bool remove_entity(std::weak_ptr<entity> target);
+  bool remove_entity(unique_id<entity> const& id);
 
-private:
+  // TODO - Make private once systems have been added to engine
   std::unordered_map<unique_id<entity>, std::shared_ptr<entity>> p_entities;
+private:  
 };
 
 } // namespace LE
