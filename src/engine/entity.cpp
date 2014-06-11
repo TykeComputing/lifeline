@@ -24,9 +24,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-// entity::entity()
-// {
-//   
-// }
+entity::entity(std::string const& name) :
+  p_name(name)
+{
+}
 
 } // namespace LE

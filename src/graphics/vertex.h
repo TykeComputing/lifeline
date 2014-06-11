@@ -24,7 +24,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <common/macros.h>
 
-#include<math/vec.h>
+#include <math/vec.h>
 
 namespace LE
 {

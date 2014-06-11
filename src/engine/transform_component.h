@@ -25,6 +25,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <math/transform.h>
 #include <math/vec.h>
 
+#include <engine/component_base.h>
+
 namespace LE
 {
 
@@ -32,13 +34,15 @@ namespace LE
 //          final transform/transform_component design.
 //      - Trying inheiritance based approch for now. I should evaluate if this is desirable
 //          when implementing parenting.
-class transform_component : public transform
+class transform_component : public component_base, public transform
 {
 public:
   transform_component()
   {
     set_scale(0.1f, 0.1f);
   }
+
+  static unique_id<component_base> const type_id;
 };
 
 } // namespace LE

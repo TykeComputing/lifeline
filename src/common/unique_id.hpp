@@ -19,44 +19,19 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_ENGINE_GRAPHICS_COMPONENT_H
-#define LE_ENGINE_GRAPHICS_COMPONENT_H
-
-#include <GL/glew.h>
-
-#include <common/unique_id.h>
-
-#include <graphics/vertex_array.h>
-#include <graphics/vertex_buffer.h>
-
-#include <math/vec.h>
-
-#include <engine/component_base.h>
-
 namespace LE
 {
 
-class sprite_component : public component_base
+template<typename SCOPE_T>
+unique_id<SCOPE_T>::unique_id() :
+  p_value(p_curr_id++)
 {
-public:
-  sprite_component();
-  explicit sprite_component(vec4 const& color);
+}
 
-  void bind() const;
-  void unbind() const;
-
-  GLsizei get_num_verts() const;
-
-  vec4 m_color = vec4({ 1.0f, 1.0f, 1.0f, 1.0f }); // TODO: Move and change method of representing colors (RGBA8?)
-
-  static unique_id<component_base> const type_id;
-private:
-  vertex_array p_VAO;
-  vertex_buffer p_VBO;
-
-  GLsizei num_verts = 0;
-};
+//template<typename SCOPE_T>
+//unique_id<SCOPE_T>::operator type() const
+//{
+//  return p_value;
+//}
 
 } // namespace LE
-
-#endif // LE_ENGINE_GRAPHICS_COMPONENT_H

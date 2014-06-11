@@ -45,34 +45,6 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
-typedef unsigned unique_id_t;
-
-struct unique_id_gen
-{
-  unique_id_t generate()
-  {
-    static unique_id_t curr_id = 1;
-    return curr_id++;
-  }
-};
-
-//////////////////////////////////////////////////////////////////////////
-class entity_hack
-{
-public:
-  explicit entity_hack(std::string const& name);
-  explicit entity_hack(char const* name);
-
-  sprite_component m_gfx_comp;
-  physics_component_hack m_phx_comp;
-
-  transform_component m_tf_comp;
-  float m_health = 100.0f;
-  std::string m_name = "unnamed";
-  unique_id_t m_id;
-};
-
-//////////////////////////////////////////////////////////////////////////
 template<typename T>
 bool operator==(std::unique_ptr<T> const& lhs, T const* rhs)
 {
@@ -85,21 +57,21 @@ class engine;
 class game_hack
 {
 public:
-  //typedef std::shared_ptr<entity_hack> entity_owning_ptr;
-  //typedef std::weak_ptr<entity_hack> entity_borrowed_ptr;
+  //typedef std::shared_ptr<entity> entity_owning_ptr;
+  //typedef std::weak_ptr<entity> entity_borrowed_ptr;
 
   explicit game_hack(engine & game_engine);
   ~game_hack();
 
-  std::weak_ptr<entity_hack> create_entity(std::string const& name);
-  std::weak_ptr<entity_hack> find_entity(std::string const& name);
-  void kill_entity(std::weak_ptr<entity_hack> target);
+  std::weak_ptr<entity> create_entity(std::string const& name);
+  std::weak_ptr<entity> find_entity(std::string const& name);
+  void kill_entity(std::weak_ptr<entity> target);
 
   bool update(float dt);
   void draw();
 
 private:
-  std::unordered_map<unique_id_t, std::shared_ptr<entity_hack>> p_entities;
+  std::unordered_map<unique_id<entity>, std::shared_ptr<entity>> p_entities;
   std::unique_ptr<shader_program> p_shader_prog;
 };
 
