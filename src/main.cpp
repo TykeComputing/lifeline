@@ -26,7 +26,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <common/error.h>
 #include <common/fatal_construction_exception.h>
-#include <common/LE_printf.h>
+#include <common/logging.h>
 #include <common/macros.h>
 #include <engine/engine.h>
 
@@ -53,7 +53,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     if(arg_value_separator_pos == std::string::npos
     || arg_value_separator_pos >= curr_arg.size())
     {
-      LE_printf("Malformed option specified: \"%s\"\n", curr_arg.c_str());
+      LE::log("setup", "Malformed option specified: \"{}\"") << curr_arg;
       continue;
     }
 
@@ -68,7 +68,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     }
     else
     {
-      LE_printf("Invalid option specified: \"%s\"\n", curr_arg.c_str());
+      LE::log("setup", "Invalid option specified: \"{}\"") << curr_arg;
     }
   }
 }

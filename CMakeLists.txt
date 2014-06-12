@@ -67,6 +67,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/file_string.h
   src/common/LE_printf.cpp
   src/common/LE_printf.h
+  src/common/logging.cpp
+  src/common/logging.h
   src/common/macros.h
   src/common/message_exception.cpp
   src/common/message_exception.h
