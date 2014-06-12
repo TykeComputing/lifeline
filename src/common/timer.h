@@ -22,6 +22,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_COMMON_TIMER_H
 #define LE_COMMON_TIMER_H
 
+// cstdint Must be incldued before SDL in this case otherwise size_t conflicts (unsure why)
+#include <cstdint>
 #include <SDL2/SDL_timer.h>
 
 namespace LE

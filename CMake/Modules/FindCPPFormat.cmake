@@ -23,5 +23,5 @@ endif()
 
 mark_as_advanced(CPPFORMAT_FOUND)
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(CPPFormat
+find_package_handle_standard_args(CPPFormat
   REQUIRED_VARS CPPFORMAT_LIBRARY CPPFORMAT_INCLUDE_PATH)
