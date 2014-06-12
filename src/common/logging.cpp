@@ -87,7 +87,7 @@ void logger::operator()(fmt::Writer const& w) const
   }
 }
 
-fmt::Formatter<logger> log(char const* scope, char const* format)
+fmt::Formatter<logger> log_status(char const* scope, char const* format)
 {
   std::ostream & os = std::cout;
   detail::log_prefix(os, "status", scope);
@@ -96,4 +96,21 @@ fmt::Formatter<logger> log(char const* scope, char const* format)
   return f;
 }
 
+fmt::Formatter<logger> log_error(char const* scope, char const* format)
+{
+  std::ostream & os = std::cerr;
+  detail::log_prefix(os, "error", scope);
+
+  fmt::Formatter<logger> f{format, logger{os}};
+  return f;
+}
+
+fmt::Formatter<logger> log_status(char const* format)
+{
+  log_status("global", format);
+}
+
+fmt::Formatter<logger> log_error(char const* format)
+{
+  log_error("global", format);
 }

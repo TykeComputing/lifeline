@@ -28,8 +28,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <cppformat/format.h>
 
-#include <common/macros.h>
-
 namespace LE
 {
 
@@ -66,7 +64,11 @@ private:
   bool p_print_newline;
 };
 
-fmt::Formatter<logger> log(char const* scope, char const* format);
+fmt::Formatter<logger> log_status(char const* scope, char const* format);
+fmt::Formatter<logger> log_error(char const* scope, char const* format);
+
+fmt::Formatter<logger> log_status(char const* format);
+fmt::Formatter<logger> log_error(char const* format);
 
 }
 
