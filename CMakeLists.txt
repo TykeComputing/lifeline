@@ -50,6 +50,7 @@ include(${LE_CMAKE_DIR}/ExternalDependencyRuntimes.cmake)
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(CPPFormat REQUIRED)
 
 # Header files are added so they will show up in all IDEs
 #
@@ -259,6 +260,8 @@ message(STATUS "${LE_MESSAGE_LINE_BREAK}")
 target_include_directories(${PROJECT_NAME}
   PUBLIC ${GLEW_INCLUDE_PATH}
   PUBLIC ${SDL2_INCLUDE_DIR}
+  PUBLIC ${CPPFORMAT_INCLUDE_PATH}
+
   PUBLIC ${LE_EXTERNAL_INCLUDE_DIR}
 )
 
@@ -267,4 +270,5 @@ target_link_libraries(${PROJECT_NAME}
   PUBLIC ${OPENGL_gl_LIBRARY}
   PUBLIC ${SDL2_LIBRARY}
   #PUBLIC ${SDL2MAIN_LIBRARY}
+  PUBLIC ${CPPFORMAT_LIBRARY}
 )

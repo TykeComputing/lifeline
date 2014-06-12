@@ -23,8 +23,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <SDL2/SDL.h>
 
+
 #include <common/error.h>
 #include <common/fatal_construction_exception.h>
+#include <common/LE_printf.h>
 
 namespace LE
 {
@@ -37,6 +39,18 @@ OS_interface::OS_interface()
     LE_ERROR(SDL_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error initializing SDL, exiting...\n");
+  }
+
+  {
+    SDL_version compiled;
+    SDL_version linked;
+
+    SDL_VERSION(&compiled);
+    SDL_GetVersion(&linked);
+    LE_printf("Compiled against SDL version %d.%d.%d ...\n",
+           compiled.major, compiled.minor, compiled.patch);
+    LE_printf("Linked against SDL version %d.%d.%d.\n",
+           linked.major, linked.minor, linked.patch);
   }
 
   auto LE_SDL_GL_SetAttribute = [](SDL_GLattr attrib, int val)->void

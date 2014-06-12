@@ -22,8 +22,14 @@ if(NOT CMAKE_BUILD_TYPE)
       "Choose the type of build, options are: ${CMAKE_CONFIGURATION_TYPES}.")
 endif()
 
-set(LE_TARGET_ARCH "x86" CACHE STRING
-  "Determines if application 32 bit or 64 bit. This affects what external libs are used.")
+
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+  set(LE_TARGET_ARCH "x86" CACHE STRING
+    "Determines if application 32 bit or 64 bit. This affects what external libs are used.")
+else("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  set(LE_TARGET_ARCH "x64" CACHE STRING
+    "Determines if application 32 bit or 64 bit. This affects what external libs are used.")
+endif()
 
 set(LE_RUN_SETTINGS_SUPPORTED_IDES "VS2013")
 
