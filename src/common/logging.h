@@ -26,6 +26,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <iosfwd>
 #include <string>
 
+#define FMT_USE_NOEXCEPT 1
+#define FMT_USE_VARIADIC_TEMPLATES 1
+#define FMT_USE_RVALUE_REFERENCES 1
 #include <cppformat/format.h>
 
 namespace LE

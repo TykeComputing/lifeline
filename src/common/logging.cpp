@@ -107,10 +107,11 @@ fmt::Formatter<logger> log_error(char const* scope, char const* format)
 
 fmt::Formatter<logger> log_status(char const* format)
 {
-  log_status("global", format);
+  return log_status("global", format);
 }
 
 fmt::Formatter<logger> log_error(char const* format)
 {
-  log_error("global", format);
+  auto f = log_error("global", format);;
+  return f;
 }

@@ -23,19 +23,25 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cstring>
+#include <iostream>
 #include <vector>
 
-void LE_display_error_message(
+#include <common/logging.h>
+
+namespace LE
+{
+
+void display_assert(
   std::string const& file,
   std::string const& function,
   int line,
   char const* message)
 {
-  LE_display_error_message(file, function, line, std::string(message));
+  display_assert(file, function, line, std::string(message));
 }
 
 // Some APIs return unsigned c-strings, they are converted here.
-void LE_display_error_message(
+void display_assert(
   std::string const& file,
   std::string const& function,
   int line,
@@ -55,28 +61,44 @@ void LE_display_error_message(
     signed_message.begin(),
    [](unsigned char c)->char { return static_cast<char>(c); });
 
-  LE_display_error_message(file, function, line, signed_message.data());
+  display_assert(file, function, line, signed_message.data());
 }
 
-void LE_display_error_message(
+void display_assert(
   std::string const& file,
   std::string const& function,
   int line,
   std::string const& message)
 {
-  // Since this will only occur during errors, efficiency doesn't matter
-  std::string formatted_message =
-      file + ":" + function + "(" + std::to_string(line) + ")\n\n" + message;
+  static bool sdl_init = false;
 
-  int res = SDL_ShowSimpleMessageBox(
-    SDL_MESSAGEBOX_ERROR,
-    "LifeLine Engine - ERROR!",
-    formatted_message.c_str(),
-    NULL);
-
-  if(res != 0)
+  if(sdl_init)
   {
-    std::cerr << "Attempting to display error message before SDL_Init()." << std::endl;
-    std::cerr << formatted_message << std::endl;
+    // Since this will only occur during errors, efficiency doesn't matter
+    std::string formatted_message =
+        file + ":" + function + "(" + std::to_string(line) + ")\n\n" + message;
+
+    log_error("ASSERT", "{}") << formatted_message;
+
+    int res = SDL_ShowSimpleMessageBox(
+      SDL_MESSAGEBOX_ERROR,
+      "LifeLine Engine - ERROR!",
+      formatted_message.c_str(),
+      NULL);
+
+    if(res == 0)
+    {
+      log_error("{}") << SDL_GetError();
+      SDL_ClearError();
+    }
   }
+  else
+  {
+    log_error("Attempting to display assert message box before SDL_Init()!");
+  }
+
+  std::cout.flush();
+  std::cerr.flush();
+}
+
 }
