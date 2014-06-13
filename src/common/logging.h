@@ -71,11 +71,16 @@ LE_ENUM_5(log_scope,
   graphics,
   math)
 
+fmt::Formatter<logger> log_status_no_prefix(char const* format);
+fmt::Formatter<logger> log_error_no_prefix(char const* format);
+
 fmt::Formatter<logger> log_status(char const* format);
 fmt::Formatter<logger> log_error(char const* format);
 
 fmt::Formatter<logger> log_status(log_scope::value scope, char const* format);
 fmt::Formatter<logger> log_error(log_scope::value scope, char const* format);
+
+extern char const* log_line_seperator;
 
 // HELPERS
 namespace detail

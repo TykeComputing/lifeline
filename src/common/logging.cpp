@@ -31,6 +31,7 @@ std::unique_ptr<high_resolution_timer> log_timer::p_timer = {};
 void log_timer::start()
 {
   p_timer.reset(new high_resolution_timer);
+  p_timer->start();
 }
 
 float log_timer::get_log_time()
@@ -67,23 +68,40 @@ void logger::operator()(fmt::Writer const& w) const
   }
 }
 
+static std::ostream & status_os = std::cout;
+static std::ostream & error_os = std::cerr;
+
 fmt::Formatter<logger> log(std::ostream & os, char const* format)
 {
   fmt::Formatter<logger> f{format, logger{os}};
   return f;
 }
 
+fmt::Formatter<logger> log_status_no_prefix(char const* format)
+{
+  auto & os = status_os;
+  fmt::Formatter<logger> f{format, logger{os}};
+  return f;
+}
+
+fmt::Formatter<logger> log_error_no_prefix(char const* format)
+{
+  auto & os = error_os;
+  fmt::Formatter<logger> f{format, logger{os}};
+  return f;
+}
+
 fmt::Formatter<logger> log_status(char const* format)
 {
-  auto & os = std::cout;
-  fmt::Formatter<logger> f{format, logger{os}};
+  auto & os = status_os;
   detail::log_prefix(os, "STATUS", log_scope::global);
+  fmt::Formatter<logger> f{format, logger{os}};
   return f;
 }
 
 fmt::Formatter<logger> log_error(char const* format)
 {
-  auto & os = std::cerr;
+  auto & os = error_os;
   detail::log_prefix(os, "ERROR", log_scope::global);
   fmt::Formatter<logger> f{format, logger{os}};
   return f;
@@ -91,19 +109,22 @@ fmt::Formatter<logger> log_error(char const* format)
 
 fmt::Formatter<logger> log_status(log_scope::value scope, char const* format)
 {
-  auto & os = std::cout;
-  fmt::Formatter<logger> f{format, logger{os}};
+  auto & os = status_os;
   detail::log_prefix(os, "STATUS", scope);
+  fmt::Formatter<logger> f{format, logger{os}};
   return f;
 }
 
 fmt::Formatter<logger> log_error(log_scope::value scope, char const* format)
 {
-  auto & os = std::cerr;
+  auto & os = error_os;
   detail::log_prefix(os, "ERROR", scope);
   fmt::Formatter<logger> f{format, logger{os}};
   return f;
 }
+
+char const* log_line_seperator =
+  "----------------------------------------------------------------";
 
 // HELPERS
 namespace detail
@@ -113,7 +134,7 @@ void log_prefix(std::ostream & os, char const* log_type, log_scope::value scope)
 {
   try
   {
-    fmt::Formatter<logger> log_prefix_f{"({:6.2f}) {} - {}: ", logger{os, false}};
+    fmt::Formatter<logger> log_prefix_f{"({:<6.2f}) {} - {}: ", logger{os, false}};
     log_prefix_f << log_timer::get_log_time() << log_type << log_scope::c_str[scope];
   }
   catch(fmt::FormatError const& e)

@@ -29,6 +29,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/resource_exception.h>
 
 #include <graphics/error_checking.h>
+#include <algorithm>
 
 namespace LE
 {
@@ -92,25 +93,30 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
     compile_log.resize(compile_log_length);
     glGetShaderInfoLog(p_raw_name, compile_log_length, nullptr, compile_log.data());
 
-    // If OpenGL implementation provides newline, get rid of it
-    if(compile_log.empty() == false && compile_log.back() == '\n')
+    // If OpenGL implementation provides newline(s), get rid of it/them
+    if(compile_log.size() >= 2)
     {
-      compile_log.back() = '\0';
+      // Skip null terminator
+      int newline_it = compile_log_length - 2;
+      while( (newline_it >= 0) && (compile_log[newline_it] == '\n') )
+      {
+       compile_log[newline_it] = '\0';
+        --newline_it;
+      }
     }
 
-    log_error(log_scope::graphics,
-      "-- GLSL SHADER COMPILER ERRORS: --------------------------------");
-    log_error(log_scope::graphics, "== SHADER SOURCES =======");
+    log_error(log_scope::graphics, "GLSL SHADER COMPILER ERRORS");
+    log_error_no_prefix(log_line_seperator);
+    log_error_no_prefix("== SHADER SOURCES =======");
     for(auto const& shader_source_it : shader_source_strings)
     {
-      log_error(log_scope::graphics, "{:3} {}")
+      log_error_no_prefix("({:<3}) {}")
         << shader_source_it.get_num_lines()
         << shader_source_it.get_file_name().c_str();
     }
-    log_error(log_scope::graphics, "=== ERROR LOG ===========");
-    log_error(log_scope::graphics, "{}") << compile_log.data();
-    log_error(log_scope::graphics,
-      "----------------------------------------------------------------");
+    log_error_no_prefix("=== ERROR LOG ===========");
+    log_error_no_prefix("{}") << compile_log.data();
+    log_error_no_prefix(log_line_seperator);
 
     // cleanup from failure
     glDeleteShader(p_raw_name);
