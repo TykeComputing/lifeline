@@ -21,8 +21,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "logging.h"
 
-#include <iostream>
-
 #include <SDL2/SDL.h>
 
 #include <common/timer.h>
@@ -87,31 +85,4 @@ void logger::operator()(fmt::Writer const& w) const
   }
 }
 
-fmt::Formatter<logger> log_status(char const* scope, char const* format)
-{
-  std::ostream & os = std::cout;
-  detail::log_prefix(os, "status", scope);
-
-  fmt::Formatter<logger> f{format, logger{os}};
-  return f;
-}
-
-fmt::Formatter<logger> log_error(char const* scope, char const* format)
-{
-  std::ostream & os = std::cerr;
-  detail::log_prefix(os, "error", scope);
-
-  fmt::Formatter<logger> f{format, logger{os}};
-  return f;
-}
-
-fmt::Formatter<logger> log_status(char const* format)
-{
-  return log_status("global", format);
-}
-
-fmt::Formatter<logger> log_error(char const* format)
-{
-  auto f = log_error("global", format);;
-  return f;
 }

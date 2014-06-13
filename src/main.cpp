@@ -53,7 +53,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     if(arg_value_separator_pos == std::string::npos
     || arg_value_separator_pos >= curr_arg.size())
     {
-      LE::log_error("Malformed option specified: \"{}\"") << curr_arg;
+      LE::log_error("Malformed option specified: \"{}\"", curr_arg);
       continue;
     }
 
@@ -68,7 +68,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     }
     else
     {
-      LE::log_error("Invalid option specified: \"{}\"") << curr_arg;
+      LE::log_error("Invalid option specified: \"{}\"", curr_arg);
     }
   }
 }

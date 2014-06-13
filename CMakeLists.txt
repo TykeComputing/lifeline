@@ -83,6 +83,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/unique_id.hpp
   src/common/unique_id.h
 
+  #src/math/logging.cpp
+  #src/math/logging.h
   src/math/mat.cpp
   src/math/mat.hpp
   src/math/mat.h
@@ -94,6 +96,8 @@ set(LE_EXECUTABLE_SRC_LIST
 
   src/graphics/error_checking.cpp
   src/graphics/error_checking.h
+  #src/graphics/logging.cpp
+  #src/graphics/logging.h
   src/graphics/shader.cpp
   src/graphics/shader.h
   src/graphics/shader_program.cpp
@@ -120,6 +124,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/entity_manager.h
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
+  #src/engine/logging.cpp
+  #src/engine/logging.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
   src/engine/sprite_component.cpp
@@ -131,6 +137,8 @@ set(LE_EXECUTABLE_SRC_LIST
 
   src/game/game_hack.cpp
   src/game/game_hack.h
+  #src/game/logging.cpp
+  #src/game/logging.h
 )
 
 # File specific compile options

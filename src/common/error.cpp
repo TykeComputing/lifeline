@@ -78,7 +78,7 @@ void display_assert(
     std::string formatted_message =
         file + ":" + function + "(" + std::to_string(line) + ")\n\n" + message;
 
-    log_error("ASSERT", "{}") << formatted_message;
+    log("ASSERT", "global", "{}", formatted_message);
 
     int res = SDL_ShowSimpleMessageBox(
       SDL_MESSAGEBOX_ERROR,
@@ -88,7 +88,7 @@ void display_assert(
 
     if(res == 0)
     {
-      log_error("{}") << SDL_GetError();
+      log_error("{}", SDL_GetError());
       SDL_ClearError();
     }
   }

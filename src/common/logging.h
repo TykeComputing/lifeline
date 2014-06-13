@@ -23,7 +23,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #define LE_COMMON_LOGGING_H
 
 #include <memory>
-#include <iosfwd>
+#include <iostream>
 #include <string>
 
 #define FMT_USE_NOEXCEPT 1
@@ -67,11 +67,44 @@ private:
   bool p_print_newline;
 };
 
-fmt::Formatter<logger> log_status(char const* scope, char const* format);
-fmt::Formatter<logger> log_error(char const* scope, char const* format);
+class log_impl
+{
+public:
+  template<typename FIRST_T, typename... Ts>
+  static void aux_log(fmt::Formatter<logger> & f, FIRST_T const& first, Ts const&... vs)
+  {
+    f << first;
+    aux_log<Ts...>(f, vs...); // why does this call this overload instead of the below?
+  }
 
-fmt::Formatter<logger> log_status(char const* format);
-fmt::Formatter<logger> log_error(char const* format);
+  template<typename... Ts>
+  static void aux_log(fmt::Formatter<logger> &)
+  {
+    // End of recursion
+  }
+};
+
+template<typename... Ts>
+void log(char const* log_type, char const* log_scope, char const* format, Ts const&... vs)
+{
+  std::ostream & os = std::cout;
+  detail::log_prefix(os, log_type, log_scope);
+
+  fmt::Formatter<logger> f{format, logger{os}};
+  log_impl::aux_log<Ts...>(f, vs...);
+}
+
+template<typename... Ts>
+void log_status(char const* format, Ts const&... vs)
+{
+  log("status", "global", format, vs...);
+}
+
+template<typename... Ts>
+void log_error(char const* format, Ts const&... vs)
+{
+  log("error", "global", format, vs...);
+}
 
 }
 
