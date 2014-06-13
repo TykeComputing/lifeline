@@ -23,7 +23,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
 
-#include <common/error.h>
+#include <common/fatal_error.h>
 #include <common/LE_printf.h>
 #include <common/timer.h>
 
@@ -82,13 +82,13 @@ void engine::run()
         catch(LE::resource_exception const& e)
         {
           e.print("Game");
-          LE_ERROR("Uncaught resource exception!");
+          LE_FATAL_ERROR("Uncaught resource exception!");
           return;
         }
         catch(LE::message_exception const& e)
         {
           e.print("Game");
-          LE_ERROR("Uncaught message exception!");
+          LE_FATAL_ERROR("Uncaught message exception!");
           return;
         }
 
@@ -106,7 +106,7 @@ void engine::run()
   catch(LE::resource_exception const& e)
   {
     e.print("Game Construction");
-    LE_ERROR("ERROR"); // Give time to look at error
+    LE_FATAL_ERROR("ERROR"); // Give time to look at error
   }
 }
 
@@ -119,7 +119,7 @@ void engine::set_resource_dir(std::string const& val)
 {
   if(val.empty())
   {
-    LE_ERROR("Empty resource directory provided, ignoring.");
+    LE_FATAL_ERROR("Empty resource directory provided, ignoring.");
     return;
   }
 

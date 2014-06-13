@@ -23,7 +23,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <utility>
 
-#include <common/error.h>
+#include <common/fatal_error.h>
 #include <common/LE_printf.h>
 #include <common/resource_exception.h>
 
@@ -82,7 +82,7 @@ shader_program::shader_program(std::vector<shader*> const& shaders)
     // cleanup from failure
     glDeleteProgram(p_raw_name);
 
-    LE_ERRORIF_GL_ERROR();
+    LE_FATAL_ERROR_IF_GL_ERROR();
 
     throw resource_exception("Shader linking failed.");
   }
@@ -95,7 +95,7 @@ shader_program::shader_program(std::vector<shader*> const& shaders)
       glDetachShader(p_raw_name, shader_it->p_raw_name);
     }
 
-    LE_ERRORIF_GL_ERROR();
+    LE_FATAL_ERROR_IF_GL_ERROR();
   }
 }
 

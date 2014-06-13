@@ -67,24 +67,40 @@ void logger::operator()(fmt::Writer const& w) const
   }
 }
 
-void log(std::ostream & os, char const* format)
+fmt::Formatter<logger> log(std::ostream & os, char const* format)
 {
   fmt::Formatter<logger> f{format, logger{os}};
   return f;
 }
 
-void log_status(char const* format)
+fmt::Formatter<logger> log_status(char const* format)
 {
   auto & os = std::cout;
   fmt::Formatter<logger> f{format, logger{os}};
-  detail::log_prefix(os, "STATUS", "GLOBAL");
+  detail::log_prefix(os, "STATUS", log_scope::global);
   return f;
 }
 
-void log_error(char const* format)
+fmt::Formatter<logger> log_error(char const* format)
 {
   auto & os = std::cerr;
-  detail::log_prefix(os, "STATUS", "GLOBAL");
+  detail::log_prefix(os, "ERROR", log_scope::global);
+  fmt::Formatter<logger> f{format, logger{os}};
+  return f;
+}
+
+fmt::Formatter<logger> log_status(log_scope::value scope, char const* format)
+{
+  auto & os = std::cout;
+  fmt::Formatter<logger> f{format, logger{os}};
+  detail::log_prefix(os, "STATUS", scope);
+  return f;
+}
+
+fmt::Formatter<logger> log_error(log_scope::value scope, char const* format)
+{
+  auto & os = std::cerr;
+  detail::log_prefix(os, "ERROR", scope);
   fmt::Formatter<logger> f{format, logger{os}};
   return f;
 }
@@ -93,12 +109,12 @@ void log_error(char const* format)
 namespace detail
 {
 
-void log_prefix(std::ostream & os, char const* log_type, char const* log_scope)
+void log_prefix(std::ostream & os, char const* log_type, log_scope::value scope)
 {
   try
   {
     fmt::Formatter<logger> log_prefix_f{"({:6.2f}) {} - {}: ", logger{os, false}};
-    log_prefix_f << log_timer::get_log_time() << log_type << log_scope;
+    log_prefix_f << log_timer::get_log_time() << log_type << log_scope::c_str[scope];
   }
   catch(fmt::FormatError const& e)
   {

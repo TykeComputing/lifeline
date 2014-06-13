@@ -19,8 +19,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_COMMON_ASSERT_H
-#define LE_COMMON_ASSERT_H
+#ifndef LE_COMMON_FATAL_ERROR_H
+#define LE_COMMON_FATAL_ERROR_H
 
 #include <string>
 
@@ -36,14 +36,17 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 
-#define LE_ERROR(msg) \
+#define LE_FATAL_ERROR(msg) \
 { \
-  ::LE::display_assert(__FILE__, __FUNCTION__, __LINE__, msg);\
+  ::LE::detail::display_assert(__FILE__, __FUNCTION__, __LINE__, msg);\
   LE_HALT_PROGRAM(); \
 }
-#define LE_ERRORIF(cond, msg) { if(cond) { LE_ERROR(msg); } }
+#define LE_FATAL_ERROR_IF(cond, msg) { if(cond) { LE_FATAL_ERROR(msg); } }
 
 namespace LE
+{
+
+namespace detail
 {
   void display_assert(
     std::string const& file,
@@ -64,4 +67,6 @@ namespace LE
     std::string const& message);
 }
 
-#endif // LE_COMMON_ASSERT_H
+}
+
+#endif // LE_COMMON_FATAL_ERROR_H

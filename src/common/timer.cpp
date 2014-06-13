@@ -21,7 +21,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "timer.h"
 
-#include <common/error.h>
+#include <common/fatal_error.h>
 
 #include <SDL2/SDL.h>
 
@@ -51,11 +51,11 @@ float high_resolution_timer::poll(void) const
 {
   if(p_is_running == false)
   {
-    LE_ERROR("Attemtping to poll high resolution timer that was not started.");
+    LE_FATAL_ERROR("Attemtping to poll high resolution timer that was not started.");
     return 0.0f;
   }
 
-  LE_ERRORIF(p_perf_freq != SDL_GetPerformanceFrequency(),
+  LE_FATAL_ERROR_IF(p_perf_freq != SDL_GetPerformanceFrequency(),
     "high_resolution_timer error, frequency when polled is different from frequency when reset!");
 
   // In the event of wrap around we will assume only one wrap has occured, and end < start.

@@ -21,7 +21,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "window.h"
 
-#include <common/error.h>
+#include <common/fatal_error.h>
 #include <common/fatal_construction_exception.h>
 
 namespace LE
@@ -33,7 +33,7 @@ window::window()
   p_raw_window = SDL_CreateWindow("Lifeline Engine", 64, 64, 1280, 760, sdl_window_flags);
   if(p_raw_window == nullptr)
   {
-    LE_ERROR(SDL_GetError());
+    LE_FATAL_ERROR(SDL_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error creating SDL window, exiting...\n");
   }

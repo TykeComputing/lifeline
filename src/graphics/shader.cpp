@@ -24,11 +24,11 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <utility>
 
 #include <common/file_string.h>
+#include <common/logging.h>
 
 #include <common/resource_exception.h>
 
 #include <graphics/error_checking.h>
-#include <graphics/logging.h>
 
 namespace LE
 {
@@ -98,27 +98,29 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
       compile_log.back() = '\0';
     }
 
-    log_graphics_error("-- GLSL SHADER COMPILER ERRORS: --------------------------------");
-    log_graphics_error("== SHADER SOURCES =======");
+    log_error(log_scope::graphics,
+      "-- GLSL SHADER COMPILER ERRORS: --------------------------------");
+    log_error(log_scope::graphics, "== SHADER SOURCES =======");
     for(auto const& shader_source_it : shader_source_strings)
     {
-      log_graphics_error("{:3} {}",
-        shader_source_it.get_num_lines(),
-        shader_source_it.get_file_name().c_str());
+      log_error(log_scope::graphics, "{:3} {}")
+        << shader_source_it.get_num_lines()
+        << shader_source_it.get_file_name().c_str();
     }
-    log_graphics_error("=== ERROR LOG ===========");
-    log_graphics_error("{}", compile_log.data());
-    log_graphics_error("----------------------------------------------------------------");
+    log_error(log_scope::graphics, "=== ERROR LOG ===========");
+    log_error(log_scope::graphics, "{}") << compile_log.data();
+    log_error(log_scope::graphics,
+      "----------------------------------------------------------------");
 
     // cleanup from failure
     glDeleteShader(p_raw_name);
 
-    LE_ERRORIF_GL_ERROR();
+    LE_FATAL_ERROR_IF_GL_ERROR();
 
     throw resource_exception("Shader compilation failed.");
   }
 
-  LE_ERRORIF_GL_ERROR();
+  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 shader::~shader()

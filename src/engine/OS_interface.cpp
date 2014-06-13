@@ -24,7 +24,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <SDL2/SDL.h>
 
 #include <common/logging.h>
-#include <common/error.h>
+#include <common/fatal_error.h>
 #include <common/fatal_construction_exception.h>
 #include <common/LE_printf.h>
 
@@ -36,7 +36,7 @@ OS_interface::OS_interface()
   int sdl_init_res = SDL_Init(SDL_INIT_VIDEO);
   if(sdl_init_res != 0)
   {
-    LE_ERROR(SDL_GetError());
+    LE_FATAL_ERROR(SDL_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error initializing SDL, exiting...\n");
   }
@@ -60,7 +60,7 @@ OS_interface::OS_interface()
     int set_attrib_res = SDL_GL_SetAttribute(attrib, val);
     if(set_attrib_res != 0)
     {
-      LE_ERROR(SDL_GetError());
+      LE_FATAL_ERROR(SDL_GetError());
       SDL_ClearError();
     }
   };
@@ -109,7 +109,7 @@ std::string OS_interface::get_base_dir(void) const
   }
   else
   {
-    LE_ERROR(SDL_GetError());
+    LE_FATAL_ERROR(SDL_GetError());
     SDL_ClearError();
     return std::string("Unable to get working directory.");
   }
@@ -126,7 +126,7 @@ std::string OS_interface::get_preferred_dir(void) const
 //  }
 //  else
 //  {
-//    LE_ERROR(SDL_GetError());
+//    LE_FATAL_ERROR(SDL_GetError());
 //    SDL_ClearError();
 //    return std::string("Unable to get working directory.");
 //  }

@@ -25,7 +25,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 #include <unordered_map>
 
-#include <common/error.h>
+#include <common/fatal_error.h>
 #include <common/macros.h>
 #include <common/unique_id.h>
 
@@ -77,7 +77,7 @@ public:
     }
     else
     {
-      LE_ERROR("Unable to add component!");
+      LE_FATAL_ERROR("Unable to add component!");
       return nullptr;
     }
   }

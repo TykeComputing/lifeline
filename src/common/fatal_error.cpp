@@ -19,7 +19,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include "error.h"
+#include "fatal_error.h"
 
 #include <algorithm>
 #include <cstring>
@@ -29,6 +29,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/logging.h>
 
 namespace LE
+{
+
+namespace detail
 {
 
 void display_assert(
@@ -78,7 +81,7 @@ void display_assert(
     std::string formatted_message =
         file + ":" + function + "(" + std::to_string(line) + ")\n\n" + message;
 
-    safe_log(std::cerr, "HALT - {}", formatted_message);
+    log(std::cerr, "HALT - {}") << formatted_message;
 
     int res = SDL_ShowSimpleMessageBox(
       SDL_MESSAGEBOX_ERROR,
@@ -88,17 +91,20 @@ void display_assert(
 
     if(res == 0)
     {
-      log_error("{}", SDL_GetError());
+      log_error("{}") << SDL_GetError();
       SDL_ClearError();
     }
   }
   else
   {
-    safe_log(std::cerr, "Attempting to display assert message box before SDL_Init!");
+    sdl_init = (SDL_WasInit(0) != 0);
+    log(std::cerr, "Attempting to display assert message box before SDL_Init!");
   }
 
   std::cout.flush();
   std::cerr.flush();
+}
+
 }
 
 }

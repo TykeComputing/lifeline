@@ -23,7 +23,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/glew.h>
 
-#include <common/error.h>
+#include <common/fatal_error.h>
 #include <common/fatal_construction_exception.h>
 #include <common/LE_printf.h>
 #include <graphics/error_checking.h>
@@ -38,7 +38,7 @@ graphics_context::graphics_context(window & target_window)
   p_raw_context = SDL_GL_CreateContext(target_window.get_raw());
   if(p_raw_context == nullptr)
   {
-    LE_ERROR(SDL_GetError());
+    LE_FATAL_ERROR(SDL_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error creating OpenGL context, exiting...");
   }
@@ -49,7 +49,7 @@ graphics_context::graphics_context(window & target_window)
   GLenum glew_init_res = glewInit();
   if(glew_init_res != GLEW_OK)
   {
-    LE_ERROR(glewGetErrorString(glew_init_res));
+    LE_FATAL_ERROR(glewGetErrorString(glew_init_res));
     throw fatal_construction_exception("Error intializing GLEW, exiting...");
   }
 

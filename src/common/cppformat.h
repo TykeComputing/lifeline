@@ -19,30 +19,12 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_ERROR_CHECKING_H
-#define LE_GRAPHICS_ERROR_CHECKING_H
+#ifndef LE_COMMON_CPPFORMAT_H
+#define LE_COMMON_CPPFORMAT_H
 
-#include <GL/glew.h>
+#define FMT_USE_NOEXCEPT 1
+#define FMT_USE_VARIADIC_TEMPLATES 1
+#define FMT_USE_RVALUE_REFERENCES 1
+#include <cppformat/format.h>
 
-#include <string>
-
-#include <common/fatal_error.h>
-
-#define LE_FATAL_ERROR_IF_GL_ERROR() \
-{ \
-  GLenum last_error = glGetError(); \
-  if(last_error != GL_NO_ERROR) \
-  { \
-    LE_FATAL_ERROR("Graphics: Internal OpenGL Error!\nCode(s): " + LE::get_GL_errors(last_error)); \
-  } \
-}
-
-namespace LE
-{
-
-std::string get_GL_errors();
-std::string get_GL_errors(GLenum last_error);
-
-}
-
-#endif // LE_GRAPHICS_ERROR_CHECKING_H
+#endif // LE_COMMON_CPPFORMAT_H

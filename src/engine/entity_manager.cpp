@@ -41,7 +41,7 @@ std::weak_ptr<entity> entity_manager::create_entity(std::string const& name)
   }
   else
   {
-    LE_ERROR("Unable to create entity!");
+    LE_FATAL_ERROR("Unable to create entity!");
     return {};
   }
 }

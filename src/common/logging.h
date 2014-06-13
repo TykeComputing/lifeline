@@ -22,14 +22,13 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_COMMON_LOGGING_H
 #define LE_COMMON_LOGGING_H
 
+#include <common/macros.h>
+
 #include <memory>
 #include <iostream>
 #include <string>
 
-#define FMT_USE_NOEXCEPT 1
-#define FMT_USE_VARIADIC_TEMPLATES 1
-#define FMT_USE_RVALUE_REFERENCES 1
-#include <cppformat/format.h>
+#include <common/cppformat.h>
 
 namespace LE
 {
@@ -61,54 +60,28 @@ private:
   bool p_print_newline;
 };
 
-void log(std::ostream & os, char const* format)
-{
-  fmt::Formatter<logger> f{format, logger{os}};
-  return f;
-}
+fmt::Formatter<logger> log(std::ostream & os, char const* format);
 
 // NOTE: The below logging functions cannot be used until SDL has been initialized.
-void log_status(char const* format)
-{
-  auto & os = std::cout;
-  fmt::Formatter<logger> f{format, logger{os}};
-  detail::log_prefix(os, "STATUS", "GLOBAL");
-  return f;
-}
 
-void log_error(char const* format)
-{
-  auto & os = std::cerr;
-  detail::log_prefix(os, "STATUS", "GLOBAL");
-  fmt::Formatter<logger> f{format, logger{os}};
-  return f;
-}
+LE_ENUM_5(log_scope,
+  global,
+  engine,
+  game,
+  graphics,
+  math)
 
-void log_status(char const* format)
-{
-  auto & os = std::cout;
-  fmt::Formatter<logger> f{format, logger{os}};
-  detail::log_prefix(os, "STATUS", "GLOBAL");
-  return f;
-}
+fmt::Formatter<logger> log_status(char const* format);
+fmt::Formatter<logger> log_error(char const* format);
 
-void log_error(char const* format)
-{
-  auto & os = std::cerr;
-  detail::log_prefix(os, "STATUS", "GLOBAL");
-  fmt::Formatter<logger> f{format, logger{os}};
-  return f;
-}
-
-// Ideally these would be defined elsewhere (since common would have no knowledge of other
-//   libraries). Placing here for the time being for convenience.
-
+fmt::Formatter<logger> log_status(log_scope::value scope, char const* format);
+fmt::Formatter<logger> log_error(log_scope::value scope, char const* format);
 
 // HELPERS
 namespace detail
 {
 
-void log_prefix(std::ostream & os, char const* log_type, char const* log_scope);
+void log_prefix(std::ostream & os, char const* log_type, log_scope::value scope);
 
 } //namespace detail
 
