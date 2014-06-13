@@ -21,8 +21,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "logging.h"
 
-#include <SDL2/SDL.h>
-
 #include <common/timer.h>
 
 namespace LE
@@ -31,32 +29,16 @@ namespace LE
 namespace detail
 {
 
-std::unique_ptr<timer> log_time::p_timer = {};
-
-void log_time::start_log_timer()
-{
-  p_timer.reset(new timer);
-}
-
-float log_time::get_log_time()
-{
-  return p_timer->poll();
-}
-
 void log_prefix(std::ostream & os, char const* log_type, char const* log_scope)
 {
-  static bool sdl_init = false;
-
-  if(sdl_init)
+  try
   {
-    fmt::Formatter<logger> log_prefix_f{"({}) {} - {}: ", logger{os, false}};
-    log_prefix_f << log_time::get_log_time() << log_type << log_scope;
+    fmt::Formatter<logger> log_prefix_f{"({:6.2f}) {} - {}: ", logger{os, false}};
+    log_prefix_f << log_timer::get_log_time() << log_type << log_scope;
   }
-  else
+  catch(fmt::FormatError const& e)
   {
-    sdl_init = SDL_WasInit(0) != 0;
-    fmt::Formatter<logger> log_prefix_f{"{} - {}: ", logger{os, false}};
-    log_prefix_f << log_type << log_scope;
+    std::cerr << e.what();
   }
 }
 
@@ -82,5 +64,25 @@ void logger::operator()(fmt::Writer const& w) const
 }
 
 } // namespace detail
+
+std::unique_ptr<high_resolution_timer> log_timer::p_timer = {};
+
+void log_timer::start()
+{
+  p_timer.reset(new high_resolution_timer);
+}
+
+float log_timer::get_log_time()
+{
+  if(p_timer == nullptr)
+  {
+    // Indicate that this was called in the land before timer.
+    return -1.0f;
+  }
+  else
+  {
+    return p_timer->poll();
+  }
+}
 
 }

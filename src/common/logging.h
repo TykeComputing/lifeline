@@ -34,20 +34,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-class timer;
+class high_resolution_timer;
 
 namespace detail
 {
-
-class log_time
-{
-public:
-  static void start_log_timer();
-  static float get_log_time();
-
-private:
-  static std::unique_ptr<timer> p_timer;
-};
 
 void log_prefix(std::ostream & os, char const* log_type, char const* log_scope);
 
@@ -68,46 +58,121 @@ private:
 class log_impl
 {
 public:
-  template<typename FIRST_T, typename... Ts>
+#define test1
+#ifdef test
+  template<typename FIRST_T, typename... ARG_TYPES>
   static void
   aux_log(
     fmt::Formatter<logger> & f,
     FIRST_T const& first,
-    Ts const&... vs)
+    ARG_TYPES const&... arg_vals)
   {
     f << first;
-    aux_log<Ts...>(f, vs...);
+    aux_log<ARG_TYPES...>(f, arg_vals...);
   }
 
-  template<typename... Ts>
+  template<typename... ARG_TYPES>
   static void aux_log(fmt::Formatter<logger> &)
   {
     // Do nothing
   }
 };
+#else
+  void gun(fmt::Formatter<logger> const&) {}
 
+  template<typename... ARG_TYPES>
+  static void
+  aux_log(
+    fmt::Formatter<logger> & f,
+    ARG_TYPES const&... arg_vals)
+  {
+
+    gun(f.operator<<(arg_vals)...);
+  }
+};
+#endif
 } //namespace detail
 
-template<typename... Ts>
-void log(char const* log_type, char const* log_scope, char const* format, Ts const&... vs)
+class log_timer
 {
-  std::ostream & os = std::cout;
+public:
+  static void start();
+  static float get_log_time();
+
+private:
+  static std::unique_ptr<high_resolution_timer> p_timer;
+};
+
+// os - error should be cerr
+// safe_log to log with no dependencies.
+
+// Has no dependencies, can be used anywhere.
+template<typename... ARG_TYPES>
+void
+safe_log(
+  std::ostream & os,
+  char const* format,
+  ARG_TYPES const&... args_vals)
+{
+  try
+  {
+    fmt::Formatter<detail::logger> f{format, detail::logger{os}};
+    detail::log_impl::aux_log<ARG_TYPES...>(f, args_vals...);
+  }
+  catch(fmt::FormatError const& e)
+  {
+    std::cerr << e.what();
+  }
+}
+
+template<typename... ARG_TYPES>
+void
+log(
+  std::ostream & os,
+  char const* log_type,
+  char const* log_scope,
+  char const* format,
+  ARG_TYPES const&... args_vals)
+{
   detail::log_prefix(os, log_type, log_scope);
-
-  fmt::Formatter<detail::logger> f{format, detail::logger{os}};
-  detail::log_impl::aux_log<Ts...>(f, vs...);
+  safe_log<ARG_TYPES...>(os, format, args_vals...);
 }
 
-template<typename... Ts>
-void log_status(char const* format, Ts const&... vs)
+template<typename... ARG_TYPES>
+void
+log_status(
+  char const* log_scope,
+  char const* format,
+  ARG_TYPES const&... arg_vals)
 {
-  log("status", "global", format, vs...);
+  log(std::cout, "status", log_scope, format, arg_vals...);
 }
 
-template<typename... Ts>
-void log_error(char const* format, Ts const&... vs)
+template<typename... ARG_TYPES>
+void log_error(
+  char const* log_scope,
+  char const* format,
+  ARG_TYPES const&... arg_vals)
 {
-  log("error", "global", format, vs...);
+  log(std::cerr, "error", log_scope, format, arg_vals...);
+}
+
+template<typename... ARG_TYPES>
+void
+log_global_status(
+  char const* format,
+  ARG_TYPES const&... arg_vals)
+{
+  log_status("global", format, arg_vals...);
+}
+
+template<typename... ARG_TYPES>
+void
+log_global_error(
+  char const* format,
+  ARG_TYPES const&... arg_vals)
+{
+  log_error("global", format, arg_vals...);
 }
 
 }

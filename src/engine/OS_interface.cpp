@@ -23,7 +23,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <SDL2/SDL.h>
 
-
+#include <common/logging.h>
 #include <common/error.h>
 #include <common/fatal_construction_exception.h>
 #include <common/LE_printf.h>
@@ -40,6 +40,8 @@ OS_interface::OS_interface()
     SDL_ClearError();
     throw fatal_construction_exception("Error initializing SDL, exiting...\n");
   }
+
+  log_timer::start();
 
   {
     SDL_version compiled;

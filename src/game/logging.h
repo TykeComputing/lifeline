@@ -27,16 +27,22 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-template<typename... Ts>
-void log_game_status(char const* format, Ts const&... vs)
+template<typename... ARG_TYPES>
+void
+log_game_status(
+  char const* format,
+  ARG_TYPES const&... arg_vals)
 {
-  log_status("game", format, vs...);
+  log_status("game", format, arg_vals...);
 }
 
-template<typename... Ts>
-void log_game_error(char const* format, Ts const&... vs)
+template<typename... ARG_TYPES>
+void
+log_game_error(
+  char const* format,
+  ARG_TYPES const&... arg_vals)
 {
-  log_error("game", format, vs...);
+  log_error("game", format, arg_vals...);
 }
 
 }

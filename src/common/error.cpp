@@ -78,7 +78,7 @@ void display_assert(
     std::string formatted_message =
         file + ":" + function + "(" + std::to_string(line) + ")\n\n" + message;
 
-    log("ASSERT", "global", "{}", formatted_message);
+    safe_log(std::cerr, "HALT - {}", formatted_message);
 
     int res = SDL_ShowSimpleMessageBox(
       SDL_MESSAGEBOX_ERROR,
@@ -94,7 +94,7 @@ void display_assert(
   }
   else
   {
-    log_error("Attempting to display assert message box before SDL_Init()!");
+    safe_log(std::cerr, "Attempting to display assert message box before SDL_Init!");
   }
 
   std::cout.flush();

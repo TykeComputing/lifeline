@@ -59,7 +59,8 @@ void engine::run()
     float const max_iterations_per_frame = max_frame_rate / min_frame_rate;
 
     float current_dt = update_dt;
-    timer frame_timer;
+    high_resolution_timer frame_timer;
+    frame_timer.start();
 
     p_is_running = true;
     while(p_is_running)

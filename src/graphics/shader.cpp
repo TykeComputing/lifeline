@@ -24,10 +24,11 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <utility>
 
 #include <common/file_string.h>
-#include <common/LE_printf.h>
+
 #include <common/resource_exception.h>
 
 #include <graphics/error_checking.h>
+#include <graphics/logging.h>
 
 namespace LE
 {
@@ -97,16 +98,17 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
       compile_log.back() = '\0';
     }
 
-    LE_printf("-- GLSL SHADER COMPILER ERRORS: --------------------------------\n");
-    LE_printf("== SHADER SOURCES =======\n");
+    log_graphics_error("-- GLSL SHADER COMPILER ERRORS: --------------------------------");
+    log_graphics_error("== SHADER SOURCES =======");
     for(auto const& shader_source_it : shader_source_strings)
     {
-      LE_printf("(%4d) %s\n",
-        shader_source_it.get_num_lines(), shader_source_it.get_file_name().c_str());
+      log_graphics_error("{:3} {}",
+        shader_source_it.get_num_lines(),
+        shader_source_it.get_file_name().c_str());
     }
-    LE_printf("=== ERROR LOG ===========\n");
-    LE_printf("%s\n", compile_log.data());
-    LE_printf("----------------------------------------------------------------\n");
+    log_graphics_error("=== ERROR LOG ===========");
+    log_graphics_error("{}", compile_log.data());
+    log_graphics_error("----------------------------------------------------------------");
 
     // cleanup from failure
     glDeleteShader(p_raw_name);

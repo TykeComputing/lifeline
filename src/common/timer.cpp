@@ -29,24 +29,50 @@ namespace LE
 {
 
 
-timer::timer(void)
+high_resolution_timer::high_resolution_timer(void)
+{
+
+}
+
+void high_resolution_timer::start(void)
 {
   reset();
 }
 
-void timer::reset(void)
+void high_resolution_timer::reset(void)
 {
   p_perf_freq = SDL_GetPerformanceFrequency();
   p_perf_count_start = SDL_GetPerformanceCounter();
+
+  p_is_running = true;
 }
 
-float timer::poll(void) const
+float high_resolution_timer::poll(void) const
 {
-  Uint64 perf_count_end = SDL_GetPerformanceCounter();
-  Uint64 perf_count_elapsed = perf_count_end - p_perf_count_start;
+  if(p_is_running == false)
+  {
+    LE_ERROR("Attemtping to poll high resolution timer that was not started.");
+    return 0.0f;
+  }
 
   LE_ERRORIF(p_perf_freq != SDL_GetPerformanceFrequency(),
-    "Timer error, frequency when polled is different from frequency when reset!");
+    "high_resolution_timer error, frequency when polled is different from frequency when reset!");
+
+  // In the event of wrap around we will assume only one wrap has occured, and end < start.
+  //   All other cases will be ignored.
+  Uint64 perf_count_end = SDL_GetPerformanceCounter();
+
+  Uint64 perf_count_elapsed;
+  if(perf_count_end > p_perf_count_start)
+  {
+    perf_count_elapsed = perf_count_end - p_perf_count_start;
+  }
+  else
+  {
+    perf_count_elapsed =
+      (std::numeric_limits<Uint64>::max() - p_perf_count_start) + perf_count_end;
+  }
+
   return static_cast<float>(perf_count_elapsed) / p_perf_freq;
 }
 
