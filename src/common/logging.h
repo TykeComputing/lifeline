@@ -51,8 +51,6 @@ private:
 
 void log_prefix(std::ostream & os, char const* log_type, char const* log_scope);
 
-} //namespace detail
-
 class logger
 {
 public:
@@ -71,18 +69,24 @@ class log_impl
 {
 public:
   template<typename FIRST_T, typename... Ts>
-  static void aux_log(fmt::Formatter<logger> & f, FIRST_T const& first, Ts const&... vs)
+  static void
+  aux_log(
+    fmt::Formatter<logger> & f,
+    FIRST_T const& first,
+    Ts const&... vs)
   {
     f << first;
-    aux_log<Ts...>(f, vs...); // why does this call this overload instead of the below?
+    aux_log<Ts...>(f, vs...);
   }
 
   template<typename... Ts>
   static void aux_log(fmt::Formatter<logger> &)
   {
-    // End of recursion
+    // Do nothing
   }
 };
+
+} //namespace detail
 
 template<typename... Ts>
 void log(char const* log_type, char const* log_scope, char const* format, Ts const&... vs)
@@ -90,8 +94,8 @@ void log(char const* log_type, char const* log_scope, char const* format, Ts con
   std::ostream & os = std::cout;
   detail::log_prefix(os, log_type, log_scope);
 
-  fmt::Formatter<logger> f{format, logger{os}};
-  log_impl::aux_log<Ts...>(f, vs...);
+  fmt::Formatter<detail::logger> f{format, detail::logger{os}};
+  detail::log_impl::aux_log<Ts...>(f, vs...);
 }
 
 template<typename... Ts>

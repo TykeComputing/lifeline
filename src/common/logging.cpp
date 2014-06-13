@@ -60,20 +60,16 @@ void log_prefix(std::ostream & os, char const* log_type, char const* log_scope)
   }
 }
 
-} // namespace detail
-
 logger::logger(std::ostream & os, bool print_newline) :
   p_os(os),
   p_print_newline(print_newline)
 {
-
 }
 
 logger::logger(logger const& rhs) :
   p_os(rhs.p_os),
   p_print_newline(rhs.p_print_newline)
 {
-
 }
 
 void logger::operator()(fmt::Writer const& w) const
@@ -84,5 +80,7 @@ void logger::operator()(fmt::Writer const& w) const
     p_os << std::endl;
   }
 }
+
+} // namespace detail
 
 }

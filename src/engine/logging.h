@@ -27,8 +27,17 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-fmt::Formatter<logger> log_engine_status(char const* format);
-fmt::Formatter<logger> log_engine_error(char const* format);
+template<typename... Ts>
+void log_engine_status(char const* format, Ts const&... vs)
+{
+  log_status("engine", format, vs...);
+}
+
+template<typename... Ts>
+void log_engine_error(char const* format, Ts const&... vs)
+{
+  log_error("engine", format, vs...);
+}
 
 }
 
