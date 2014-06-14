@@ -66,8 +66,6 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/fatal_construction_exception.h
   src/common/file_string.cpp
   src/common/file_string.h
-  src/common/LE_printf.cpp
-  src/common/LE_printf.h
   src/common/logging.cpp
   src/common/logging.h
   src/common/macros.h
