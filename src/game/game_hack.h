@@ -56,12 +56,11 @@ public:
   explicit game_hack(engine & game_engine);
   ~game_hack();
 
-  bool update(float dt);
-  void draw();
+  bool update(engine & game_engine, float dt);
+  void draw(engine & game_engine);
 
 private:
   std::unique_ptr<shader_program> p_shader_prog;
-  entity_manager p_ent_mgr;
 };
 
 } // namespace LE

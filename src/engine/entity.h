@@ -82,14 +82,19 @@ public:
     }
   }
 
+  void kill();
+
   unique_id<entity> const& get_id() { return p_id; }
   std::string const& get_name() { return p_name; }
+  bool is_alive() const { return p_is_alive; }
 
 private:
   std::unordered_map<unique_id<component_base>, std::unique_ptr<component_base>> p_components;
 
   std::string p_name = "unnamed";
   unique_id<entity> const p_id;
+
+  bool p_is_alive = true;
 };
 
 } // namespace LE

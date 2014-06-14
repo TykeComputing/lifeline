@@ -60,39 +60,18 @@ std::weak_ptr<entity> entity_manager::find_entity(std::string const& name)
   return {};
 }
 
-bool entity_manager::remove_entity(std::weak_ptr<entity> target)
+void entity_manager::remove_dead()
 {
-  auto owned_target = target.lock();
-  if(owned_target)
+  for(auto it = p_entities.begin(); it != p_entities.end();)
   {
-    auto result = remove_entity(owned_target->get_id());
-    if(result == false)
+    if((*it).second->is_alive() == false)
     {
-      // TODO - Print name
-      log_error(log_scope::ENGINE, "Entity Manager: Unable to remove entity with name \"{}\".")
-        << owned_target->get_name();
+      it = p_entities.erase(it);
     }
-
-    return result;
-  }
-
-  log_error(log_scope::ENGINE, "Entity Manager: Unable to remove entity, no longer exists.");
-  return false;
-}
-
-bool entity_manager::remove_entity(const unique_id<entity> & id)
-{
-  auto enemy_find_it = p_entities.find(id);
-  if(enemy_find_it != p_entities.end())
-  {
-    p_entities.erase(enemy_find_it);
-    return true;
-  }
-  else
-  {
-    log_error(log_scope::ENGINE, "Entity Manager: Unable to remove entity with id \"{}\".")
-      << id.value();
-    return false;
+    else
+    {
+      ++it;
+    }
   }
 }
 

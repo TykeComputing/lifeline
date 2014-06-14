@@ -42,6 +42,7 @@ namespace LE
 //////////////////////////////////////////////////////////////////////////
 game_hack::game_hack(engine & game_engine)
 {
+  auto & ent_mgr = game_engine.get_entity_mgr();
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
   // TODO - Move shader loading to someplace that makes more sense once resources exist
@@ -61,19 +62,19 @@ game_hack::game_hack(engine & game_engine)
   LE::shader_program::use(*p_shader_prog);
 
   {
-    auto new_ent_ref = p_ent_mgr.create_entity("player");
+    auto new_ent_ref = ent_mgr.create_entity("player");
     auto new_ent = new_ent_ref.lock();
     new_ent->get_component<transform_component>()->set_pos(0.0f, 0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({0.0f, 1.0f, 0.0f, 1.0f});
   }
   {
-    auto new_ent_ref = p_ent_mgr.create_entity("enemy");
+    auto new_ent_ref = ent_mgr.create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
     new_ent->get_component<transform_component>()->set_pos(0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
   }
   {
-    auto new_ent_ref = p_ent_mgr.create_entity("enemy");
+    auto new_ent_ref = ent_mgr.create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
     new_ent->get_component<transform_component>()->set_pos(-0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
@@ -84,11 +85,13 @@ game_hack::~game_hack()
 {
 }
 
-bool game_hack::update(float dt)
+bool game_hack::update(engine & game_engine, float dt)
 {
+  auto & ent_mgr = game_engine.get_entity_mgr();
+
   //////////////////////////////////////////////////////////////////////////
   // UPDATE
-  auto player_ref = p_ent_mgr.find_entity("player");
+  auto player_ref = ent_mgr.find_entity("player");
   auto player = player_ref.lock();
 
   float const player_movement_speed = 0.8f;
@@ -118,7 +121,7 @@ bool game_hack::update(float dt)
           {
             auto * player_t = player->get_component<transform_component>();
 
-            auto new_bullet_ref = p_ent_mgr.create_entity("bullet");
+            auto new_bullet_ref = ent_mgr.create_entity("bullet");
             auto new_bullet = new_bullet_ref.lock();
             auto * new_bullet_t = new_bullet->get_component<transform_component>();
             new_bullet_t->set_pos(player_t->get_pos());
@@ -190,7 +193,7 @@ bool game_hack::update(float dt)
     player->get_component<transform_component>()->translate(player_transl);
 
 
-    for(auto & entity_it : p_ent_mgr.p_entities)
+    for(auto & entity_it : ent_mgr.p_entities)
     {
       // Enemy seeking
       auto & curr_entity = entity_it.second;
@@ -216,13 +219,11 @@ bool game_hack::update(float dt)
     }
   }
 
-  std::vector<std::weak_ptr<entity>> ents_to_kill;
-
   // Quick and oh so dirty hack, going to unhack soon anyway, just need to get compiling on
   //   GCC.
   std::vector<std::weak_ptr<entity>> curr_ents;
-  curr_ents.reserve(p_ent_mgr.p_entities.size());
-  for(auto & ent_it : p_ent_mgr.p_entities)
+  curr_ents.reserve(ent_mgr.p_entities.size());
+  for(auto & ent_it : ent_mgr.p_entities)
   {
     curr_ents.emplace_back(ent_it.second);
   }
@@ -284,38 +285,35 @@ bool game_hack::update(float dt)
         {
           if(ents_raw[other_index]->get_name() == "enemy")
           {
-            ents_to_kill.emplace_back(*ents[index]);
+            (*ents[index])->kill();
           }
         }
         if(ent_involved_in_collision("enemy", ents_raw, index, other_index))
         {
           if(ents_raw[other_index]->get_name() == "bullet")
           {
-            ents_to_kill.emplace_back(*ents[index]);
-            ents_to_kill.emplace_back(*ents[other_index]);
+            (*ents[index])->kill();
+            (*ents[other_index])->kill();
           }
         }
       }
     }
   }
 
-  for(auto const& kill_it : ents_to_kill)
-  {
-    p_ent_mgr.remove_entity(kill_it);
-  }
-
   return true;
 }
 
-void game_hack::draw()
+void game_hack::draw(engine & game_engine)
 {
+  auto & ent_mgr = game_engine.get_entity_mgr();
+
   glClear(GL_COLOR_BUFFER_BIT);
 
   GLint color_ul = p_shader_prog->get_unform_location("color");
   GLint model_to_world_ul = p_shader_prog->get_unform_location("model_to_world");
 
   // Terrible game loop, HACK HACK HACK
-  for(auto & entity_it : p_ent_mgr.p_entities)
+  for(auto & entity_it : ent_mgr.p_entities)
   {
     auto & curr_ent = entity_it.second;
     auto const* curr_ent_t = curr_ent->get_component<transform_component>();

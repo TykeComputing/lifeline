@@ -29,4 +29,9 @@ entity::entity(std::string const& name) :
 {
 }
 
+void entity::kill()
+{
+  p_is_alive = false;
+}
+
 } // namespace LE
