@@ -21,6 +21,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "logging.h"
 
+#include <vector>
+
 namespace LE
 {
 
