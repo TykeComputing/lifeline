@@ -119,6 +119,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/entity_manager.h
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
+  src/engine/graphics_system.cpp
+  src/engine/graphics_system.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
   src/engine/sprite_component.cpp
