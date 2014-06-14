@@ -41,14 +41,9 @@ message_exception::message_exception(std::string const& message) :
 {
 }
 
-void message_exception::print(std::string const& prefix) const
+std::string const& message_exception::what() const
 {
-  print(std::cerr, prefix);
-}
-
-void message_exception::print(std::ostream & out, std::string const& prefix) const
-{
-  out << prefix << ": " << p_message << std::endl;
+  return p_message;
 }
 
 } // namespace LE

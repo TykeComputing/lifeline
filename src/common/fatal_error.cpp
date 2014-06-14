@@ -43,30 +43,6 @@ void display_assert(
   display_assert(file, function, line, std::string(message));
 }
 
-// Some APIs return unsigned c-strings, they are converted here.
-void display_assert(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  unsigned char const* unsigned_message)
-{
-  unsigned char const* unsigned_strlen_it = unsigned_message;
-  while(*unsigned_strlen_it != 0)
-  {
-    ++unsigned_strlen_it;
-  }
-  size_t message_len = unsigned_strlen_it - unsigned_message;
-
-  std::vector<char> signed_message;
-  signed_message.resize(message_len);
-  std::transform(
-    unsigned_message, unsigned_message + message_len,
-    signed_message.begin(),
-   [](unsigned char c)->char { return static_cast<char>(c); });
-
-  display_assert(file, function, line, signed_message.data());
-}
-
 void display_assert(
   std::string const& file,
   std::string const& function,

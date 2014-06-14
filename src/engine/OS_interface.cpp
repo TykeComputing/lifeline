@@ -26,7 +26,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/logging.h>
 #include <common/fatal_error.h>
 #include <common/fatal_construction_exception.h>
-#include <common/LE_printf.h>
 
 namespace LE
 {
@@ -49,10 +48,10 @@ OS_interface::OS_interface()
 
     SDL_VERSION(&compiled);
     SDL_GetVersion(&linked);
-    LE_printf("Compiled against SDL version %d.%d.%d ...\n",
-           compiled.major, compiled.minor, compiled.patch);
-    LE_printf("Linked against SDL version %d.%d.%d.\n",
-           linked.major, linked.minor, linked.patch);
+    log_status(log_scope::ENGINE, "Compiled against SDL version {}.{}.{} ...")
+      << (unsigned)compiled.major << (unsigned)compiled.minor << (unsigned)compiled.patch;
+    log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{} ...")
+      << (unsigned)linked.major << (unsigned)linked.minor << (unsigned)linked.patch;
   }
 
   auto LE_SDL_GL_SetAttribute = [](SDL_GLattr attrib, int val)->void

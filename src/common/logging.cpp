@@ -94,7 +94,7 @@ fmt::Formatter<logger> log_error_no_prefix(char const* format)
 fmt::Formatter<logger> log_status(char const* format)
 {
   auto & os = status_os;
-  detail::log_prefix(os, "STATUS", log_scope::global);
+  detail::log_prefix(os, "STATUS", log_scope::GLOBAL);
   fmt::Formatter<logger> f{format, logger{os}};
   return f;
 }
@@ -102,7 +102,7 @@ fmt::Formatter<logger> log_status(char const* format)
 fmt::Formatter<logger> log_error(char const* format)
 {
   auto & os = error_os;
-  detail::log_prefix(os, "ERROR", log_scope::global);
+  detail::log_prefix(os, "ERROR", log_scope::GLOBAL);
   fmt::Formatter<logger> f{format, logger{os}};
   return f;
 }
@@ -123,6 +123,25 @@ fmt::Formatter<logger> log_error(log_scope::value scope, char const* format)
   return f;
 }
 
+std::string convert_unsigned_string_to_signed(unsigned char const* unsigned_message)
+{
+  unsigned char const* unsigned_strlen_it = unsigned_message;
+  while(*unsigned_strlen_it != 0)
+  {
+    ++unsigned_strlen_it;
+  }
+  size_t message_len = unsigned_strlen_it - unsigned_message;
+
+  std::vector<char> signed_message;
+  signed_message.resize(message_len);
+  std::transform(
+    unsigned_message, unsigned_message + message_len,
+    signed_message.begin(),
+   [](unsigned char c)->char { return static_cast<char>(c); });
+
+   return {signed_message.begin(), signed_message.end()};
+}
+
 char const* log_line_seperator =
   "----------------------------------------------------------------";
 
@@ -134,7 +153,7 @@ void log_prefix(std::ostream & os, char const* log_type, log_scope::value scope)
 {
   try
   {
-    fmt::Formatter<logger> log_prefix_f{"({:<6.2f}) {} - {}: ", logger{os, false}};
+    fmt::Formatter<logger> log_prefix_f{"({:<6.2f}){:<6}|{:<8}|", logger{os, false}};
     log_prefix_f << log_timer::get_log_time() << log_type << log_scope::c_str[scope];
   }
   catch(fmt::FormatError const& e)

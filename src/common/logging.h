@@ -65,11 +65,11 @@ fmt::Formatter<logger> log(std::ostream & os, char const* format);
 // NOTE: The below logging functions cannot be used until SDL has been initialized.
 
 LE_ENUM_5(log_scope,
-  global,
-  engine,
-  game,
-  graphics,
-  math)
+  GLOBAL,
+  ENGINE,
+  GAME,
+  GRAPHICS,
+  MATH)
 
 fmt::Formatter<logger> log_status_no_prefix(char const* format);
 fmt::Formatter<logger> log_error_no_prefix(char const* format);
@@ -79,6 +79,8 @@ fmt::Formatter<logger> log_error(char const* format);
 
 fmt::Formatter<logger> log_status(log_scope::value scope, char const* format);
 fmt::Formatter<logger> log_error(log_scope::value scope, char const* format);
+
+std::string convert_unsigned_string_to_signed(unsigned char const* unsigned_message);
 
 extern char const* log_line_seperator;
 

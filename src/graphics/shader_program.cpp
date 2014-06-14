@@ -76,7 +76,7 @@ shader_program::shader_program(std::vector<shader*> const& shaders)
       }
     }
 
-    log_error(log_scope::graphics, "GLSL SHADER LINKER ERRORS");
+    log_error(log_scope::GRAPHICS, "GLSL SHADER LINKER ERRORS");
     log_error_no_prefix(log_line_seperator);
     log_error_no_prefix("== SHADER NAMES =======");
     for(auto const& shader_it : shaders)

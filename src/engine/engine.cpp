@@ -24,7 +24,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <algorithm>
 
 #include <common/fatal_error.h>
-#include <common/LE_printf.h>
+#include <common/logging.h>
 #include <common/timer.h>
 
 // TODO - Remove when done hacking
@@ -39,8 +39,8 @@ engine::engine() :
   p_window(),
   p_graphics_context(p_window)
 {
-  LE_printf("Base Directory: %s\n", p_os_interface.get_base_dir().c_str());
-  //LE_printf("Preferred Directory: %s\n", p_os_interface.get_preferred_dir().c_str());
+  log_status(log_scope::ENGINE, "Base Directory: {}") << p_os_interface.get_base_dir();
+  //log_status(log_scope::ENGINE, "Preferred Directory: {}") << p_os_interface.get_preferred_dir();
 }
 
 void engine::run()
@@ -81,13 +81,13 @@ void engine::run()
         }
         catch(LE::resource_exception const& e)
         {
-          e.print("Game");
+          log_status(log_scope::ENGINE, "{}") << e.what();
           LE_FATAL_ERROR("Uncaught resource exception!");
           return;
         }
         catch(LE::message_exception const& e)
         {
-          e.print("Game");
+          log_status(log_scope::ENGINE, "{}") << e.what();
           LE_FATAL_ERROR("Uncaught message exception!");
           return;
         }
@@ -105,7 +105,7 @@ void engine::run()
   }
   catch(LE::resource_exception const& e)
   {
-    e.print("Game Construction");
+    log_status(log_scope::ENGINE, "{}") << e.what();
     LE_FATAL_ERROR("ERROR"); // Give time to look at error
   }
 }
@@ -129,7 +129,8 @@ void engine::set_resource_dir(std::string const& val)
     p_resource_dir.append(1, '/');
   }
 
-  LE_printf("Engine: Resource directory set to \"%s\"\n", p_resource_dir.c_str());
+  log_status(log_scope::ENGINE, "Resource directory set to \"{}\"")
+    << p_resource_dir.c_str();
 }
 
 std::string const& engine::get_resource_dir() const

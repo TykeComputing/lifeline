@@ -36,8 +36,7 @@ public:
   message_exception(char const* message);
   message_exception(std::string const& message);
 
-  void print(std::string const& prefix) const;
-  void print(std::ostream & out, std::string const& prefix) const;
+  std::string const& what() const;
 
 private:
   std::string p_message;

@@ -53,7 +53,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     if(arg_value_separator_pos == std::string::npos
     || arg_value_separator_pos >= curr_arg.size())
     {
-      LE::log_error(LE::log_scope::global, "Malformed option specified: \"{}\"") << curr_arg;
+      LE::log_error(LE::log_scope::GLOBAL, "Malformed option specified: \"{}\"") << curr_arg;
       continue;
     }
 
@@ -68,7 +68,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     }
     else
     {
-      LE::log_error(LE::log_scope::global, "Invalid option specified: \"{}\"") << curr_arg;
+      LE::log_error(LE::log_scope::GLOBAL, "Invalid option specified: \"{}\"") << curr_arg;
     }
   }
 }
@@ -85,7 +85,7 @@ int main(int arg_count, char *args[])
   }
   catch(LE::fatal_construction_exception const& e)
   {
-    e.print("Engine Creation");
+    LE::log_status(LE::log_scope::GLOBAL, "{}") << e.what();
     LE_FATAL_ERROR("Unable to create engine!"); // TODO - Remove
     return -1;
   }

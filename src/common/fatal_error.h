@@ -58,12 +58,6 @@ namespace detail
     std::string const& file,
     std::string const& function,
     int line,
-    unsigned char const* message);
-
-  void display_assert(
-    std::string const& file,
-    std::string const& function,
-    int line,
     std::string const& message);
 }
 

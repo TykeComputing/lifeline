@@ -105,7 +105,7 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
       }
     }
 
-    log_error(log_scope::graphics, "GLSL SHADER COMPILER ERRORS");
+    log_error(log_scope::GRAPHICS, "GLSL SHADER COMPILER ERRORS");
     log_error_no_prefix(log_line_seperator);
     log_error_no_prefix("== SHADER SOURCES =======");
     for(auto const& shader_source_it : shader_source_strings)
