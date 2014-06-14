@@ -29,21 +29,18 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 
 #include <common/cppformat.h>
+#include <common/timer.h>
 
 namespace LE
 {
 
-// fwd-decl
-class high_resolution_timer;
-
 class log_timer
 {
 public:
-  static void start();
   static float get_log_time();
 
 private:
-  static std::unique_ptr<high_resolution_timer> p_timer;
+  static steady_timer p_timer;
 };
 
 class logger

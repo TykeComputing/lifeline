@@ -33,7 +33,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
   GLenum last_error = glGetError(); \
   if(last_error != GL_NO_ERROR) \
   { \
-    LE_FATAL_ERROR("Graphics: Internal OpenGL Error!\nCode(s): " + LE::get_GL_errors(last_error)); \
+    LE_FATAL_ERROR("Internal OpenGL Error!\nCode(s): " + LE::get_GL_errors(last_error)); \
   } \
 }
 

@@ -35,7 +35,7 @@ window::window()
   {
     LE_FATAL_ERROR(SDL_GetError());
     SDL_ClearError();
-    throw fatal_construction_exception("Error creating SDL window, exiting...\n");
+    throw fatal_construction_exception("Error creating SDL window, exiting...");
   }
 }
 

@@ -81,13 +81,13 @@ void engine::run()
         }
         catch(LE::resource_exception const& e)
         {
-          log_status(log_scope::ENGINE, "{}") << e.what();
+          log_error(log_scope::ENGINE, "{}") << e.what();
           LE_FATAL_ERROR("Uncaught resource exception!");
           return;
         }
         catch(LE::message_exception const& e)
         {
-          log_status(log_scope::ENGINE, "{}") << e.what();
+          log_error(log_scope::ENGINE, "{}") << e.what();
           LE_FATAL_ERROR("Uncaught message exception!");
           return;
         }
@@ -105,7 +105,7 @@ void engine::run()
   }
   catch(LE::resource_exception const& e)
   {
-    log_status(log_scope::ENGINE, "{}") << e.what();
+    log_error(log_scope::ENGINE, "{}") << e.what();
     LE_FATAL_ERROR("ERROR"); // Give time to look at error
   }
 }

@@ -67,7 +67,7 @@ void display_assert(
 
     if(res == 0)
     {
-      log_error("{}") << SDL_GetError();
+      log_error("Assert!\n {}") << SDL_GetError();
       SDL_ClearError();
     }
   }

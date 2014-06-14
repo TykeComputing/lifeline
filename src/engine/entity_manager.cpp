@@ -21,7 +21,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "entity_manager.h"
 
-#include <common/LE_printf.h>
+#include <common/logging.h>
 
 #include <engine/sprite_component.h>
 #include <engine/transform_component.h>
@@ -69,13 +69,14 @@ bool entity_manager::remove_entity(std::weak_ptr<entity> target)
     if(result == false)
     {
       // TODO - Print name
-      LE_printf("Entity Manager: Unable to remove entity with name \"...\".");
+      log_error(log_scope::ENGINE, "Entity Manager: Unable to remove entity with name \"{}\".")
+        << owned_target->get_name();
     }
 
     return result;
   }
 
-  LE_printf("Entity Manager: Unable to remove entity, no longer exists.");
+  log_error(log_scope::ENGINE, "Entity Manager: Unable to remove entity, no longer exists.");
   return false;
 }
 
@@ -89,7 +90,8 @@ bool entity_manager::remove_entity(const unique_id<entity> & id)
   }
   else
   {
-    LE_printf("Entity Manager: Unable to remove entity with id \"%d\".", id.value());
+    log_error(log_scope::ENGINE, "Entity Manager: Unable to remove entity with id \"{}\".")
+      << id.value();
     return false;
   }
 }

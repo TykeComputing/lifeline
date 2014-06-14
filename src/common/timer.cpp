@@ -29,11 +29,6 @@ namespace LE
 {
 
 
-high_resolution_timer::high_resolution_timer(void)
-{
-
-}
-
 void high_resolution_timer::start(void)
 {
   reset();
@@ -74,6 +69,18 @@ float high_resolution_timer::poll(void) const
   }
 
   return static_cast<float>(perf_count_elapsed) / p_perf_freq;
+}
+
+void steady_timer::reset(void)
+{
+  p_time_start = std::chrono::steady_clock::now();
+}
+
+float steady_timer::poll(void) const
+{
+  time_point time_end = std::chrono::steady_clock::now();
+  std::chrono::duration<float> duration = time_end - p_time_start;
+  return duration.count();
 }
 
 } // namespace LE

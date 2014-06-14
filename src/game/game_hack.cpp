@@ -32,7 +32,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <graphics/vertex_buffer.h>
 #include <engine/engine.h>
 #include <engine/transform_component.h>
-#include <common/LE_printf.h>
 
 #include <engine/sprite_component.h>
 #include <engine/transform_component.h>

@@ -75,6 +75,8 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
 
 int main(int arg_count, char *args[])
 {
+  int res = 0;
+
   try
   {
     LE::engine game_engine;
@@ -85,10 +87,12 @@ int main(int arg_count, char *args[])
   }
   catch(LE::fatal_construction_exception const& e)
   {
-    LE::log_status(LE::log_scope::GLOBAL, "{}") << e.what();
+    LE::log_error(LE::log_scope::GLOBAL, "{}") << e.what();
     LE_FATAL_ERROR("Unable to create engine!"); // TODO - Remove
-    return -1;
+    res = -1;
   }
 
-  return 0;
+  LE::log_status(LE::log_scope::GLOBAL, "Exiting...");
+
+  return res;
 }

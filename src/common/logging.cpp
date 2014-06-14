@@ -21,30 +21,14 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "logging.h"
 
-#include <common/timer.h>
-
 namespace LE
 {
 
-std::unique_ptr<high_resolution_timer> log_timer::p_timer = {};
-
-void log_timer::start()
-{
-  p_timer.reset(new high_resolution_timer);
-  p_timer->start();
-}
+steady_timer log_timer::p_timer = {};
 
 float log_timer::get_log_time()
 {
-  if(p_timer == nullptr)
-  {
-    // Indicate that this was called in the land before timer.
-    return -1.0f;
-  }
-  else
-  {
-    return p_timer->poll();
-  }
+  return p_timer.poll();
 }
 
 logger::logger(std::ostream & os, bool print_newline) :
@@ -153,7 +137,7 @@ void log_prefix(std::ostream & os, char const* log_type, log_scope::value scope)
 {
   try
   {
-    fmt::Formatter<logger> log_prefix_f{"({:<6.2f}){:<6}|{:<8}|", logger{os, false}};
+    fmt::Formatter<logger> log_prefix_f{"({:>6.2f}){:<6}|{:<8}|", logger{os, false}};
     log_prefix_f << log_timer::get_log_time() << log_type << log_scope::c_str[scope];
   }
   catch(fmt::FormatError const& e)

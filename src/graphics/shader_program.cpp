@@ -24,7 +24,6 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <utility>
 
 #include <common/fatal_error.h>
-#include <common/LE_printf.h>
 #include <common/logging.h>
 #include <common/resource_exception.h>
 
@@ -128,7 +127,7 @@ GLint shader_program::get_unform_location(char const* uniform_name) const
 
     if(uniform_index == -1)
     {
-      LE_printf("Uniform named \"%s\" not found!", uniform_name);
+      log_status("Uniform named \"{}\" not found!") << uniform_name;
     }
 
     return uniform_index;
