@@ -11,6 +11,12 @@ find_library(CPPFORMAT_LIBRARY
     PATHS ${LE_EXTERNAL_LIB_DIR}
     DOC "The cppformat library")
 
+find_library(CPPFORMAT_LIBRARY_DEBUG
+    NAMES formatd
+    PATH_SUFFIXES lib
+    PATHS ${LE_EXTERNAL_LIB_DIR}
+    DOC "The cppformat library, debug version")
+
 message(STATUS "Include - ${CPPFORMAT_INCLUDE_PATH}")
 message(STATUS "Lib - ${CPPFORMAT_LIBRARY}")
 message(STATUS "Lib search - ${LE_EXTERNAL_LIB_DIR}")

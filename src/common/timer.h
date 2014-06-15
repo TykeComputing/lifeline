@@ -41,7 +41,7 @@ namespace LE
  *
  * WARNING: Should not be left without resetting for an extended period of timer. Ideal scenario
  *  would involve resetting timer every couple seconds at bare minimum. Otherwise time will
- *  continously wrap around and reported time will be within the range of a few seconds
+ *  continuously wrap around and reported time will be within the range of a few seconds
  *  depending on the range of the underlying timer.
  *
  *  See: https://connect.microsoft.com/VisualStudio/feedback/details/719443/c-chrono-headers-high-resolution-clock-does-not-have-high-resolution
@@ -72,9 +72,9 @@ public:
   float poll(void) const;
 
 private:
-  typedef std::chrono::time_point<std::chrono::steady_clock> time_point;
+  typedef std::chrono::steady_clock::time_point time_point;
 
-  time_point p_time_start = std::chrono::steady_clock::now();
+  time_point p_time_start = std::chrono::steady_clock::now();;
 };
 
 } // namespace LE
