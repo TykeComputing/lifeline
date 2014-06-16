@@ -61,7 +61,8 @@ private:
 };
 
 /*
- * A timer that uses potentially low precision but can measure much greater spans of time.
+ * A timer that uses potentially low precision but can measure much greater spans of time than
+ *   a high_resolution_timer.
  *
  * Implicitly started when created.
  */
@@ -74,7 +75,7 @@ public:
 private:
   typedef std::chrono::steady_clock::time_point time_point;
 
-  time_point p_time_start = std::chrono::steady_clock::now();;
+  time_point p_time_start = std::chrono::steady_clock::now();
 };
 
 } // namespace LE

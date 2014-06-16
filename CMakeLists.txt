@@ -158,49 +158,54 @@ message(STATUS "${LE_MESSAGE_HEADER}")
 
 message(STATUS "Build warnings...")
 target_compile_options(${PROJECT_NAME}
-  PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
-    # Enable
-    /W4 /WX
-  >
+  PUBLIC 
+    $<$<CXX_COMPILER_ID:MSVC>:
+      # Enable
+      /W4 /WX
+    >
 
-  PUBLIC $<$<CXX_COMPILER_ID:GNU>:
-    # Enable
-    -Wall -Wextra -Werror -Wfatal-errors -Wpedantic
-  >
+    $<$<CXX_COMPILER_ID:GNU>:
+      # Enable
+      -Wall -Wextra -Werror -Wfatal-errors -Wpedantic
+    >
 )
 
 message(STATUS "C++ runtime libraries...")
 target_compile_options(${PROJECT_NAME}
-  PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
+  PUBLIC 
+    $<$<CXX_COMPILER_ID:MSVC>:
 
-    # Release configs
-    $<$<OR:$<CONFIG:RELEASE>,$<CONFIG:RELWITHDEBINFO>,$<CONFIG:MINSIZEREL>>:
-      /MD
-    >
+      # Release configs
+      $<$<OR:$<CONFIG:RELEASE>,$<CONFIG:RELWITHDEBINFO>,$<CONFIG:MINSIZEREL>>:
+        /MD
+      >
 
-    # Debug configs
-    $<$<CONFIG:DEBUG>:
-      /MDd
+      # Debug configs
+      $<$<CONFIG:DEBUG>:
+        /MDd
+      >
     >
-  >
 )
 
 message(STATUS "General compile flags...")
 target_compile_options(${PROJECT_NAME}
-  PUBLIC $<$<CXX_COMPILER_ID:GNU>:
-    -std=c++11
-  >
+  PUBLIC 
+    $<$<CXX_COMPILER_ID:GNU>:
+      -std=c++11
+    >
 )
 
 message(STATUS "Preprocessor definitions...")
 target_compile_definitions(${PROJECT_NAME}
-  PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
-    /D_CRT_SECURE_NO_DEPRECATE
-  >
+  PUBLIC 
+    $<$<CXX_COMPILER_ID:MSVC>:
+      /D_CRT_SECURE_NO_DEPRECATE
+    >
 )
 
 target_include_directories(${PROJECT_NAME}
-  PUBLIC src
+  PUBLIC 
+    src
 )
 
 message(STATUS "${LE_MESSAGE_LINE_BREAK}")
@@ -256,22 +261,33 @@ message(STATUS "${LE_MESSAGE_LINE_BREAK}")
 # EXTERNAL DEPENDENCIES
 ################################
 
+message(STATUS "External Dependency Setup")
+
 # NOTE - If split into multiple projects, set the dependencies only where they're needed
 #       using target_*_* and they will be propagated up. For example, linking/including
 #       GLEW in graphics. GLEW will only need to be specified in graphics instead of for
 #       each target that uses graphics all the way up.
 target_include_directories(${PROJECT_NAME}
-  PUBLIC ${GLEW_INCLUDE_PATH}
-  PUBLIC ${SDL2_INCLUDE_DIR}
-  PUBLIC ${CPPFORMAT_INCLUDE_PATH}
+  PUBLIC 
+    ${GLEW_INCLUDE_PATH}
+    ${SDL2_INCLUDE_DIR}
+    ${CPPFORMAT_INCLUDE_PATH}
 
-  PUBLIC ${LE_EXTERNAL_INCLUDE_DIR}
+    ${LE_EXTERNAL_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  PUBLIC general ${GLEW_LIBRARY}
-  PUBLIC general ${OPENGL_gl_LIBRARY}
-  PUBLIC general ${SDL2_LIBRARY}
-  PUBLIC debug ${CPPFORMAT_LIBRARY_DEBUG}
-  PUBLIC optimized ${CPPFORMAT_LIBRARY}
+  PUBLIC
+    general ${GLEW_LIBRARY}
+    general ${OPENGL_gl_LIBRARY}
+    general ${SDL2_LIBRARY}
+
+  $<$<CXX_COMPILER_ID:MSVC>:
+    debug ${CPPFORMAT_LIBRARY_DEBUG}
+    optimized ${CPPFORMAT_LIBRARY}
+  >
+  
+  $<$<CXX_COMPILER_ID:GNU>:
+      general ${CPPFORMAT_LIBRARY}
+  >
 )
