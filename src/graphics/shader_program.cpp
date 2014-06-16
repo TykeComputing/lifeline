@@ -23,8 +23,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <utility>
 
-#include <common/error.h>
-#include <common/LE_printf.h>
+#include <common/fatal_error.h>
+#include <common/logging.h>
 #include <common/resource_exception.h>
 
 #include <graphics/error_checking.h>
@@ -63,26 +63,33 @@ shader_program::shader_program(std::vector<shader*> const& shaders)
     link_log.resize(link_log_length);
     glGetProgramInfoLog(p_raw_name, link_log_length, nullptr, link_log.data());
 
-    // If OpenGL implementation provides newline, get rid of it
-    if(link_log.empty() == false && link_log.back() == '\n')
+    // If OpenGL implementation provides newline(s), get rid of it/them
+    if(link_log.size() >= 2)
     {
-      link_log.back() = '\0';
+      // Skip null terminator
+      int newline_it = link_log_length - 2;
+      while( (newline_it >= 0) && (link_log[newline_it] == '\n') )
+      {
+       link_log[newline_it] = '\0';
+        --newline_it;
+      }
     }
 
-    LE_printf("-- GLSL SHADER LINKER ERRORS: ----------------------------------\n");
-    LE_printf("== SHADER NAMES =======\n");
+    log_error(log_scope::GRAPHICS, "GLSL SHADER LINKER ERRORS");
+    log_error_no_prefix(log_line_seperator);
+    log_error_no_prefix("== SHADER NAMES =======");
     for(auto const& shader_it : shaders)
     {
-      LE_printf("%s\n", shader_it->get_file_name().c_str());
+      log_error_no_prefix("{}") << shader_it->get_file_name().c_str();
     }
-    LE_printf("=== ERROR LOG ===========\n");
-    LE_printf("%s\n", link_log.data());
-    LE_printf("----------------------------------------------------------------\n");
+    log_error_no_prefix("=== ERROR LOG ===========");
+    log_error_no_prefix("{}") << link_log.data();
+    log_error_no_prefix(log_line_seperator);
 
     // cleanup from failure
     glDeleteProgram(p_raw_name);
 
-    LE_ERRORIF_GL_ERROR();
+    LE_FATAL_ERROR_IF_GL_ERROR();
 
     throw resource_exception("Shader linking failed.");
   }
@@ -95,7 +102,7 @@ shader_program::shader_program(std::vector<shader*> const& shaders)
       glDetachShader(p_raw_name, shader_it->p_raw_name);
     }
 
-    LE_ERRORIF_GL_ERROR();
+    LE_FATAL_ERROR_IF_GL_ERROR();
   }
 }
 
@@ -120,7 +127,7 @@ GLint shader_program::get_unform_location(char const* uniform_name) const
 
     if(uniform_index == -1)
     {
-      LE_printf("Uniform named \"%s\" not found!", uniform_name);
+      log_status("Uniform named \"{}\" not found!") << uniform_name;
     }
 
     return uniform_index;

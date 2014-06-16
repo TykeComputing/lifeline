@@ -32,7 +32,7 @@ namespace LE
 class texture
 {
 public:
-  texture(std::string const& texture_file_name);
+  explicit texture(std::string const& texture_file_name);
   ~texture();
 
   static void set_active_texture_unit(GLuint unit_index);

@@ -25,6 +25,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 #include <vector>
 
+#include <common/unique_id.h>
+
 #include <engine/entity.h>
 
 namespace LE
@@ -34,11 +36,16 @@ namespace LE
 class entity_manager
 {
 public:
-  entity * create_entity();
+  std::weak_ptr<entity> create_entity(std::string const& name);
 
+  std::weak_ptr<entity> find_entity(std::string const& name);
+  std::weak_ptr<entity> find_entity(unique_id<entity> const& id);
 
+  void remove_dead();
+
+  // TODO - Make private once systems have been added to engine
+  std::unordered_map<unique_id<entity>, std::shared_ptr<entity>> p_entities;
 private:
-  std::vector<std::unique_ptr<entity>> entities;
 };
 
 } // namespace LE

@@ -22,20 +22,24 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_ENGINE_TRANSFORM_COMPONENT_H
 #define LE_ENGINE_TRANSFORM_COMPONENT_H
 
-#include <math/vec2.h>
+#include <math/transform.h>
+#include <math/vec.h>
+
+#include <engine/component_base.h>
 
 namespace LE
 {
 
-class transform_component
+// TODO - Figure out how I'm going to handle transformation heirarchies and then decide on
+//          final transform/transform_component design.
+//      - Trying inheiritance based approch for now. I should evaluate if this is desirable
+//          when implementing parenting.
+class transform_component : public component_base, public transform
 {
 public:
-	transform_component();
-	~transform_component();
-	
-private:
-  vec2 pos;
-  vec2 scale;
+  transform_component();
+
+  static unique_id<component_base> const type_id;
 };
 
 } // namespace LE

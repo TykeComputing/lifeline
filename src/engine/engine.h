@@ -22,9 +22,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef LE_ENGINE_ENGINE_H
 #define LE_ENGINE_ENGINE_H
 
-#include "OS_interface.h"
-#include "window.h"
-#include "graphics_context.h"
+#include <engine/entity_manager.h>
+#include <engine/graphics_context.h>
+#include <engine/OS_interface.h>
+#include <engine/window.h>
 
 namespace LE
 {
@@ -37,10 +38,13 @@ public:
   void run();
 
   void set_is_running(bool val);
-  
+
   // TODO - Move to more appropriate place once there is one
   void set_resource_dir(std::string const& val);
   std::string const& get_resource_dir() const;
+
+  entity_manager & get_entity_mgr() { return p_ent_mgr; }
+  entity_manager const& get_entity_mgr() const { return p_ent_mgr; }
 
 private:
   OS_interface p_os_interface;
@@ -51,6 +55,8 @@ private:
 
   // TODO - Move to more appropriate place once there is one
   std::string p_resource_dir = "resources/";
+
+  entity_manager p_ent_mgr;
 };
 
 } // namespace LE

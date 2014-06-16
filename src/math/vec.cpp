@@ -19,20 +19,13 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_ENGINE_GRAPHICS_COMPONENT_H
-#define LE_ENGINE_GRAPHICS_COMPONENT_H
+#include "vec.h"
 
 namespace LE
 {
 
-class graphics_component
-{
-public:
-  graphics_component();
+vec2 const zero_vec2 = vec2({0.0f, 0.0f});
+vec3 const zero_vec3 = vec3({0.0f, 0.0f, 0.0f});
+vec4 const zero_vec4 = vec4({0.0f, 0.0f, 0.0f, 0.0f});
 
-private:
-};
-
-} // namespace LE
-
-#endif // LE_ENGINE_GRAPHICS_COMPONENT_H
+}

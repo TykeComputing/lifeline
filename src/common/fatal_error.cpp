@@ -19,48 +19,68 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_COMMON_ASSERT_H
-#define LE_COMMON_ASSERT_H
+#include "fatal_error.h"
 
+#include <algorithm>
+#include <cstring>
 #include <iostream>
-#include <string>
+#include <vector>
 
-#include <SDL2/SDL.h>
+#include <common/logging.h>
 
-#ifdef __GNUC__
-#include<sys/signal.h>
-#define LE_HALT_PROGRAM() raise(SIGTRAP);
-#elif _MSC_VER
-#define LE_HALT_PROGRAM() __debugbreak();
-#else
-#define LE_HALT_PROGRAM()
-#endif
+namespace LE
+{
 
+namespace detail
+{
 
-#define LE_ERROR(msg) \
-{ \
-  LE_display_error_message(__FILE__, __FUNCTION__, __LINE__, msg);\
-  std::cout.flush(); \
-  LE_HALT_PROGRAM(); \
+void display_assert(
+  std::string const& file,
+  std::string const& function,
+  int line,
+  char const* message)
+{
+  display_assert(file, function, line, std::string(message));
 }
-#define LE_ERRORIF(cond, msg) { if(cond) { LE_ERROR(msg); } }
 
-void LE_display_error_message(
+void display_assert(
   std::string const& file,
   std::string const& function,
   int line,
-  char const* message);
+  std::string const& message)
+{
+  static bool sdl_init = false;
 
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  unsigned char const* message);
+  if(sdl_init)
+  {
+    // Since this will only occur during errors, efficiency doesn't matter
+    std::string formatted_message =
+        file + ":" + function + "(" + std::to_string(line) + ")\n\n" + message;
 
-void LE_display_error_message(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  std::string const& message);
+    log(std::cerr, "HALT - {}") << formatted_message;
 
-#endif // LE_COMMON_ASSERT_H
+    int res = SDL_ShowSimpleMessageBox(
+      SDL_MESSAGEBOX_ERROR,
+      "LifeLine Engine - ERROR!",
+      formatted_message.c_str(),
+      NULL);
+
+    if(res == 0)
+    {
+      log_error("Assert!\n {}") << SDL_GetError();
+      SDL_ClearError();
+    }
+  }
+  else
+  {
+    sdl_init = (SDL_WasInit(0) != 0);
+    log(std::cerr, "Attempting to display assert message box before SDL_Init!");
+  }
+
+  std::cout.flush();
+  std::cerr.flush();
+}
+
+}
+
+}

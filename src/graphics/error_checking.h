@@ -26,14 +26,14 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 
-#include <common/error.h>
+#include <common/fatal_error.h>
 
-#define LE_ERRORIF_GL_ERROR() \
+#define LE_FATAL_ERROR_IF_GL_ERROR() \
 { \
   GLenum last_error = glGetError(); \
   if(last_error != GL_NO_ERROR) \
   { \
-    LE_ERROR("Graphics: Internal OpenGL Error!\nCode(s): " + LE::get_GL_errors(last_error)); \
+    LE_FATAL_ERROR("Internal OpenGL Error!\nCode(s): " + LE::get_GL_errors(last_error)); \
   } \
 }
 

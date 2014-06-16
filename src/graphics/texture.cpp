@@ -24,7 +24,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/resource_exception.h>
 
 #include <graphics/error_checking.h>
-#include <graphics/stb_image.h>
+#include <stb/stb_image.h>
 
 namespace LE
 {
@@ -47,7 +47,7 @@ texture::texture(std::string const& texture_file_name)
   glBindTexture(GL_TEXTURE_2D, p_raw_name);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8_ALPHA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);
   stbi_image_free(texture_data);
-  LE_ERRORIF_GL_ERROR();
+  LE_FATAL_ERROR_IF_GL_ERROR();
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
@@ -55,7 +55,7 @@ texture::texture(std::string const& texture_file_name)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  LE_ERRORIF_GL_ERROR();
+  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 texture::~texture()

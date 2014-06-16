@@ -23,8 +23,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
 
-#include <common/error.h>
-#include <common/LE_printf.h>
+#include <common/fatal_error.h>
+#include <common/logging.h>
 #include <common/timer.h>
 
 // TODO - Remove when done hacking
@@ -39,8 +39,8 @@ engine::engine() :
   p_window(),
   p_graphics_context(p_window)
 {
-  LE_printf("Base Directory: %s\n", p_os_interface.get_base_dir().c_str());
-  //LE_printf("Preferred Directory: %s\n", p_os_interface.get_preferred_dir().c_str());
+  log_status(log_scope::ENGINE, "Base Directory: {}") << p_os_interface.get_base_dir();
+  //log_status(log_scope::ENGINE, "Preferred Directory: {}") << p_os_interface.get_preferred_dir();
 }
 
 void engine::run()
@@ -59,7 +59,8 @@ void engine::run()
     float const max_iterations_per_frame = max_frame_rate / min_frame_rate;
 
     float current_dt = update_dt;
-    timer frame_timer;
+    high_resolution_timer frame_timer;
+    frame_timer.start();
 
     p_is_running = true;
     while(p_is_running)
@@ -76,25 +77,27 @@ void engine::run()
 
         try
         {
-          p_is_running = game->update(update_dt);
+          p_is_running = game->update(*this, update_dt);
         }
         catch(LE::resource_exception const& e)
         {
-          e.print("Game");
-          LE_ERROR("Uncaught resource exception!");
+          log_error(log_scope::ENGINE, "{}") << e.what();
+          LE_FATAL_ERROR("Uncaught resource exception!");
           return;
         }
         catch(LE::message_exception const& e)
         {
-          e.print("Game");
-          LE_ERROR("Uncaught message exception!");
+          log_error(log_scope::ENGINE, "{}") << e.what();
+          LE_FATAL_ERROR("Uncaught message exception!");
           return;
         }
+
+        p_ent_mgr.remove_dead();
 
         current_dt -= update_dt;
       }
 
-      game->draw();
+      game->draw(*this);
       p_window.update();
 
       // Add the new dt to any leftover dt from updating.
@@ -104,8 +107,8 @@ void engine::run()
   }
   catch(LE::resource_exception const& e)
   {
-    e.print("Game Construction");
-    LE_ERROR("ERROR"); // Give time to look at error
+    log_error(log_scope::ENGINE, "{}") << e.what();
+    LE_FATAL_ERROR("ERROR"); // Give time to look at error
   }
 }
 
@@ -118,7 +121,7 @@ void engine::set_resource_dir(std::string const& val)
 {
   if(val.empty())
   {
-    LE_ERROR("Empty resource directory provided, ignoring.");
+    LE_FATAL_ERROR("Empty resource directory provided, ignoring.");
     return;
   }
 
@@ -128,7 +131,8 @@ void engine::set_resource_dir(std::string const& val)
     p_resource_dir.append(1, '/');
   }
 
-  LE_printf("Engine: Resource directory set to \"%s\"\n", p_resource_dir.c_str());
+  log_status(log_scope::ENGINE, "Resource directory set to \"{}\"")
+    << p_resource_dir.c_str();
 }
 
 std::string const& engine::get_resource_dir() const

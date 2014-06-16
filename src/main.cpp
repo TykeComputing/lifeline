@@ -24,9 +24,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 
-#include <common/error.h>
+#include <common/fatal_error.h>
 #include <common/fatal_construction_exception.h>
-#include <common/LE_printf.h>
+#include <common/logging.h>
 #include <common/macros.h>
 #include <engine/engine.h>
 
@@ -53,7 +53,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     if(arg_value_separator_pos == std::string::npos
     || arg_value_separator_pos >= curr_arg.size())
     {
-      LE_printf("Malformed option specified: \"%s\"\n", curr_arg.c_str());
+      LE::log_error(LE::log_scope::GLOBAL, "Malformed option specified: \"{}\"") << curr_arg;
       continue;
     }
 
@@ -68,13 +68,15 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     }
     else
     {
-      LE_printf("Invalid option specified: \"%s\"\n", curr_arg.c_str());
+      LE::log_error(LE::log_scope::GLOBAL, "Invalid option specified: \"{}\"") << curr_arg;
     }
   }
 }
 
 int main(int arg_count, char *args[])
 {
+  int res = 0;
+
   try
   {
     LE::engine game_engine;
@@ -85,10 +87,12 @@ int main(int arg_count, char *args[])
   }
   catch(LE::fatal_construction_exception const& e)
   {
-    e.print("Engine Creation");
-    LE_ERROR("Unable to create engine!"); // TODO - Remove
-    return -1;
+    LE::log_error(LE::log_scope::GLOBAL, "{}") << e.what();
+    LE_FATAL_ERROR("Unable to create engine!"); // TODO - Remove
+    res = -1;
   }
 
-  return 0;
+  LE::log_status(LE::log_scope::GLOBAL, "Exiting...");
+
+  return res;
 }

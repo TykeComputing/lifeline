@@ -45,7 +45,7 @@ ELSE ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
 
 ELSE()
     # Lifeline Engine TODO - Change this if needed.
-    MESSAGE(FATAL "Unable to find SDL2 - UNSUPPORTED PLATFORM")
+    MESSAGE(FATAL "Unable to find GLEW - UNSUPPORTED PLATFORM")
 ENDIF ()
 
 IF (GLEW_INCLUDE_PATH)

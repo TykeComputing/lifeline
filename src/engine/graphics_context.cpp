@@ -23,9 +23,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <GL/glew.h>
 
-#include <common/error.h>
+#include <common/fatal_error.h>
 #include <common/fatal_construction_exception.h>
-#include <common/LE_printf.h>
+#include <common/logging.h>
+
 #include <graphics/error_checking.h>
 
 #include <engine/window.h>
@@ -38,7 +39,7 @@ graphics_context::graphics_context(window & target_window)
   p_raw_context = SDL_GL_CreateContext(target_window.get_raw());
   if(p_raw_context == nullptr)
   {
-    LE_ERROR(SDL_GetError());
+    LE_FATAL_ERROR(SDL_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error creating OpenGL context, exiting...");
   }
@@ -49,19 +50,20 @@ graphics_context::graphics_context(window & target_window)
   GLenum glew_init_res = glewInit();
   if(glew_init_res != GLEW_OK)
   {
-    LE_ERROR(glewGetErrorString(glew_init_res));
+    LE_FATAL_ERROR(
+      convert_unsigned_string_to_signed( glewGetErrorString(glew_init_res) ).c_str());
     throw fatal_construction_exception("Error intializing GLEW, exiting...");
   }
 
   std::string glew_init_GL_errors = get_GL_errors();
   if(glew_init_GL_errors.empty())
   {
-    LE_printf("OpenGL Function Loading: No errors on glewInit...\n");
+    log_status(log_scope::ENGINE, "OpenGL Function Loading: No errors on glewInit...");
   }
   else
   {
-    LE_printf("OpenGL Function Loading: Errors on glewInit: %s \n",
-      glew_init_GL_errors.c_str());
+    log_status(log_scope::ENGINE, "OpenGL Function Loading: Errors on glewInit: {} ...")
+      << glew_init_GL_errors.c_str();
   }
 
   if(!GLEW_VERSION_3_2)
@@ -69,15 +71,19 @@ graphics_context::graphics_context(window & target_window)
     throw fatal_construction_exception("Error, unable to obtain OpenGL 3.2 context, exiting...");
   }
 
-  LE_printf("----------------------------------------------------------------\n");
-  LE_printf("Graphics Successfully Initialized\n");
-  LE_printf("System OpenGL Info\n");
-  LE_printf("======================\n");
-  LE_printf(" Version: %s\n", glGetString(GL_VERSION));
-  LE_printf("  Vendor: %s\n", glGetString(GL_VENDOR));
-  LE_printf("Renderer: %s\n", glGetString(GL_RENDERER));
-  LE_printf(" Shading: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-  LE_printf("----------------------------------------------------------------\n");
+  log_status(log_scope::ENGINE, log_line_seperator);
+  log_status(log_scope::ENGINE, "Graphics Successfully Initialized");
+  log_status(log_scope::ENGINE, "System OpenGL Info");
+  log_status(log_scope::ENGINE, "======================");
+  log_status(log_scope::ENGINE, " Version: {}")
+    << convert_unsigned_string_to_signed( glGetString(GL_VERSION) ).c_str();
+  log_status(log_scope::ENGINE, "  Vendor: {}")
+    << convert_unsigned_string_to_signed( glGetString(GL_VENDOR) ).c_str();
+  log_status(log_scope::ENGINE, "Renderer: {}")
+    << convert_unsigned_string_to_signed( glGetString(GL_RENDERER) ).c_str();
+  log_status(log_scope::ENGINE, " Shading: {}")
+    << convert_unsigned_string_to_signed( glGetString(GL_SHADING_LANGUAGE_VERSION) ).c_str();
+  log_status(log_scope::ENGINE, log_line_seperator);
 }
 
 graphics_context::~graphics_context()

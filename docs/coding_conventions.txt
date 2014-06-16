@@ -32,6 +32,20 @@ For private member variables use p_*
 For public member variables use m_*
 Exclusively use getters/setters for non-POD types.
 
+**** Templates ****
+
+template<typename ...ARGS...>
+return_type
+function_name(
+  arg1
+  arg2
+  ...)
+{
+
+}
+
+Note the all uppercase used for template arguments
+
 **** Constructor/Destructors ****
 Prefer using constructors/destructors vs initialize/terminate (or other similar member function
 scheme). If a constructor fails, throw a fatal_construction_exception if the failure is non-

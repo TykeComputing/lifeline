@@ -65,7 +65,7 @@ void vertex_buffer::set_data(GLenum target, GLsizeiptr size, GLvoid const* data,
 {
   glBufferData(target, size, data, usage);
 
-  LE_ERRORIF_GL_ERROR();
+  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 void vertex_buffer::copy_data(
@@ -82,7 +82,7 @@ void vertex_buffer::copy_data(
   glBindBuffer(GL_COPY_READ_BUFFER, 0);
   glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
 
-  LE_ERRORIF_GL_ERROR();
+  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 void vertex_buffer::draw_arrays(

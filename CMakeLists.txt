@@ -50,22 +50,24 @@ include(${LE_CMAKE_DIR}/ExternalDependencyRuntimes.cmake)
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(CPPFormat REQUIRED)
 
 # Header files are added so they will show up in all IDEs
 #
 # Files are currently ordered by modules from lowest to highest level to make a change to
-# a multi-project setup easier.
+# a multi-project setup easier.graphics
 set(LE_EXECUTABLE_SRC_LIST
   src/main.cpp
 
-  src/common/error.cpp
-  src/common/error.h
+  src/common/cppformat.h
+  src/common/fatal_error.cpp
+  src/common/fatal_error.h
   src/common/fatal_construction_exception.cpp
   src/common/fatal_construction_exception.h
   src/common/file_string.cpp
   src/common/file_string.h
-  src/common/LE_printf.cpp
-  src/common/LE_printf.h
+  src/common/logging.cpp
+  src/common/logging.h
   src/common/macros.h
   src/common/message_exception.cpp
   src/common/message_exception.h
@@ -77,13 +79,17 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/resource_exception.h
   src/common/timer.h
   src/common/timer.cpp
+  src/common/unique_id.hpp
+  src/common/unique_id.h
 
-  src/math/mat3.cpp
-  src/math/mat3.h
-  src/math/vec2.cpp
-  src/math/vec2.h
-  src/math/vec3.cpp
-  src/math/vec3.h
+  src/math/mat.cpp
+  src/math/mat.hpp
+  src/math/mat.h
+  src/math/transform.cpp
+  src/math/transform.h
+  src/math/vec.cpp
+  src/math/vec.hpp
+  src/math/vec.h
 
   src/graphics/error_checking.cpp
   src/graphics/error_checking.h
@@ -92,7 +98,6 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/shader_program.cpp
   src/graphics/shader_program.h
   src/graphics/stb_image.cpp
-  src/graphics/stb_image.h
   #src/graphics/shader_program_definition.cpp
   #src/graphics/shader_program_definition.h
   src/graphics/texture.cpp
@@ -104,22 +109,24 @@ set(LE_EXECUTABLE_SRC_LIST
   src/graphics/vertex_buffer.cpp
   src/graphics/vertex_buffer.h
 
-  #src/engine/component_base.cpp
-  #src/engine/component_base.h
+  src/engine/component_base.cpp
+  src/engine/component_base.h
   src/engine/engine.cpp
   src/engine/engine.h
-  #src/engine/entity.cpp
-  #src/engine/entity.h
-  #src/engine/entity_manager.cpp
-  #src/engine/entity_manager.h
-  #src/engine/graphics_component.cpp
-  #src/engine/graphics_component.h
+  src/engine/entity.cpp
+  src/engine/entity.h
+  src/engine/entity_manager.cpp
+  src/engine/entity_manager.h
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
+  src/engine/graphics_system.cpp
+  src/engine/graphics_system.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
-  #src/engine/transform_component.h
-  #src/engine/transform_component.h
+  src/engine/sprite_component.cpp
+  src/engine/sprite_component.h
+  src/engine/transform_component.cpp
+  src/engine/transform_component.h
   src/engine/window.cpp
   src/engine/window.h
 
@@ -154,17 +161,11 @@ target_compile_options(${PROJECT_NAME}
   PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
     # Enable
     /W4 /WX
-
-    # Disable
-    /wd4201
   >
 
   PUBLIC $<$<CXX_COMPILER_ID:GNU>:
     # Enable
-    -Wall -Wextra -Werror -Wfatal-errors #-Wpedantic
-
-    # Disable
-    -fms-extensions # unnamed struct/union
+    -Wall -Wextra -Werror -Wfatal-errors -Wpedantic
   >
 )
 
@@ -262,11 +263,15 @@ message(STATUS "${LE_MESSAGE_LINE_BREAK}")
 target_include_directories(${PROJECT_NAME}
   PUBLIC ${GLEW_INCLUDE_PATH}
   PUBLIC ${SDL2_INCLUDE_DIR}
+  PUBLIC ${CPPFORMAT_INCLUDE_PATH}
+
+  PUBLIC ${LE_EXTERNAL_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}
-  PUBLIC ${GLEW_LIBRARY}
-  PUBLIC ${OPENGL_gl_LIBRARY}
-  PUBLIC ${SDL2_LIBRARY}
-  #PUBLIC ${SDL2MAIN_LIBRARY}
+  PUBLIC general ${GLEW_LIBRARY}
+  PUBLIC general ${OPENGL_gl_LIBRARY}
+  PUBLIC general ${SDL2_LIBRARY}
+  PUBLIC debug ${CPPFORMAT_LIBRARY_DEBUG}
+  PUBLIC optimized ${CPPFORMAT_LIBRARY}
 )

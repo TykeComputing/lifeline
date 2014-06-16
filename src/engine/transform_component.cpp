@@ -24,9 +24,11 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+unique_id<component_base> const transform_component::type_id;
+
 transform_component::transform_component()
 {
-  
+  set_scale(0.1f, 0.1f);
 }
 
 } // namespace LE

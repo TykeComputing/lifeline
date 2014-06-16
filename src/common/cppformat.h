@@ -19,14 +19,12 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include "mat3.h"
+#ifndef LE_COMMON_CPPFORMAT_H
+#define LE_COMMON_CPPFORMAT_H
 
-namespace LE
-{
+//#define FMT_USE_NOEXCEPT 1 // Unsupported by VS2013
+#define FMT_USE_VARIADIC_TEMPLATES 1
+#define FMT_USE_RVALUE_REFERENCES 1
+#include <cppformat/format.h>
 
-mat3::mat3()
-{
-  
-}
-
-} // namespace LE
+#endif // LE_COMMON_CPPFORMAT_H
