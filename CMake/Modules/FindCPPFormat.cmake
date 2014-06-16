@@ -2,24 +2,24 @@
 
 # Stored in subrepo, platform specific path set by LE_EXTERNAL_LIB_DIR.
 find_path(CPPFORMAT_INCLUDE_PATH cppformat/format.h
-    PATHS ${LE_EXTERNAL_INCLUDE_DIR}
-    DOC "The directory where cppformat/format.h resides")
+  PATHS ${LE_EXTERNAL_INCLUDE_DIR}
+  DOC "The directory where cppformat/format.h resides")
 
 find_library(CPPFORMAT_LIBRARY
-    NAMES format
-    PATH_SUFFIXES lib
-    PATHS ${LE_EXTERNAL_LIB_DIR}
-    DOC "The cppformat library")
+  NAMES format
+  PATH_SUFFIXES lib
+  PATHS ${LE_EXTERNAL_LIB_DIR}
+  DOC "The cppformat library")
 
-find_library(CPPFORMAT_LIBRARY_DEBUG
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  find_library(CPPFORMAT_LIBRARY_DEBUG
     NAMES formatd
     PATH_SUFFIXES lib
     PATHS ${LE_EXTERNAL_LIB_DIR}
     DOC "The cppformat library, debug version")
-
-message(STATUS "Include - ${CPPFORMAT_INCLUDE_PATH}")
-message(STATUS "Lib - ${CPPFORMAT_LIBRARY}")
-message(STATUS "Lib search - ${LE_EXTERNAL_LIB_DIR}")
+else()
+  set(CPPFORMAT_LIBRARY_DEBUG "NOT_USED")
+endif()
 
 if(CPPFORMAT_INCLUDE_PATH)
   set(CPPFORMAT_FOUND 1 CACHE STRING "Set to 1 if GLEW is found, 0 otherwise")
