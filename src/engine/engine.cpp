@@ -22,6 +22,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include "engine.h"
 
 #include <algorithm>
+#include <thread>
 
 #include <common/fatal_error.h>
 #include <common/logging.h>
@@ -70,6 +71,7 @@ void engine::run()
       //   stalling while trying to update too many times.
       current_dt = std::min(current_dt, max_iterations_per_frame * update_dt);
 
+      bool has_updated = false;
       while(current_dt > update_dt)
       {
         // Temp hack to allow quiting
@@ -95,10 +97,25 @@ void engine::run()
         p_ent_mgr.remove_dead();
 
         current_dt -= update_dt;
+        has_updated  = true;
       }
 
-      game->draw(*this);
-      p_window.update();
+      // Don't bother drawing if we haven't updated anything.
+      // NOTE - Right now we're busy waiting but that isn't a concern (since we're a game).
+      if(has_updated)
+      {
+        game->draw(*this);
+        p_window.update();
+      }
+      // Sleep if we're running excessively fast
+      else if((update_dt - current_dt) > 0.001)
+      {
+        //log_status(log_scope::ENGINE, "Sleeping for {} seconds, {}") << update_dt - current_dt;
+        std::this_thread::sleep_for(
+          std::chrono::milliseconds(
+            static_cast<std::chrono::milliseconds::rep>(
+              (update_dt - current_dt) * 1000.f) ));
+      }
 
       // Add the new dt to any leftover dt from updating.
       current_dt += frame_timer.poll();

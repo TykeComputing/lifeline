@@ -72,14 +72,14 @@ void debug_drawer_base::draw(GLenum mode)
     GL_STREAM_DRAW);
   vertex_buffer::unbind(GL_ARRAY_BUFFER);
 
-  clear();
-
   // Draw
   vertex_array::bind(p_VAO);
 
   vertex_buffer::draw_arrays(mode, 0, p_vertices.size());
 
   vertex_array::unbind();
+
+  clear();
 }
 
 /**********************************************/

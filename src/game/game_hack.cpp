@@ -72,6 +72,9 @@ game_hack::game_hack(engine & game_engine)
     new_ent->get_component<transform_component>()->set_pos(-0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
   }
+
+  glLineWidth(2.0f);
+  glPointSize(5.0f);
 }
 
 game_hack::~game_hack()
