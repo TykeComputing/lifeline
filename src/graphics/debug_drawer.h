@@ -26,6 +26,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <common/macros.h>
 
+#include <math/mat.h>
+#include <math/vec.h>
+
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
 #include <graphics/vertex.h>
@@ -71,6 +74,18 @@ public:
   void draw();
 
   void add_line(vec2 const& p0, vec2 const& p1, vec4 const& color);
+
+  void add_circle(vec2 const& p, float r, vec4 const& color);
+
+  void add_arrow(vec2 const& p0, vec2 const& norm_dir, float length, vec4 const& color);
+  void add_arrow(vec2 const& p0, vec2 const& v, vec4 const& color);
+
+  /*
+   * Draws an AABB specified in world space.
+   */
+  void add_aabb(vec2 const& min, vec2 const& max, vec4 const& color);
+
+  void add_transform(mat3 const& transform, float scale);
 };
 
 class debug_point_drawer : public debug_drawer_base

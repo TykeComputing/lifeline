@@ -326,6 +326,14 @@ get_normalized(
   return normalize(result);
 }
 
+template<typename COMP_T>
+vecn<2, COMP_T>
+get_orthogonal(
+  vecn<2, COMP_T> const& v)
+{
+  return vec2({ v[1], -v[0] });
+}
+
 /**********************************************************************************************/
 /* Relational Operations */
 /**********************************************************************************************/
@@ -338,7 +346,7 @@ operator==(
 {
   for(size_t i = 0; i < N; ++i)
   {
-    if(is_equal_epsilon(lhs[i], rhs[i], 0.0001f) == false)
+    if(lhs[i] != rhs[i])
     {
       return false;
     }
@@ -347,15 +355,32 @@ operator==(
   return true;
 }
 
-template<size_t N, typename COMP_T>
+template<size_t N>
 bool
 operator==(
-  vecn<N, typename std::enable_if<std::is_integral<COMP_T>::value, COMP_T>::type> const& lhs,
-  vecn<N, COMP_T> const& rhs)
+  vecn<N, float> const& lhs,
+  vecn<N, float> const& rhs)
 {
   for(size_t i = 0; i < N; ++i)
   {
-    if(lhs[i] != rhs[i])
+    if(is_equal_epsilon<float>(lhs[i], rhs[i], epsilon) == false)
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+template<size_t N>
+bool
+operator==(
+  vecn<N, double> const& lhs,
+  vecn<N, double> const& rhs)
+{
+  for(size_t i = 0; i < N; ++i)
+  {
+    if(is_equal_epsilon<double>(lhs[i], rhs[i], epsilon) == false)
     {
       return false;
     }

@@ -223,8 +223,12 @@ bool game_hack::update(engine & game_engine, float dt)
 
     if(player_transl != zero_vec2)
     {
-      p_line_drawer.add_line(
-        player_old_pos, player_old_pos + (player_transl / dt), vec4({1.0f, 0.0f, 0.0f, 1.0f}));
+      p_line_drawer.add_arrow(
+        player_old_pos, player_transl / dt, vec4({1.0f, 0.0f, 0.0f, 1.0f}));
+
+      p_line_drawer.add_aabb(
+        vec2({-0.9f, -0.9f}), vec2({0.9f, 0.9f}), vec4({1.0f, 1.0f, 0.0f, 1.0f}));
+
       p_point_drawer.add_point(
         player_old_pos, vec4({0.0f, 0.0f, 1.0f, 1.0f}));
     }
@@ -237,13 +241,20 @@ bool game_hack::update(engine & game_engine, float dt)
       {
         auto * enemy_t = curr_entity->get_component<transform_component>();
 
+        p_line_drawer.add_circle(
+          enemy_t->get_pos(), enemy_seek_radius, vec4({1.0f, .0f, 1.0f, 1.0f}));
+
         vec2 dir_to_player =
             player_t->get_pos() - enemy_t->get_pos();
         float dist_to_player;
         normalize(dir_to_player, dist_to_player);
+
         if(dist_to_player <= enemy_seek_radius)
         {
           enemy_t->translate(dir_to_player * enemy_movement_speed * dt);
+
+          p_line_drawer.add_arrow(
+            enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4({1.0f, .0f, 1.0f, 1.0f}));
         }
       }
       // Bullet logic
@@ -286,6 +297,16 @@ bool game_hack::update(engine & game_engine, float dt)
       float r_sum =
           ent_outer_t->get_scale_x() + ent_inner_t->get_scale_x();
       r_sum *= 0.5f; // use half of scale as radius
+
+      p_line_drawer.add_circle(
+        ent_inner_t->get_pos(),
+        ent_inner_t->get_scale_x() * 0.5f,
+        vec4({1.0f, 1.0f, 1.0f, 1.0f}));
+      p_line_drawer.add_circle(
+        ent_outer_t->get_pos(),
+        ent_outer_t->get_scale_x() * 0.5f,
+        vec4({1.0f, 1.0f, 1.0f, 1.0f}));
+
       float r_sum_sq = r_sum * r_sum;
       if(dist_sq <= r_sum_sq)
       {
@@ -365,6 +386,9 @@ void game_hack::draw(engine & game_engine)
     curr_g_comp->bind();
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp->get_num_verts());
     curr_g_comp->unbind();
+
+    // TODO - REMOVE
+    p_line_drawer.add_transform(curr_ent_t->get_matrix(), 0.1f);
   }
 
   LE::shader_program::use(*p_debug_shader_prog);

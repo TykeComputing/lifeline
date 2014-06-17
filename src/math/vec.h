@@ -184,9 +184,30 @@ normalize(
   vecn<N, COMP_T> & v);
 
 template<size_t N, typename COMP_T>
+vecn<N, COMP_T> &
+normalize(
+  vecn<N, COMP_T> & v, COMP_T & old_length);
+
+template<size_t N, typename COMP_T>
 vecn<N, COMP_T>
 get_normalized(
   vecn<N, COMP_T> const& v);
+
+/*
+ * 2D form
+ * Will get an orthogonal vector of the form:
+ *
+ * (v)
+ *  ^
+ *  |
+ *  |---> (result)
+ *
+ * Using this form to be analagous to the right hand rule (v is thumb result is index)
+ */
+template<typename COMP_T>
+vecn<2, COMP_T>
+get_orthogonal(
+  vecn<2, COMP_T> const& v);
 
 /**********************************************************************************************/
 /* Relational Operations */

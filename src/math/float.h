@@ -27,7 +27,33 @@ namespace LE
 
 template<typename FLOAT_T>
 bool
-is_equal_epsilon(FLOAT_T const& lhs, FLOAT_T const& rhs, FLOAT_T epsilon);
+is_equal_epsilon(
+  FLOAT_T lhs,
+  FLOAT_T rhs,
+  FLOAT_T epsilon);
+
+// TODO - Move/remove?
+template<typename T>
+T const&
+min(
+  T const& lhs,
+  T const& rhs);
+
+template<typename T>
+T const&
+max(
+  T const& lhs,
+  T const& rhs);
+
+template<typename T>
+T const&
+clamp(
+  T const& val,
+  T const& min,
+  T const& max);
+
+extern float const pi;
+extern float const epsilon;
 
 } // namespace LE
 

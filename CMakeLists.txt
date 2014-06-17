@@ -82,6 +82,7 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/unique_id.hpp
   src/common/unique_id.h
 
+  src/math/float.cpp
   src/math/float.hpp
   src/math/float.h
   src/math/mat.cpp

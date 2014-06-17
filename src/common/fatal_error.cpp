@@ -61,7 +61,7 @@ void display_assert(
 
     int res = SDL_ShowSimpleMessageBox(
       SDL_MESSAGEBOX_ERROR,
-      "LifeLine Engine - ERROR!",
+      "LifeLine Engine - FATAL ERROR!",
       formatted_message.c_str(),
       NULL);
 
