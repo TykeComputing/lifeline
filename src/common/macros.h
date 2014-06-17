@@ -34,7 +34,7 @@ class_name const& operator=(class_name && rhs) = default;
 #endif
 
 // Useful for unused function parameters, etc.
-#define LE_UNUSED_VAR(x) (void)x
+#define LE_UNUSED_VAR(x) ()x
 
 // N
 #ifdef __GNUC__

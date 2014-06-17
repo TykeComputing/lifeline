@@ -25,7 +25,7 @@ namespace LE
 {
 
 
-debug_drawer_base::debug_drawer_base(void)
+debug_drawer_base::debug_drawer_base()
 {
   vertex_array::bind(p_VAO);
   vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
@@ -36,16 +36,16 @@ debug_drawer_base::debug_drawer_base(void)
   vertex_buffer::unbind(GL_ARRAY_BUFFER);
 }
 
-debug_drawer_base::~debug_drawer_base(void)
+debug_drawer_base::~debug_drawer_base()
 {
 }
 
-bool debug_drawer_base::empty(void) const
+bool debug_drawer_base::empty() const
 {
   return p_vertices.empty();
 }
 
-void debug_drawer_base::clear(void)
+void debug_drawer_base::clear()
 {
   p_vertices.clear();
 }
@@ -86,7 +86,7 @@ void debug_drawer_base::draw(GLenum mode)
 /* debug_line_drawer */
 /**********************************************/
 
-void debug_line_drawer::draw(void)
+void debug_line_drawer::draw()
 {
   debug_drawer_base::draw(GL_LINES);
 }
@@ -101,7 +101,7 @@ void debug_line_drawer::add_line(vec2 const& p0, vec2 const& p1, vec4 const& col
 /* debug_point_drawer */
 /**********************************************/
 
-void debug_point_drawer::draw(void)
+void debug_point_drawer::draw()
 {
   debug_drawer_base::draw(GL_POINTS);
 }

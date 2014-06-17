@@ -29,12 +29,12 @@ namespace LE
 {
 
 
-void high_resolution_timer::start(void)
+void high_resolution_timer::start()
 {
   reset();
 }
 
-void high_resolution_timer::reset(void)
+void high_resolution_timer::reset()
 {
   p_perf_freq = SDL_GetPerformanceFrequency();
   p_perf_count_start = SDL_GetPerformanceCounter();
@@ -42,7 +42,7 @@ void high_resolution_timer::reset(void)
   p_is_running = true;
 }
 
-float high_resolution_timer::poll(void) const
+float high_resolution_timer::poll() const
 {
   if(p_is_running == false)
   {
@@ -71,12 +71,12 @@ float high_resolution_timer::poll(void) const
   return static_cast<float>(perf_count_elapsed) / p_perf_freq;
 }
 
-void steady_timer::reset(void)
+void steady_timer::reset()
 {
   p_time_start = std::chrono::steady_clock::now();
 }
 
-float steady_timer::poll(void) const
+float steady_timer::poll() const
 {
   time_point time_end = std::chrono::steady_clock::now();
   std::chrono::duration<float> duration = time_end - p_time_start;

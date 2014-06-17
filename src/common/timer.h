@@ -49,10 +49,10 @@ namespace LE
 class high_resolution_timer
 {
 public:
-  void start(void);
+  void start();
 
-  void reset(void);
-  float poll(void) const;
+  void reset();
+  float poll() const;
 
 private:
   Uint64 p_perf_count_start = 0u;
@@ -69,8 +69,8 @@ private:
 class steady_timer
 {
 public:
-  void reset(void);
-  float poll(void) const;
+  void reset();
+  float poll() const;
 
 private:
   typedef std::chrono::steady_clock::time_point time_point;

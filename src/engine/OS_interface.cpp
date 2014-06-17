@@ -95,7 +95,7 @@ bool OS_interface::update()
   return true;
 }
 
-std::string OS_interface::get_base_dir(void) const
+std::string OS_interface::get_base_dir() const
 {
   char * cwd_c_str = SDL_GetBasePath();
   if(cwd_c_str)
@@ -112,7 +112,7 @@ std::string OS_interface::get_base_dir(void) const
   }
 }
 
-std::string OS_interface::get_preferred_dir(void) const
+std::string OS_interface::get_preferred_dir() const
 {
 //  char * cwd_c_str = SDL_GetPrefPath();
 //  if(cwd_c_str)
