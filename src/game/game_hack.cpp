@@ -254,7 +254,7 @@ bool game_hack::update(engine & game_engine, float dt)
           enemy_t->translate(dir_to_player * enemy_movement_speed * dt);
 
           p_line_drawer.add_arrow(
-            enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4({1.0f, .0f, 1.0f, 1.0f}));
+            enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4({1.0f, 0.0f, 1.0f, 1.0f}));
         }
       }
       // Bullet logic
