@@ -188,6 +188,22 @@ vecn<N, COMP_T>
 get_normalized(
   vecn<N, COMP_T> const& v);
 
+/**********************************************************************************************/
+/* Relational Operations */
+/**********************************************************************************************/
+
+template<size_t N, typename COMP_T>
+bool
+operator==(
+  vecn<N, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& rhs);
+
+template<size_t N, typename COMP_T>
+bool
+operator!=(
+  vecn<N, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& rhs);
+
 } // namespace LE
 
 #include "vec.hpp"

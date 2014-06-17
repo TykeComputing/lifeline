@@ -19,42 +19,18 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_GRAPHICS_SHADER_PROGRAM_H
-#define LE_GRAPHICS_SHADER_PROGRAM_H
-
-#include <unordered_map>
-#include <vector>
-
-#include <GL/glew.h>
-
-#include <common/macros.h>
-
-#include <graphics/shader.h>
+#ifndef LE_MATH_FLOAT_H
+#define LE_MATH_FLOAT_H
 
 namespace LE
 {
 
-class shader_program
-{
-public:
-  LE_NON_COPYABLE(shader_program)
-
-  explicit shader_program(std::vector<shader*> const& shaders);
-  ~shader_program();
-
-  GLint get_unform_location(char const* uniform_name) const;
-
-  static void use(shader_program & sp);
-  static void use_default();
-  // TODO - static set_uniform's for built in type (single and vector), and LE types (vec*, etc)
-
-private:
-  GLuint p_raw_name = 0;
-
-  // Used to store uniform location instead of asking OpenGL every time for same result.
-  mutable std::unordered_map<std::string, GLint> p_uniform_locations;
-};
+template<typename FLOAT_T>
+bool
+is_equal_epsilon(FLOAT_T const& lhs, FLOAT_T const& rhs, FLOAT_T epsilon);
 
 } // namespace LE
 
-#endif // LE_GRAPHICS_SHADER_PROGRAM_H
+#include "float.hpp"
+
+#endif // LE_MATH_FLOAT_H

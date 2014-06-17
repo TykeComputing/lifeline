@@ -33,7 +33,7 @@ template<size_t N, typename COMP_T = float>
 struct matn
 {
   static_assert(std::is_floating_point<COMP_T>::value || std::is_integral<COMP_T>::value,
-    "Only integral or floating point types may be used as components!");
+    "Only integral or floating point types may be used as components.");
 
   typedef COMP_T comp_t;
 

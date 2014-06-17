@@ -29,17 +29,30 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-LE_ENUM_2(vertex_attrib_type,
+LE_ENUM_3(vertex_attrib_type,
   position,
-  texcoord)
+  texcoord,
+  color)
 
 
 struct vertex
 {
+  vertex(vec2 const& position, vec2 const& texcoord);
+
   static void specify_vertex_attributes();
 
   vec2 position;
   vec2 texcoord;
+};
+
+struct debug_shape_vertex
+{
+  debug_shape_vertex(vec2 const& position, vec4 const& color);
+
+  static void specify_vertex_attributes();
+
+  vec2 position;
+  vec4 color;
 };
 
 } // namespace LE

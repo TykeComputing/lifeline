@@ -139,4 +139,9 @@ void shader_program::use(shader_program & sp)
   glUseProgram(sp.p_raw_name);
 }
 
+void shader_program::use_default()
+{
+  glUseProgram(0);
+}
+
 } // namespace LE

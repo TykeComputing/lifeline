@@ -86,18 +86,18 @@ void vertex_buffer::copy_data(
 }
 
 void vertex_buffer::draw_arrays(
-  GLenum mode, GLint vertex_offset, GLsizei vertex_count)
+  GLenum prim_mode, GLint vertex_offset, GLsizei vertex_count)
 {
-  glDrawArrays(mode, vertex_offset, vertex_count);
+  glDrawArrays(prim_mode, vertex_offset, vertex_count);
 }
 
 void vertex_buffer::draw_elements(
-  GLenum mode, GLsizei index_count, GLenum index_type, GLsizei vertex_byte_offset)
+  GLenum prim_mode, GLsizei index_count, GLenum index_type, GLsizei vertex_byte_offset)
 {
   // Last parameter "pointer" is used as an offset in modern OpenGL,
   //   is a pointer due to legacy OpenGL cruft.
   // See: http://stackoverflow.com/a/8283855/2507444
-  glDrawElements(mode, index_count, index_type,
+  glDrawElements(prim_mode, index_count, index_type,
     reinterpret_cast<GLvoid*>(static_cast<uintptr_t>(vertex_byte_offset)) );
 }
 

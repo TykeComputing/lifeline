@@ -26,13 +26,14 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <unordered_map>
 #include <vector>
 
+#include <engine/entity.h>
+#include <engine/entity_manager.h>
+
+#include <graphics/debug_drawer.h>
 #include <graphics/shader_program.h>
 
 #include <math/vec.h>
 #include <math/mat.h>
-
-#include <engine/entity.h>
-#include <engine/entity_manager.h>
 
 namespace LE
 {
@@ -56,11 +57,20 @@ public:
   explicit game_hack(engine & game_engine);
   ~game_hack();
 
+  void load_shader(
+    engine & game_engine,
+    std::unique_ptr<shader_program> & out_sp,
+    char const* vert,
+    char const* frag);
+
   bool update(engine & game_engine, float dt);
   void draw(engine & game_engine);
 
 private:
   std::unique_ptr<shader_program> p_shader_prog;
+  std::unique_ptr<shader_program> p_debug_shader_prog;
+  debug_line_drawer p_line_drawer;
+  debug_point_drawer p_point_drawer;
 };
 
 } // namespace LE

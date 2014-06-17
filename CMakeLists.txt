@@ -82,6 +82,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/unique_id.hpp
   src/common/unique_id.h
 
+  src/math/float.hpp
+  src/math/float.h
   src/math/mat.cpp
   src/math/mat.hpp
   src/math/mat.h
@@ -91,8 +93,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/math/vec.hpp
   src/math/vec.h
 
-  src/graphics/debug_shape_drawer.cpp
-  src/graphics/debug_shape_drawer.h
+  src/graphics/debug_drawer.cpp
+  src/graphics/debug_drawer.h
   src/graphics/error_checking.cpp
   src/graphics/error_checking.h
   src/graphics/shader.cpp

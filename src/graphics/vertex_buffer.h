@@ -50,9 +50,9 @@ public:
     vertex_buffer & destination, vertex_buffer const& source, GLsizeiptr size, GLenum usage);
 
   static void draw_arrays(
-    GLenum mode, GLint vertex_offset, GLsizei vertex_count);
+    GLenum prim_mode, GLint vertex_offset, GLsizei vertex_count);
   static void draw_elements(
-    GLenum mode, GLsizei index_count, GLenum index_type, GLsizei vertex_byte_offset);
+    GLenum prim_mode, GLsizei index_count, GLenum index_type, GLsizei vertex_byte_offset);
 
 private:
   GLuint p_raw_name = 0;

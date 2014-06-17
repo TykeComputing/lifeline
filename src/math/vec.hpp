@@ -20,6 +20,9 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <cmath>
+#include <type_traits>
+
+#include <math/float.h>
 
 namespace LE
 {
@@ -321,6 +324,53 @@ get_normalized(
 {
   vecn<N, COMP_T> result{v};
   return normalize(result);
+}
+
+/**********************************************************************************************/
+/* Relational Operations */
+/**********************************************************************************************/
+
+template<size_t N, typename COMP_T>
+bool
+operator==(
+  vecn<N, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& rhs)
+{
+  for(size_t i = 0; i < N; ++i)
+  {
+    if(is_equal_epsilon(lhs[i], rhs[i], 0.0001f) == false)
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+template<size_t N, typename COMP_T>
+bool
+operator==(
+  vecn<N, typename std::enable_if<std::is_integral<COMP_T>::value, COMP_T>::type> const& lhs,
+  vecn<N, COMP_T> const& rhs)
+{
+  for(size_t i = 0; i < N; ++i)
+  {
+    if(lhs[i] != rhs[i])
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+template<size_t N, typename COMP_T>
+bool
+operator!=(
+  vecn<N, COMP_T> const& lhs,
+  vecn<N, COMP_T> const& rhs)
+{
+  return !(lhs == rhs);
 }
 
 } // namespace LE

@@ -26,6 +26,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <graphics/shader_program.h>
 #include <string>
 #include <vector>
+#include <common/fatal_error.h>
+#include <common/logging.h>
 #include <common/resource_exception.h>
 #include <graphics/vertex.h>
 #include <graphics/vertex_array.h>
@@ -47,19 +49,9 @@ game_hack::game_hack(engine & game_engine)
 
   // TODO - Move shader loading to someplace that makes more sense once resources exist
   // Load shaders
-  std::vector<std::shared_ptr<shader>> shaders;
-  shaders.reserve(2);
-  shaders.emplace_back(std::make_shared<shader>(
-    GL_VERTEX_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + "shaders/solid_color.vert") ));
-  shaders.emplace_back(std::make_shared<shader>(
-    GL_FRAGMENT_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + "shaders/solid_color.frag") ));
 
-  // Load shader_program
-  std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
-  p_shader_prog = std::unique_ptr<shader_program>{new shader_program{shader_prog_input}};
-
-  shaders.clear();
-  LE::shader_program::use(*p_shader_prog);
+  load_shader(game_engine, p_shader_prog, "shaders/solid_color.vert", "shaders/solid_color.frag");
+  load_shader(game_engine, p_debug_shader_prog, "shaders/debug_draw.vert", "shaders/debug_draw.frag");
 
   {
     auto new_ent_ref = ent_mgr.create_entity("player");
@@ -67,6 +59,7 @@ game_hack::game_hack(engine & game_engine)
     new_ent->get_component<transform_component>()->set_pos(0.0f, 0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({0.0f, 1.0f, 0.0f, 1.0f});
   }
+
   {
     auto new_ent_ref = ent_mgr.create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
@@ -83,6 +76,35 @@ game_hack::game_hack(engine & game_engine)
 
 game_hack::~game_hack()
 {
+}
+
+void game_hack::load_shader(
+  engine & game_engine,
+  std::unique_ptr<shader_program> & out_sp,
+  char const* vert,
+  char const* frag)
+{
+  try
+  {
+    LE_FATAL_ERROR_IF(out_sp != nullptr, "Attempting to load existing shader!");
+
+    std::vector<std::shared_ptr<shader>> shaders;
+    shaders.reserve(2);
+    shaders.emplace_back(std::make_shared<shader>(
+      GL_VERTEX_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + vert) ));
+    shaders.emplace_back(std::make_shared<shader>(
+      GL_FRAGMENT_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + frag) ));
+
+    // Load shader_program
+    std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
+    out_sp = std::unique_ptr<shader_program>{new shader_program{shader_prog_input}};
+  }
+  catch(LE::resource_exception const& e)
+  {
+    log_error(log_scope::GAME, "{}") << e.what();
+    LE_FATAL_ERROR("Error loading shader!");
+    return;
+  }
 }
 
 bool game_hack::update(engine & game_engine, float dt)
@@ -173,6 +195,7 @@ bool game_hack::update(engine & game_engine, float dt)
     auto * player_t = player->get_component<transform_component>();
 
     // 1 = key pressed, 0 = key not pressed
+    auto const& player_old_pos = player->get_component<transform_component>()->get_pos();
     vec2 player_transl = zero_vec2;
     if(SDL_keys[SDL_SCANCODE_W])
     {
@@ -192,6 +215,13 @@ bool game_hack::update(engine & game_engine, float dt)
     }
     player->get_component<transform_component>()->translate(player_transl);
 
+    if(player_transl != zero_vec2)
+    {
+      p_line_drawer.add_line(
+        player_old_pos, player_old_pos + (player_transl / dt), vec4({1.0f, 0.0f, 0.0f, 1.0f}));
+      p_point_drawer.add_point(
+        player_old_pos, vec4({0.0f, 1.0f, 0.0f, 1.0f}));
+    }
 
     for(auto & entity_it : ent_mgr.p_entities)
     {
@@ -305,6 +335,8 @@ bool game_hack::update(engine & game_engine, float dt)
 
 void game_hack::draw(engine & game_engine)
 {
+  LE::shader_program::use(*p_shader_prog);
+
   auto & ent_mgr = game_engine.get_entity_mgr();
 
   glClear(GL_COLOR_BUFFER_BIT);
@@ -328,6 +360,13 @@ void game_hack::draw(engine & game_engine)
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp->get_num_verts());
     curr_g_comp->unbind();
   }
+
+  LE::shader_program::use(*p_debug_shader_prog);
+
+  p_line_drawer.draw();
+  p_point_drawer.draw();
+
+  LE::shader_program::use_default();
 }
 
 } // namespace LE
