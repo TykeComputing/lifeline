@@ -36,7 +36,7 @@ namespace LE
 /*
  * Base class for debug drawers.
  *
- * NOTE - After drawing all stored debug information will be cleared.
+ * NOTE - Debug drawers must be manually cleared once per draw.
  */
 class debug_drawer_base
 {

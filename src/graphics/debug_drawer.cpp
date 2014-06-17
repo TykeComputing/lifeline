@@ -78,8 +78,6 @@ void debug_drawer_base::draw(GLenum mode)
   vertex_buffer::draw_arrays(mode, 0, p_vertices.size());
 
   vertex_array::unbind();
-
-  clear();
 }
 
 /**********************************************/

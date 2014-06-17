@@ -44,6 +44,11 @@ graphics_context::graphics_context(window & target_window)
     throw fatal_construction_exception("Error creating OpenGL context, exiting...");
   }
 
+  // 1  = v-sync
+  // 0  = no v-sync
+  // -1 = dynamic
+  SDL_GL_SetSwapInterval(0);
+
   // Experimental is needed for OpenGL 3.2+ core contexts
   // See: http://www.opengl.org/wiki/OpenGL_Loading_Library
   glewExperimental = GL_TRUE;

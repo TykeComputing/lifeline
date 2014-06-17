@@ -112,6 +112,9 @@ void game_hack::load_shader(
 
 bool game_hack::update(engine & game_engine, float dt)
 {
+  p_line_drawer.clear();
+  p_point_drawer.clear();
+
   auto & ent_mgr = game_engine.get_entity_mgr();
 
   //////////////////////////////////////////////////////////////////////////
@@ -223,7 +226,7 @@ bool game_hack::update(engine & game_engine, float dt)
       p_line_drawer.add_line(
         player_old_pos, player_old_pos + (player_transl / dt), vec4({1.0f, 0.0f, 0.0f, 1.0f}));
       p_point_drawer.add_point(
-        player_old_pos, vec4({0.0f, 1.0f, 0.0f, 1.0f}));
+        player_old_pos, vec4({0.0f, 0.0f, 1.0f, 1.0f}));
     }
 
     for(auto & entity_it : ent_mgr.p_entities)
