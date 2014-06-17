@@ -35,7 +35,7 @@ class component_base
 {
 public:
   component_base();
-
+  virtual ~component_base() {}
   //entity const* get_owner() const;
   //entity * get_owner();
 

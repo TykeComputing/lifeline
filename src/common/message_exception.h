@@ -33,6 +33,7 @@ class message_exception
 {
 public:
   message_exception();
+  virtual ~message_exception() {}
   message_exception(char const* message);
   message_exception(std::string const& message);
 

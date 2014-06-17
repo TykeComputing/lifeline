@@ -91,6 +91,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/math/vec.hpp
   src/math/vec.h
 
+  src/graphics/debug_shape_drawer.cpp
+  src/graphics/debug_shape_drawer.h
   src/graphics/error_checking.cpp
   src/graphics/error_checking.h
   src/graphics/shader.cpp
@@ -158,7 +160,7 @@ message(STATUS "${LE_MESSAGE_HEADER}")
 
 message(STATUS "Build warnings...")
 target_compile_options(${PROJECT_NAME}
-  PUBLIC 
+  PUBLIC
     $<$<CXX_COMPILER_ID:MSVC>:
       # Enable
       /W4 /WX
@@ -172,7 +174,7 @@ target_compile_options(${PROJECT_NAME}
 
 message(STATUS "C++ runtime libraries...")
 target_compile_options(${PROJECT_NAME}
-  PUBLIC 
+  PUBLIC
     $<$<CXX_COMPILER_ID:MSVC>:
 
       # Release configs
@@ -189,7 +191,7 @@ target_compile_options(${PROJECT_NAME}
 
 message(STATUS "General compile flags...")
 target_compile_options(${PROJECT_NAME}
-  PUBLIC 
+  PUBLIC
     $<$<CXX_COMPILER_ID:GNU>:
       -std=c++11
     >
@@ -197,14 +199,14 @@ target_compile_options(${PROJECT_NAME}
 
 message(STATUS "Preprocessor definitions...")
 target_compile_definitions(${PROJECT_NAME}
-  PUBLIC 
+  PUBLIC
     $<$<CXX_COMPILER_ID:MSVC>:
       /D_CRT_SECURE_NO_DEPRECATE
     >
 )
 
 target_include_directories(${PROJECT_NAME}
-  PUBLIC 
+  PUBLIC
     src
 )
 
@@ -268,7 +270,7 @@ message(STATUS "External Dependency Setup")
 #       GLEW in graphics. GLEW will only need to be specified in graphics instead of for
 #       each target that uses graphics all the way up.
 target_include_directories(${PROJECT_NAME}
-  PUBLIC 
+  PUBLIC
     ${GLEW_INCLUDE_PATH}
     ${SDL2_INCLUDE_DIR}
     ${CPPFORMAT_INCLUDE_PATH}
@@ -286,7 +288,7 @@ target_link_libraries(${PROJECT_NAME}
     debug ${CPPFORMAT_LIBRARY_DEBUG}
     optimized ${CPPFORMAT_LIBRARY}
   >
-  
+
   $<$<CXX_COMPILER_ID:GNU>:
       general ${CPPFORMAT_LIBRARY}
   >
