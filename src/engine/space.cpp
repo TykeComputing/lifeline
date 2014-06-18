@@ -19,7 +19,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#include "entity_manager.h"
+#include "space.h"
 
 #include <common/logging.h>
 
@@ -29,7 +29,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-std::weak_ptr<entity> entity_manager::create_entity(std::string const& name)
+std::weak_ptr<entity> space::create_entity(std::string const& name)
 {
   auto new_ent = std::make_shared<entity>(name);
   auto new_ent_it = p_entities.emplace(std::make_pair(new_ent->get_id(), new_ent));
@@ -47,7 +47,7 @@ std::weak_ptr<entity> entity_manager::create_entity(std::string const& name)
 }
 
 // TODO: Add more debug printing to all functions.
-std::weak_ptr<entity> entity_manager::find_entity(std::string const& name)
+std::weak_ptr<entity> space::find_entity(std::string const& name)
 {
   for(auto & it : p_entities)
   {
@@ -60,7 +60,7 @@ std::weak_ptr<entity> entity_manager::find_entity(std::string const& name)
   return {};
 }
 
-void entity_manager::remove_dead()
+void space::remove_dead()
 {
   for(auto it = p_entities.begin(); it != p_entities.end();)
   {

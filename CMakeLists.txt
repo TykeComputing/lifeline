@@ -120,16 +120,18 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/engine.h
   src/engine/entity.cpp
   src/engine/entity.h
-  src/engine/entity_manager.cpp
-  src/engine/entity_manager.h
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
   src/engine/graphics_system.cpp
   src/engine/graphics_system.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
+  src/engine/space.cpp
+  src/engine/space.h
   src/engine/sprite_component.cpp
   src/engine/sprite_component.h
+  src/engine/system_base.cpp
+  src/engine/system_base.h
   src/engine/transform_component.cpp
   src/engine/transform_component.h
   src/engine/window.cpp

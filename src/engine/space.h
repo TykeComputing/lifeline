@@ -19,8 +19,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 ************************************************************************************************
 */
 
-#ifndef LE_ENGINE_ENTITY_MANAGER_H
-#define LE_ENGINE_ENTITY_MANAGER_H
+#ifndef LE_ENGINE_SPACE_H
+#define LE_ENGINE_SPACE_H
 
 #include <memory>
 #include <vector>
@@ -32,8 +32,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-// TODO - UNHACK
-class entity_manager
+class
 {
 public:
   std::weak_ptr<entity> create_entity(std::string const& name);
@@ -45,9 +44,10 @@ public:
 
   // TODO - Make private once systems have been added to engine
   std::unordered_map<unique_id<entity>, std::shared_ptr<entity>> p_entities;
+
 private:
 };
 
 } // namespace LE
 
-#endif // LE_ENGINE_ENTITY_MANAGER_H
+#endif // LE_ENGINE_SPACE_H
