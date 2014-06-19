@@ -23,28 +23,29 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <common/fatal_construction_exception.h>
 
-#include <graphics/shader_program.h>
 #include <string>
 #include <vector>
+
 #include <common/fatal_error.h>
 #include <common/logging.h>
 #include <common/resource_exception.h>
+
+#include <engine/engine.h>
+#include <engine/space.h>
+#include <engine/sprite_component.h>
+#include <engine/transform_component.h>
+
+#include <graphics/shader_program.h>
 #include <graphics/vertex.h>
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
-#include <engine/engine.h>
-#include <engine/transform_component.h>
-
-#include <engine/sprite_component.h>
-#include <engine/transform_component.h>
 
 namespace LE
 {
 
 //////////////////////////////////////////////////////////////////////////
-game_hack::game_hack(engine & game_engine)
+game_hack::game_hack(engine & game_engine, space & game_space)
 {
-  auto & ent_mgr = game_engine.get_entity_mgr();
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
   // TODO - Move shader loading to someplace that makes more sense once resources exist
@@ -54,20 +55,20 @@ game_hack::game_hack(engine & game_engine)
   load_shader(game_engine, p_debug_shader_prog, "shaders/debug_draw.vert", "shaders/debug_draw.frag");
 
   {
-    auto new_ent_ref = ent_mgr.create_entity("player");
+    auto new_ent_ref = game_space.create_entity("player");
     auto new_ent = new_ent_ref.lock();
     new_ent->get_component<transform_component>()->set_pos(0.0f, 0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({0.0f, 1.0f, 0.0f, 1.0f});
   }
 
   {
-    auto new_ent_ref = ent_mgr.create_entity("enemy");
+    auto new_ent_ref = game_space.create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
     new_ent->get_component<transform_component>()->set_pos(0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
   }
   {
-    auto new_ent_ref = ent_mgr.create_entity("enemy");
+    auto new_ent_ref = game_space.create_entity("enemy");
     auto new_ent = new_ent_ref.lock();
     new_ent->get_component<transform_component>()->set_pos(-0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
@@ -110,16 +111,14 @@ void game_hack::load_shader(
   }
 }
 
-bool game_hack::update(engine & game_engine, float dt)
+bool game_hack::update(space & game_space, float dt)
 {
   p_line_drawer.clear();
   p_point_drawer.clear();
 
-  auto & ent_mgr = game_engine.get_entity_mgr();
-
   //////////////////////////////////////////////////////////////////////////
   // UPDATE
-  auto player_ref = ent_mgr.find_entity("player");
+  auto player_ref = game_space.find_entity("player");
   auto player = player_ref.lock();
 
   float const player_movement_speed = 0.8f;
@@ -149,7 +148,7 @@ bool game_hack::update(engine & game_engine, float dt)
           {
             auto * player_t = player->get_component<transform_component>();
 
-            auto new_bullet_ref = ent_mgr.create_entity("bullet");
+            auto new_bullet_ref = game_space.create_entity("bullet");
             auto new_bullet = new_bullet_ref.lock();
             auto * new_bullet_t = new_bullet->get_component<transform_component>();
             new_bullet_t->set_pos(player_t->get_pos());
@@ -233,7 +232,7 @@ bool game_hack::update(engine & game_engine, float dt)
         player_old_pos, vec4({0.0f, 0.0f, 1.0f, 1.0f}));
     }
 
-    for(auto & entity_it : ent_mgr.p_entities)
+    for(auto & entity_it : game_space.p_entities)
     {
       // Enemy seeking
       auto & curr_entity = entity_it.second;
@@ -269,8 +268,8 @@ bool game_hack::update(engine & game_engine, float dt)
   // Quick and oh so dirty hack, going to unhack soon anyway, just need to get compiling on
   //   GCC.
   std::vector<std::weak_ptr<entity>> curr_ents;
-  curr_ents.reserve(ent_mgr.p_entities.size());
-  for(auto & ent_it : ent_mgr.p_entities)
+  curr_ents.reserve(game_space.p_entities.size());
+  for(auto & ent_it : game_space.p_entities)
   {
     curr_ents.emplace_back(ent_it.second);
   }
@@ -360,11 +359,9 @@ bool game_hack::update(engine & game_engine, float dt)
   return true;
 }
 
-void game_hack::draw(engine & game_engine)
+void game_hack::draw(space & game_space)
 {
   LE::shader_program::use(*p_shader_prog);
-
-  auto & ent_mgr = game_engine.get_entity_mgr();
 
   glClear(GL_COLOR_BUFFER_BIT);
 
@@ -372,7 +369,7 @@ void game_hack::draw(engine & game_engine)
   GLint model_to_world_ul = p_shader_prog->get_unform_location("model_to_world");
 
   // Terrible game loop, HACK HACK HACK
-  for(auto & entity_it : ent_mgr.p_entities)
+  for(auto & entity_it : game_space.p_entities)
   {
     auto & curr_ent = entity_it.second;
     auto const* curr_ent_t = curr_ent->get_component<transform_component>();

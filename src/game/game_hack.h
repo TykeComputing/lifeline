@@ -26,8 +26,8 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <unordered_map>
 #include <vector>
 
-#include <engine/entity.h>
-#include <engine/entity_manager.h>
+#include <engine/engine.h>
+#include <engine/space.h>
 
 #include <graphics/debug_drawer.h>
 #include <graphics/shader_program.h>
@@ -51,10 +51,7 @@ class engine;
 class game_hack
 {
 public:
-  //typedef std::shared_ptr<entity> entity_owning_ptr;
-  //typedef std::weak_ptr<entity> entity_borrowed_ptr;
-
-  explicit game_hack(engine & game_engine);
+  explicit game_hack(engine & game_engine, space & game_space);
   ~game_hack();
 
   void load_shader(
@@ -63,8 +60,8 @@ public:
     char const* vert,
     char const* frag);
 
-  bool update(engine & game_engine, float dt);
-  void draw(engine & game_engine);
+  bool update(space & game_space, float dt);
+  void draw(space & game_space);
 
 private:
   std::unique_ptr<shader_program> p_shader_prog;

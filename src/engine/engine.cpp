@@ -48,7 +48,7 @@ void engine::run()
 {
   try
   {
-    std::unique_ptr<game_hack> game{new game_hack{*this}};
+    std::unique_ptr<game_hack> game{new game_hack{*this, p_space}};
 
 
     // Credit for method of fixed time stepping:
@@ -78,7 +78,7 @@ void engine::run()
 
         try
         {
-          p_is_running = game->update(*this, update_dt);
+          p_is_running = game->update(p_space, update_dt);
         }
         catch(LE::resource_exception const& e)
         {
@@ -93,12 +93,12 @@ void engine::run()
           return;
         }
 
-        p_ent_mgr.remove_dead();
+        p_space.remove_dead();
 
         current_dt -= update_dt;
       }
 
-      game->draw(*this);
+      game->draw(p_space);
       p_window.update();
 
       // Add the new dt to any leftover dt from updating.

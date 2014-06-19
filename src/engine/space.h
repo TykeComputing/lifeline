@@ -32,7 +32,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-class
+class space
 {
 public:
   std::weak_ptr<entity> create_entity(std::string const& name);
