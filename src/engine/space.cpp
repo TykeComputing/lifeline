@@ -29,13 +29,16 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
+/**********************************************/
+/* Entity Management */
+/**********************************************/
 entity * space::create_entity(std::string const& name)
 {
   auto id_ent_pair = std::make_pair(0u, std::unique_ptr<entity>(new entity{name}));
   if(id_ent_pair.second)
   {
     // Set key to new entity's ID
-    // TODO - Consider having space assign id.
+    // TODO - Consider having space assign id instead.
     id_ent_pair.first = id_ent_pair.second->get_id().value();
 
     auto new_ent_emplace_result = p_entities.emplace(std::move(id_ent_pair));
@@ -44,6 +47,9 @@ entity * space::create_entity(std::string const& name)
     if(new_ent_emplace_result.second)
     {
       auto & new_ent = new_ent_emplace_result.first->second;
+
+      log_status(log_scope::ENGINE,
+        "Creating entity named \"{}\"") << new_ent->get_name();
 
       new_ent->create_component<transform_component>();
       new_ent->create_component<sprite_component>();

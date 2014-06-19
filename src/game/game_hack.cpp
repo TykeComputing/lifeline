@@ -227,10 +227,12 @@ bool game_hack::update(space & game_space, float dt)
         player_old_pos, vec4({0.0f, 0.0f, 1.0f, 1.0f}));
     }
 
-    for(auto & entity_it : game_space.p_entities)
+    for(auto entity_it = game_space.entity_begin();
+        entity_it != game_space.entity_end();
+        ++entity_it)
     {
       // Enemy seeking
-      auto & curr_entity = entity_it.second;
+      auto & curr_entity = (*entity_it).second;
       if(curr_entity->get_name() == "enemy")
       {
         auto * enemy_t = curr_entity->get_component<transform_component>();
@@ -263,10 +265,12 @@ bool game_hack::update(space & game_space, float dt)
   // Quick and oh so dirty hack, going to unhack soon anyway, just need to get compiling on
   //   GCC.
   std::vector<entity *> curr_ents;
-  curr_ents.reserve(game_space.p_entities.size());
-  for(auto & ent_it : game_space.p_entities)
+  curr_ents.reserve(game_space.entity_num());
+  for(auto entity_it = game_space.entity_begin();
+      entity_it != game_space.entity_end();
+      ++entity_it)
   {
-    curr_ents.emplace_back(ent_it.second.get());
+    curr_ents.emplace_back((*entity_it).second.get());
   }
 
   // TODO - Stick to actual naming conventions when unhacking this
@@ -363,9 +367,11 @@ void game_hack::draw(space & game_space)
   GLint model_to_world_ul = p_shader_prog->get_unform_location("model_to_world");
 
   // Terrible game loop, HACK HACK HACK
-  for(auto & entity_it : game_space.p_entities)
+  for(auto entity_it = game_space.entity_begin();
+    entity_it != game_space.entity_end();
+    ++entity_it)
   {
-    auto & curr_ent = entity_it.second;
+    auto & curr_ent = (*entity_it).second;
     auto const* curr_ent_t = curr_ent->get_component<transform_component>();
     auto const& model_to_world = curr_ent_t->get_matrix();
 
