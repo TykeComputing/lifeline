@@ -55,21 +55,18 @@ game_hack::game_hack(engine & game_engine, space & game_space)
   load_shader(game_engine, p_debug_shader_prog, "shaders/debug_draw.vert", "shaders/debug_draw.frag");
 
   {
-    auto new_ent_ref = game_space.create_entity("player");
-    auto new_ent = new_ent_ref.lock();
+    auto * new_ent = game_space.create_entity("player");
     new_ent->get_component<transform_component>()->set_pos(0.0f, 0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({0.0f, 1.0f, 0.0f, 1.0f});
   }
 
   {
-    auto new_ent_ref = game_space.create_entity("enemy");
-    auto new_ent = new_ent_ref.lock();
+    auto * new_ent = game_space.create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
   }
   {
-    auto new_ent_ref = game_space.create_entity("enemy");
-    auto new_ent = new_ent_ref.lock();
+    auto * new_ent = game_space.create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(-0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
   }
@@ -118,8 +115,7 @@ bool game_hack::update(space & game_space, float dt)
 
   //////////////////////////////////////////////////////////////////////////
   // UPDATE
-  auto player_ref = game_space.find_entity("player");
-  auto player = player_ref.lock();
+  auto * player = game_space.find_entity("player");
 
   float const player_movement_speed = 0.8f;
   float const bullet_movement_speed = 2.0f;
@@ -148,8 +144,7 @@ bool game_hack::update(space & game_space, float dt)
           {
             auto * player_t = player->get_component<transform_component>();
 
-            auto new_bullet_ref = game_space.create_entity("bullet");
-            auto new_bullet = new_bullet_ref.lock();
+            auto * new_bullet = game_space.create_entity("bullet");
             auto * new_bullet_t = new_bullet->get_component<transform_component>();
             new_bullet_t->set_pos(player_t->get_pos());
             new_bullet_t->set_scale(0.05f, 0.05f);
@@ -267,11 +262,11 @@ bool game_hack::update(space & game_space, float dt)
 
   // Quick and oh so dirty hack, going to unhack soon anyway, just need to get compiling on
   //   GCC.
-  std::vector<std::weak_ptr<entity>> curr_ents;
+  std::vector<entity *> curr_ents;
   curr_ents.reserve(game_space.p_entities.size());
   for(auto & ent_it : game_space.p_entities)
   {
-    curr_ents.emplace_back(ent_it.second);
+    curr_ents.emplace_back(ent_it.second.get());
   }
 
   // TODO - Stick to actual naming conventions when unhacking this
@@ -281,8 +276,8 @@ bool game_hack::update(space & game_space, float dt)
     // Don't consider this object or ones before it for testing (they've already been tested).
     for(auto ent_inner_it = curr_ents.begin() + 1; ent_inner_it != curr_ents.end(); ++ent_inner_it)
     {
-      auto ent_outer = (*ent_outer_it).lock();
-      auto ent_inner = (*ent_inner_it).lock();
+      auto ent_outer = (*ent_outer_it);
+      auto ent_inner = (*ent_inner_it);
       if(!ent_outer || !ent_inner)
       {
         continue;
@@ -309,22 +304,21 @@ bool game_hack::update(space & game_space, float dt)
       float r_sum_sq = r_sum * r_sum;
       if(dist_sq <= r_sum_sq)
       {
-        std::shared_ptr<entity> * ents[2] = { &ent_outer, &ent_inner };
-        entity * ents_raw[2] = { ents[0]->get(), ents[1]->get() };
+        entity * ents[2] = { ent_outer, ent_inner };
 
         auto ent_involved_in_collision =
           [](std::string const& name,
-            entity * (&ents_raw)[2],
+            entity * (&ents)[2],
             unsigned & index,
             unsigned & other_index)->bool
         {
-          if(ents_raw[0]->get_name() == name)
+          if(ents[0]->get_name() == name)
           {
             index = 0;
             other_index = 1;
             return true;
           }
-          else if(ents_raw[1]->get_name() == name)
+          else if(ents[1]->get_name() == name)
           {
             index = 1;
             other_index = 0;
@@ -337,19 +331,19 @@ bool game_hack::update(space & game_space, float dt)
         unsigned index;
         unsigned other_index;
         // Hacky collision logic
-        if(ent_involved_in_collision("player", ents_raw, index, other_index))
+        if(ent_involved_in_collision("player", ents, index, other_index))
         {
-          if(ents_raw[other_index]->get_name() == "enemy")
+          if(ents[other_index]->get_name() == "enemy")
           {
-            (*ents[index])->kill();
+            ents[index]->kill();
           }
         }
-        if(ent_involved_in_collision("enemy", ents_raw, index, other_index))
+        if(ent_involved_in_collision("enemy", ents, index, other_index))
         {
-          if(ents_raw[other_index]->get_name() == "bullet")
+          if(ents[other_index]->get_name() == "bullet")
           {
-            (*ents[index])->kill();
-            (*ents[other_index])->kill();
+            ents[index]->kill();
+            ents[other_index]->kill();
           }
         }
       }

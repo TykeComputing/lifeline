@@ -29,7 +29,7 @@ All lower case with underscores except for acronyms which will be uppercase.
 See "Class naming"
 
 For private member variables use p_*
-For public member variables use m_*
+For public member variables on POD types no prefix is necessary.
 Exclusively use getters/setters for non-POD types.
 
 **** Templates ****

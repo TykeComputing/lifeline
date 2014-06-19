@@ -29,35 +29,63 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 namespace LE
 {
 
-std::weak_ptr<entity> space::create_entity(std::string const& name)
+entity * space::create_entity(std::string const& name)
 {
-  auto new_ent = std::make_shared<entity>(name);
-  auto new_ent_it = p_entities.emplace(std::make_pair(new_ent->get_id(), new_ent));
-  if(new_ent_it.second)
+  auto id_ent_pair = std::make_pair(0u, std::unique_ptr<entity>(new entity{name}));
+  if(id_ent_pair.second)
   {
-    new_ent->create_component<transform_component>();
-    new_ent->create_component<sprite_component>();
-    return new_ent_it.first->second;
+    // Set key to new entity's ID
+    // TODO - Consider having space assign id.
+    id_ent_pair.first = id_ent_pair.second->get_id().value();
+
+    auto new_ent_emplace_result = p_entities.emplace(std::move(id_ent_pair));
+
+    // Check result of emplace
+    if(new_ent_emplace_result.second)
+    {
+      auto & new_ent = new_ent_emplace_result.first->second;
+
+      new_ent->create_component<transform_component>();
+      new_ent->create_component<sprite_component>();
+      return new_ent.get();
+    }
+    else
+    {
+      LE_FATAL_ERROR("Unable to insert new entity into container, conflicting ID!");
+      return nullptr;
+    }
   }
   else
   {
     LE_FATAL_ERROR("Unable to create entity!");
-    return {};
+    return nullptr;
   }
 }
 
-// TODO: Add more debug printing to all functions.
-std::weak_ptr<entity> space::find_entity(std::string const& name)
+entity * space::find_entity(std::string const& name)
 {
   for(auto & it : p_entities)
   {
     if(it.second->get_name() == name)
     {
-      return it.second;
+      return it.second.get();
     }
   }
 
-  return {};
+  return nullptr;
+}
+
+entity * space::find_entity(unique_id<entity> const& id)
+{
+  auto find_it = p_entities.find(id.value());
+  if(find_it != p_entities.end())
+  {
+    return (*find_it).second.get();
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 void space::remove_dead()
@@ -66,6 +94,9 @@ void space::remove_dead()
   {
     if((*it).second->is_alive() == false)
     {
+      log_status(log_scope::ENGINE,
+        "Removing dead entity named \"{}\"") << (*it).second->get_name();
+
       it = p_entities.erase(it);
     }
     else

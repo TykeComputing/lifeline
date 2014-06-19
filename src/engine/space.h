@@ -27,6 +27,7 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <common/unique_id.h>
 
+#include <engine/component_base.h>
 #include <engine/entity.h>
 
 namespace LE
@@ -35,17 +36,21 @@ namespace LE
 class space
 {
 public:
-  std::weak_ptr<entity> create_entity(std::string const& name);
+  entity * create_entity(std::string const& name);
 
-  std::weak_ptr<entity> find_entity(std::string const& name);
-  std::weak_ptr<entity> find_entity(unique_id<entity> const& id);
+  entity * find_entity(std::string const& name);
+  entity * find_entity(unique_id<entity> const& id);
 
   void remove_dead();
 
-  // TODO - Make private once systems have been added to engine
-  std::unordered_map<unique_id<entity>, std::shared_ptr<entity>> p_entities;
+//private:
+  std::unordered_map<
+    unique_id<entity>::value_type,
+    std::unique_ptr<entity> > p_entities;
 
-private:
+  std::unordered_map<
+    unique_id<component_base>::value_type,
+    std::vector<std::unique_ptr<component_base>> > p_components;
 };
 
 } // namespace LE
