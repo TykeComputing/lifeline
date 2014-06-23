@@ -38,7 +38,7 @@ struct matn
   typedef COMP_T comp_t;
 
   matn();
-  explicit matn(std::array<COMP_T, N * N> const& values);
+  matn(std::array<COMP_T, N * N> const& values);
 
   void set(std::array<COMP_T, N * N> const& values);
 

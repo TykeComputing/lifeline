@@ -99,12 +99,12 @@ void debug_line_drawer::add_line(vec2 const& p0, vec2 const& p1, vec4 const& col
 
 void debug_line_drawer::add_circle(vec2 const& p, float r, vec4 const& color)
 {
-  uint const num_subdiv = 16;
+  unsigned const num_subdiv = 16;
   float delta_angle = (pi * 2.0f) / num_subdiv;
 
   vec2 line_vert_prev_pos = vec2({r, 0.0f});
   line_vert_prev_pos += p;
-  for(uint i = 0; i <= num_subdiv; ++i)
+  for(unsigned i = 0; i <= num_subdiv; ++i)
   {
     float angle = i * delta_angle;
     vec2 line_vert_pos({std::cos(angle) * r, std::sin(angle) * r});
