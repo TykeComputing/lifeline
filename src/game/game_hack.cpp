@@ -218,13 +218,13 @@ bool game_hack::update(space & game_space, float dt)
     if(player_transl != zero_vec2)
     {
       p_line_drawer.add_arrow(
-        player_old_pos, player_transl / dt, vec4({1.0f, 0.0f, 0.0f, 1.0f}));
+        player_old_pos, player_transl / dt, vec4mk(1.0f, 0.0f, 0.0f, 1.0f));
 
       p_line_drawer.add_aabb(
-        vec2({-0.9f, -0.9f}), vec2({0.9f, 0.9f}), vec4({1.0f, 1.0f, 0.0f, 1.0f}));
+        vec2mk(-0.9f, -0.9f), vec2mk(0.9f, 0.9f), vec4mk(1.0f, 1.0f, 0.0f, 1.0f));
 
       p_point_drawer.add_point(
-        player_old_pos, vec4({0.0f, 0.0f, 1.0f, 1.0f}));
+        player_old_pos, vec4mk(0.0f, 0.0f, 1.0f, 1.0f));
     }
 
     for(auto entity_it = game_space.entity_begin();
@@ -238,7 +238,7 @@ bool game_hack::update(space & game_space, float dt)
         auto * enemy_t = curr_entity->get_component<transform_component>();
 
         p_line_drawer.add_circle(
-          enemy_t->get_pos(), enemy_seek_radius, vec4({1.0f, .0f, 1.0f, 1.0f}));
+          enemy_t->get_pos(), enemy_seek_radius, vec4mk(1.0f, .0f, 1.0f, 1.0f));
 
         vec2 dir_to_player =
             player_t->get_pos() - enemy_t->get_pos();
@@ -250,7 +250,7 @@ bool game_hack::update(space & game_space, float dt)
           enemy_t->translate(dir_to_player * enemy_movement_speed * dt);
 
           p_line_drawer.add_arrow(
-            enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4({1.0f, 0.0f, 1.0f, 1.0f}));
+            enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4mk(1.0f, 0.0f, 1.0f, 1.0f));
         }
       }
       // Bullet logic
@@ -299,11 +299,11 @@ bool game_hack::update(space & game_space, float dt)
       p_line_drawer.add_circle(
         ent_inner_t->get_pos(),
         ent_inner_t->get_scale_x() * 0.5f,
-        vec4({1.0f, 1.0f, 1.0f, 1.0f}));
+        vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
       p_line_drawer.add_circle(
         ent_outer_t->get_pos(),
         ent_outer_t->get_scale_x() * 0.5f,
-        vec4({1.0f, 1.0f, 1.0f, 1.0f}));
+        vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
 
       float r_sum_sq = r_sum * r_sum;
       if(dist_sq <= r_sum_sq)

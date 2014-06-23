@@ -42,7 +42,7 @@ namespace LE
 class physics_component_hack
 {
 public:
-  vec2 m_velocity = vec2({ 0.0f, 0.0f });
+  vec2 m_velocity = zero_vec2;
 };
 
 //////////////////////////////////////////////////////////////////////////

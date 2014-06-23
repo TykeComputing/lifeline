@@ -102,7 +102,7 @@ void debug_line_drawer::add_circle(vec2 const& p, float r, vec4 const& color)
   unsigned const num_subdiv = 16;
   float delta_angle = (pi * 2.0f) / num_subdiv;
 
-  vec2 line_vert_prev_pos = vec2({r, 0.0f});
+  vec2 line_vert_prev_pos = vec2mk(r, 0.0f);
   line_vert_prev_pos += p;
   for(unsigned i = 0; i <= num_subdiv; ++i)
   {
@@ -173,8 +173,8 @@ void debug_line_drawer::add_transform(mat3 const& transform, float scale)
   normalize(right);
   normalize(up);
 
-  add_arrow(pos, right, scale, vec4({1.0f, 0.0f, 0.0f, 1.0f}) );
-  add_arrow(pos, up, scale, vec4({0.0f, 1.0f, 0.0f, 1.0f}) );
+  add_arrow(pos, right, scale, vec4mk(1.0f, 0.0f, 0.0f, 1.0f) );
+  add_arrow(pos, up, scale, vec4mk(0.0f, 1.0f, 0.0f, 1.0f) );
 }
 
 /**********************************************/

@@ -47,7 +47,7 @@ public:
 
   GLsizei get_num_verts() const;
 
-  vec4 m_color = vec4({ 1.0f, 1.0f, 1.0f, 1.0f }); // TODO: Move and change method of representing colors (RGBA8?)
+  vec4 m_color = vec4mk(1.0f, 1.0f, 1.0f, 1.0f); // TODO: Move and change method of representing colors (RGBA8?)
 
   static unique_id<component_base> const type_id;
 private:
