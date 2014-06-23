@@ -116,12 +116,11 @@ mat3 const& transform::get_matrix() const
 {
   if(p_is_dirty)
   {
-    p_mat.set(
-    {
+    p_mat = mat3mk(
       p_scale[0], 0.0f, p_pos[0],
       0.0f, p_scale[1], p_pos[1],
       0.0f, 0.0f, 1.0f
-    });
+    );
 
     p_is_dirty = false;
   }
