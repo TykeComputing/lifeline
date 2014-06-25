@@ -57,13 +57,13 @@ game_hack::game_hack(engine & game_engine, space & game_space)
   {
     auto * new_ent = game_space.create_entity("player");
     new_ent->get_component<transform_component>()->set_pos(0.0f, 0.5f);
-    new_ent->get_component<sprite_component>()->m_color.set({0.0f, 1.0f, 0.0f, 1.0f});
+    set(new_ent->get_component<sprite_component>()->m_color, 0.0f, 1.0f, 0.0f, 1.0f);
   }
 
   {
     auto * new_ent = game_space.create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(0.5f, -0.5f);
-    new_ent->get_component<sprite_component>()->m_color.set({1.0f, 0.0f, 0.0f, 1.0f});
+    set(new_ent->get_component<sprite_component>()->m_color, 1.0f, 0.0f, 0.0f, 1.0f);
   }
   {
     auto * new_ent = game_space.create_entity("enemy");

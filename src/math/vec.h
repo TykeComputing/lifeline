@@ -60,14 +60,34 @@ extern vec4 const zero_vec4;
 /**********************************************************************************************/
 /* Creation functions */
 /**********************************************************************************************/
-template<typename COMP_T = float>
-vecn<2, COMP_T> vec2mk(COMP_T x, COMP_T y);
 
 template<typename COMP_T = float>
-vecn<3, COMP_T> vec3mk(COMP_T x, COMP_T y, COMP_T z);
+vecn<2, COMP_T> 
+vec2mk(COMP_T x, COMP_T y);
 
 template<typename COMP_T = float>
-vecn<4, COMP_T> vec4mk(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
+vecn<3, COMP_T> 
+vec3mk(COMP_T x, COMP_T y, COMP_T z);
+
+template<typename COMP_T = float>
+vecn<4, COMP_T> 
+vec4mk(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
+
+/**********************************************************************************************/
+/* Setting functions */
+/**********************************************************************************************/
+
+template<typename COMP_T = float>
+void
+set(vecn<2, COMP_T> & v, COMP_T x, COMP_T y);
+
+template<typename COMP_T = float>
+void
+set(vecn<3, COMP_T> & v, COMP_T x, COMP_T y, COMP_T z);
+
+template<typename COMP_T = float>
+void
+set(vecn<4, COMP_T> & v, COMP_T x, COMP_T y, COMP_T z, COMP_T w);
 
 /**********************************************************************************************/
 /* Vector Arithmetic Operators */
@@ -214,7 +234,7 @@ get_normalized(
  *  |
  *  |---> (result)
  *
- * Using this form to be analagous to the right hand rule (v is thumb result is index)
+ * Using this form to be analogous to the right hand rule (v is thumb, result is index)
  */
 template<typename COMP_T>
 vecn<2, COMP_T>

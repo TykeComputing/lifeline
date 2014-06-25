@@ -64,14 +64,17 @@ extern mat3 const identity_mat3;
 /**********************************************************************************************/
 /* Creation functions */
 /**********************************************************************************************/
+
 template<typename COMP_T = float>
-matn<3, COMP_T> mat3mk(
+matn<3, COMP_T> 
+mat3mk(
   COMP_T m00, COMP_T m01, COMP_T m02,
   COMP_T m10, COMP_T m11, COMP_T m12,
   COMP_T m20, COMP_T m21, COMP_T m22);
 
 template<typename COMP_T = float>
-matn<4, COMP_T> mat4mk(
+matn<4, COMP_T> 
+mat4mk(
   COMP_T m00, COMP_T m01, COMP_T m02, COMP_T m03,
   COMP_T m10, COMP_T m11, COMP_T m12, COMP_T m13,
   COMP_T m20, COMP_T m21, COMP_T m22, COMP_T m23,
@@ -80,6 +83,7 @@ matn<4, COMP_T> mat4mk(
 /**********************************************************************************************/
 /* Matrix Arithmetic Operators */
 /**********************************************************************************************/
+
 template<typename COMP_T>
 matn<3, COMP_T>
 operator*(
