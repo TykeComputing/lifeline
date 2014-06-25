@@ -117,20 +117,15 @@ vecn<3, COMP_T>::vecn()
 template<typename COMP_T>
 vecn<3, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z)
 {
-  data[0] = x;
-  data[1] = y;
-  data[2] = z;
+  set(x, y, z);
 }
 
 template<typename COMP_T>
 void vecn<3, COMP_T>::set(COMP_T x, COMP_T y, COMP_T z)
 {
-  auto values_it = std::begin(values);
-  for(auto data_it = std::begin(data); data_it != std::end(data); ++data_it)
-  {
-    *data_it = *values_it;
-    ++values_it;
-  }
+  data[0] = x;
+  data[1] = y;
+  data[2] = z;
 }
 
 template<typename COMP_T>
