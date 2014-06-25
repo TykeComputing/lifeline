@@ -35,16 +35,79 @@ struct vecn
     "Only integral or floating point types may be used as components!");
 
   typedef COMP_T comp_t;
+  static size_t const size = N;
 
   vecn();
-  vecn(std::array<COMP_T, N> const& values);
+  vecn(std::array<COMP_T, size> const& values);
 
-  void set(std::array<COMP_T, N> const& values);
+  void set(std::array<COMP_T, size> const& values);
 
   COMP_T & operator[](size_t index);
   COMP_T const& operator[](size_t index) const;
 
-  static size_t const size = N;
+  COMP_T data[size];
+};
+
+/**********************************************************************************************/
+/* Specializations */
+/**********************************************************************************************/
+
+template<typename COMP_T>
+struct vecn<2, COMP_T>
+{
+  static_assert(std::is_floating_point<COMP_T>::value || std::is_integral<COMP_T>::value,
+    "Only integral or floating point types may be used as components!");
+
+  typedef COMP_T comp_t;
+  static size_t const size = 2;
+
+  vecn();
+  vecn(COMP_T x, COMP_T y);
+
+  void set(COMP_T x, COMP_T y);
+
+  COMP_T & operator[](size_t index);
+  COMP_T const& operator[](size_t index) const;  
+
+  COMP_T data[size];
+};
+
+template<typename COMP_T>
+struct vecn<3, COMP_T>
+{
+  static_assert(std::is_floating_point<COMP_T>::value || std::is_integral<COMP_T>::value,
+    "Only integral or floating point types may be used as components!");
+
+  typedef COMP_T comp_t;
+  static size_t const size = 3;
+
+  vecn();
+  vecn(COMP_T x, COMP_T y, COMP_T z);
+
+  void set(COMP_T x, COMP_T y, COMP_T z);
+
+  COMP_T & operator[](size_t index);
+  COMP_T const& operator[](size_t index) const;
+
+  COMP_T data[size];
+};
+
+template<typename COMP_T>
+struct vecn<4, COMP_T>
+{
+  static_assert(std::is_floating_point<COMP_T>::value || std::is_integral<COMP_T>::value,
+    "Only integral or floating point types may be used as components!");
+
+  typedef COMP_T comp_t;
+  static size_t const size = 4;
+
+  vecn();
+  vecn(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
+
+  void set(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
+
+  COMP_T & operator[](size_t index);
+  COMP_T const& operator[](size_t index) const;  
 
   COMP_T data[size];
 };
@@ -72,22 +135,6 @@ vec3mk(COMP_T x, COMP_T y, COMP_T z);
 template<typename COMP_T = float>
 vecn<4, COMP_T> 
 vec4mk(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
-
-/**********************************************************************************************/
-/* Setting functions */
-/**********************************************************************************************/
-
-template<typename COMP_T = float>
-void
-set(vecn<2, COMP_T> & v, COMP_T x, COMP_T y);
-
-template<typename COMP_T = float>
-void
-set(vecn<3, COMP_T> & v, COMP_T x, COMP_T y, COMP_T z);
-
-template<typename COMP_T = float>
-void
-set(vecn<4, COMP_T> & v, COMP_T x, COMP_T y, COMP_T z, COMP_T w);
 
 /**********************************************************************************************/
 /* Vector Arithmetic Operators */

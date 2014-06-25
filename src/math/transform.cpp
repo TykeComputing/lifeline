@@ -29,7 +29,7 @@ namespace LE
 /**********************************************/
 void transform::set_pos(float x, float y)
 {
-  p_pos.set({x, y});
+  p_pos.set(x, y);
   mark_as_dirty();
 }
 
@@ -72,7 +72,7 @@ vec2 const& transform::translate(vec2 const& value)
 /**********************************************/
 void transform::set_scale(float x, float y)
 {
-  p_scale.set({x, y});
+  p_scale.set(x, y);
   mark_as_dirty();
 }
 
