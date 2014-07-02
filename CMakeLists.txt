@@ -56,6 +56,10 @@ set(LE_EXECUTABLE_SRC_LIST
   src/common/macros.h
   src/common/message_exception.cpp
   src/common/message_exception.h
+  src/common/profiling.cpp
+  src/common/profiling.h
+  src/common/profiling_records.cpp
+  src/common/profiling_records.h
   #src/common/resource.cpp
   #src/common/resource.h
   #src/common/resource_manager.cpp
