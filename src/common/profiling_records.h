@@ -22,8 +22,7 @@ public:
   typedef std::deque<float> time_record;
   typedef std::unordered_map<std::string, time_record> time_record_container;
 
-  void start_record_entry();
-  void end_record_entry();
+  void start_new_record_entry();
 
   void add_to_record_entry(std::string const& label, float time);
 
@@ -31,13 +30,6 @@ public:
   void set_max_num_record_entries(size_t const& value);
 
 private:
-  enum status
-  {
-    record_entry_started,
-    record_entry_ended
-  };
-
-  status curr_status = record_entry_ended;
   size_t num_record_entries = 0;
   size_t max_num_record_entries = 600;
   time_record_container p_records;
