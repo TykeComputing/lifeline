@@ -67,7 +67,7 @@ void profiling_records::set_max_num_record_entries(size_t const& value)
     {
       for(unsigned i = 0; i < num_to_discard; ++i)
       {
-        record.pop_front();
+        record.second.pop_front();
       }
     }
 
@@ -75,6 +75,32 @@ void profiling_records::set_max_num_record_entries(size_t const& value)
   }
 
   max_num_record_entries = value;
+}
+
+profiling_records::time_record const*
+profiling_records::get_record(std::string const& label) const
+{
+  auto record_find_it = p_records.find(label);
+  if(record_find_it != p_records.end())
+  {
+    return &(record_find_it->second);
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+profiling_records::time_record_container::const_iterator
+profiling_records::begin() const
+{
+  return p_records.begin();
+}
+
+profiling_records::time_record_container::const_iterator
+profiling_records::end() const
+{
+  return p_records.end();
 }
 
 } // namespace LE

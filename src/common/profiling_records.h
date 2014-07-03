@@ -9,6 +9,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <deque>
 #include <string>
+
 #include <unordered_map>
 
 #include <common/macros.h>
@@ -28,6 +29,11 @@ public:
 
   size_t get_max_num_record_entries() const;
   void set_max_num_record_entries(size_t const& value);
+
+  time_record const* get_record(std::string const& label) const;
+
+  time_record_container::const_iterator begin() const;
+  time_record_container::const_iterator end() const;
 
 private:
   size_t num_record_entries = 0;
