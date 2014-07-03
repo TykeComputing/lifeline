@@ -91,14 +91,12 @@ profiling_records::get_record(std::string const& label) const
   }
 }
 
-profiling_records::time_record_container::const_iterator
-profiling_records::begin() const
+profiling_records::time_record_container::const_iterator profiling_records::begin() const
 {
   return p_records.begin();
 }
 
-profiling_records::time_record_container::const_iterator
-profiling_records::end() const
+profiling_records::time_record_container::const_iterator profiling_records::end() const
 {
   return p_records.end();
 }
