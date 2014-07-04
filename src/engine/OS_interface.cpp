@@ -31,10 +31,10 @@ OS_interface::OS_interface()
 
     SDL_VERSION(&compiled);
     SDL_GetVersion(&linked);
-    log_status(log_scope::ENGINE, "Compiled against SDL version {}.{}.{}...")
-      << (unsigned)compiled.major << (unsigned)compiled.minor << (unsigned)compiled.patch;
-    log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{}...")
-      << (unsigned)linked.major << (unsigned)linked.minor << (unsigned)linked.patch;
+    log_status(log_scope::ENGINE, "Compiled against SDL version {}.{}.{}...",
+      (unsigned)compiled.major, (unsigned)compiled.minor, (unsigned)compiled.patch);
+    log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{}...",
+      (unsigned)linked.major, (unsigned)linked.minor, (unsigned)linked.patch);
   }
 
   auto LE_SDL_GL_SetAttribute = [](SDL_GLattr attrib, int val)->void

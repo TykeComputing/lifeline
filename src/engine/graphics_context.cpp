@@ -52,8 +52,8 @@ graphics_context::graphics_context(window & target_window)
   }
   else
   {
-    log_status(log_scope::ENGINE, "OpenGL Function Loading: Errors on glewInit: {} ...")
-      << glew_init_GL_errors.c_str();
+    log_status(log_scope::ENGINE, "OpenGL Function Loading: Errors on glewInit: {} ...",
+       glew_init_GL_errors.c_str());
   }
 
   if(!GLEW_VERSION_3_2)
@@ -65,14 +65,14 @@ graphics_context::graphics_context(window & target_window)
   log_status(log_scope::ENGINE, "Graphics Successfully Initialized");
   log_status(log_scope::ENGINE, "System OpenGL Info");
   log_status(log_scope::ENGINE, "======================");
-  log_status(log_scope::ENGINE, " Version: {}")
-    << convert_unsigned_string_to_signed( glGetString(GL_VERSION) ).c_str();
-  log_status(log_scope::ENGINE, "  Vendor: {}")
-    << convert_unsigned_string_to_signed( glGetString(GL_VENDOR) ).c_str();
-  log_status(log_scope::ENGINE, "Renderer: {}")
-    << convert_unsigned_string_to_signed( glGetString(GL_RENDERER) ).c_str();
-  log_status(log_scope::ENGINE, " Shading: {}")
-    << convert_unsigned_string_to_signed( glGetString(GL_SHADING_LANGUAGE_VERSION) ).c_str();
+  log_status(log_scope::ENGINE, " Version: {}",
+    convert_unsigned_string_to_signed( glGetString(GL_VERSION) ).c_str());
+  log_status(log_scope::ENGINE, "  Vendor: {}",
+    convert_unsigned_string_to_signed( glGetString(GL_VENDOR) ).c_str());
+  log_status(log_scope::ENGINE, "Renderer: {}",
+    convert_unsigned_string_to_signed( glGetString(GL_RENDERER) ).c_str());
+  log_status(log_scope::ENGINE, " Shading: {}",
+    convert_unsigned_string_to_signed( glGetString(GL_SHADING_LANGUAGE_VERSION) ).c_str());
   log_status(log_scope::ENGINE, log_line_seperator);
 }
 

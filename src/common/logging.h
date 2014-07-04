@@ -9,12 +9,14 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/macros.h>
 
-#include <memory>
+#include <cstdio>
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include <common/cppformat.h>
 #include <common/timer.h>
+
 
 namespace LE
 {
@@ -28,22 +30,6 @@ private:
   static steady_timer p_timer;
 };
 
-class logger
-{
-public:
-  logger(std::ostream & os, bool print_newline = true);
-  logger(logger const& rhs);
-  logger const& operator=(logger const& rhs) = delete;
-
-  void operator()(fmt::Writer const& w) const;
-
-private:
-  std::ostream & p_os;
-  bool p_print_newline;
-};
-
-fmt::Formatter<logger> log(std::ostream & os, char const* format);
-
 // NOTE: The below logging functions cannot be used until SDL has been initialized.
 
 LE_ENUM_5(log_scope,
@@ -53,26 +39,28 @@ LE_ENUM_5(log_scope,
   GRAPHICS,
   MATH)
 
-fmt::Formatter<logger> log_status_no_prefix(char const* format);
-fmt::Formatter<logger> log_error_no_prefix(char const* format);
+void log(FILE * const out_file, char const* format, fmt::ArgList const& args);
 
-fmt::Formatter<logger> log_status(char const* format);
-fmt::Formatter<logger> log_error(char const* format);
+void log_status_no_prefix(char const* format, fmt::ArgList const& args);
+void log_error_no_prefix(char const* format, fmt::ArgList const& args);
 
-fmt::Formatter<logger> log_status(log_scope::value scope, char const* format);
-fmt::Formatter<logger> log_error(log_scope::value scope, char const* format);
+void log_status(char const* format, fmt::ArgList const& args);
+void log_error(char const* format, fmt::ArgList const& args);
+
+void log_status(log_scope::value scope, char const* format, fmt::ArgList const& args);
+void log_error(log_scope::value scope, char const* format, fmt::ArgList const& args);
+
+FMT_VARIADIC(void, log, FILE * const, const char *)
+FMT_VARIADIC(void, log_status_no_prefix, const char *)
+FMT_VARIADIC(void, log_error_no_prefix, const char *)
+FMT_VARIADIC(void, log_status, const char *)
+FMT_VARIADIC(void, log_error, const char *)
+FMT_VARIADIC(void, log_status, log_scope::value, const char *)
+FMT_VARIADIC(void, log_error, log_scope::value, const char *)
 
 std::string convert_unsigned_string_to_signed(unsigned char const* unsigned_message);
 
-extern char const* log_line_seperator;
-
-// HELPERS
-namespace detail
-{
-
-void log_prefix(std::ostream & os, char const* log_type, log_scope::value scope);
-
-} //namespace detail
+extern char const* const log_line_seperator;
 
 }
 

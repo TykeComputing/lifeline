@@ -8,7 +8,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <algorithm>
 #include <cstring>
-#include <iostream>
+#include <cstdio>
 #include <vector>
 
 #include <common/logging.h>
@@ -42,7 +42,7 @@ void display_assert(
     std::string formatted_message =
         file + ":" + function + "(" + std::to_string(line) + ")\n\n" + message;
 
-    log(std::cerr, "HALT - {}") << formatted_message;
+    log(stderr, "HALT - {}", formatted_message);
 
     int res = SDL_ShowSimpleMessageBox(
       SDL_MESSAGEBOX_ERROR,
@@ -52,14 +52,14 @@ void display_assert(
 
     if(res == 0)
     {
-      log_error("Assert!\n {}") << SDL_GetError();
+      log_error("Assert!\n {}", SDL_GetError());
       SDL_ClearError();
     }
   }
   else
   {
     sdl_init = (SDL_WasInit(0) != 0);
-    log(std::cerr, "Attempting to display assert message box before SDL_Init!");
+    log(stderr, "Attempting to display assert message box before SDL_Init!");
   }
 
   std::cout.flush();

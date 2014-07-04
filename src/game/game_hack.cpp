@@ -87,7 +87,7 @@ void game_hack::load_shader(
   }
   catch(LE::resource_exception const& e)
   {
-    log_error(log_scope::GAME, "{}") << e.what();
+    log_error(log_scope::GAME, "{}", e.what());
     LE_FATAL_ERROR("Error loading shader!");
     return;
   }

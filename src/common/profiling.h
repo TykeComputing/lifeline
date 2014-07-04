@@ -15,7 +15,7 @@ namespace LE
 // fwd-decl
 class profiling_records;
 
-template<typename TIMER_T>
+template<typename TIMER_T = high_resolution_timer>
 class profiling_point
 {
 public:

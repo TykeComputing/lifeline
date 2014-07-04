@@ -25,7 +25,7 @@ engine::engine() :
   p_window(),
   p_graphics_context(p_window)
 {
-  log_status(log_scope::ENGINE, "Base Directory: {}") << p_os_interface.get_base_dir();
+  log_status(log_scope::ENGINE, "Base Directory: {}", p_os_interface.get_base_dir());
   //log_status(log_scope::ENGINE, "Preferred Directory: {}") << p_os_interface.get_preferred_dir();
 }
 
@@ -67,13 +67,13 @@ void engine::run()
         }
         catch(LE::resource_exception const& e)
         {
-          log_error(log_scope::ENGINE, "{}") << e.what();
+          log_error(log_scope::ENGINE, "{}", e.what());
           LE_FATAL_ERROR("Uncaught resource exception!");
           return;
         }
         catch(LE::message_exception const& e)
         {
-          log_error(log_scope::ENGINE, "{}") << e.what();
+          log_error(log_scope::ENGINE, "{}", e.what());
           LE_FATAL_ERROR("Uncaught message exception!");
           return;
         }
@@ -93,7 +93,7 @@ void engine::run()
   }
   catch(LE::resource_exception const& e)
   {
-    log_error(log_scope::ENGINE, "{}") << e.what();
+    log_error(log_scope::ENGINE, "{}", e.what());
     LE_FATAL_ERROR("ERROR"); // Give time to look at error
   }
 }
@@ -117,8 +117,8 @@ void engine::set_resource_dir(std::string const& val)
     p_resource_dir.append(1, '/');
   }
 
-  log_status(log_scope::ENGINE, "Resource directory set to \"{}\"")
-    << p_resource_dir.c_str();
+  log_status(log_scope::ENGINE, "Resource directory set to \"{}\"",
+    p_resource_dir.c_str());
 }
 
 std::string const& engine::get_resource_dir() const

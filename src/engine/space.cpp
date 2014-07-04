@@ -33,8 +33,7 @@ entity * space::create_entity(std::string const& name)
     {
       auto & new_ent = new_ent_emplace_result.first->second;
 
-      log_status(log_scope::ENGINE,
-        "Creating entity named \"{}\"") << new_ent->get_name();
+      log_status(log_scope::ENGINE, "Creating entity named \"{}\"", new_ent->get_name());
 
       new_ent->create_component<transform_component>();
       new_ent->create_component<sprite_component>();
@@ -86,7 +85,7 @@ void space::remove_dead()
     if((*it).second->is_alive() == false)
     {
       log_status(log_scope::ENGINE,
-        "Removing dead entity named \"{}\"") << (*it).second->get_name();
+        "Removing dead entity named \"{}\"", (*it).second->get_name());
 
       it = p_entities.erase(it);
     }

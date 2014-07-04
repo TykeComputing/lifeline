@@ -95,12 +95,12 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
     log_error_no_prefix("== SHADER SOURCES =======");
     for(auto const& shader_source_it : shader_source_strings)
     {
-      log_error_no_prefix("({:<3}) {}")
-        << shader_source_it.get_num_lines()
-        << shader_source_it.get_file_name().c_str();
+      log_error_no_prefix("({:<3}) {}",
+        shader_source_it.get_num_lines(),
+        shader_source_it.get_file_name().c_str());
     }
     log_error_no_prefix("=== ERROR LOG ===========");
-    log_error_no_prefix("{}") << compile_log.data();
+    log_error_no_prefix("{}", compile_log.data());
     log_error_no_prefix(log_line_seperator);
 
     // cleanup from failure

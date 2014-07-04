@@ -65,10 +65,10 @@ shader_program::shader_program(std::vector<shader*> const& shaders)
     log_error_no_prefix("== SHADER NAMES =======");
     for(auto const& shader_it : shaders)
     {
-      log_error_no_prefix("{}") << shader_it->get_file_name().c_str();
+      log_error_no_prefix("{}", shader_it->get_file_name().c_str());
     }
     log_error_no_prefix("=== ERROR LOG ===========");
-    log_error_no_prefix("{}") << link_log.data();
+    log_error_no_prefix("{}", link_log.data());
     log_error_no_prefix(log_line_seperator);
 
     // cleanup from failure
@@ -112,7 +112,7 @@ GLint shader_program::get_unform_location(char const* uniform_name) const
 
     if(uniform_index == -1)
     {
-      log_status("Uniform named \"{}\" not found!") << uniform_name;
+      log_status("Uniform named \"{}\" not found!", uniform_name);
     }
 
     return uniform_index;

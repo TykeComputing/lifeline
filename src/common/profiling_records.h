@@ -8,6 +8,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #define LE_COMMON_PROFILING_RECORDS_H
 
 #include <deque>
+#include <iosfwd>
 #include <string>
 
 #include <unordered_map>
@@ -23,17 +24,19 @@ public:
   typedef std::deque<float> time_record;
   typedef std::unordered_map<std::string, time_record> time_record_container;
 
+  //std::ostream & operator<<(std::ostream & os) const;
+
   void start_new_record_entry();
 
   void add_to_record_entry(std::string const& label, float time);
 
-  size_t get_max_num_record_entries() const;
-  void set_max_num_record_entries(size_t const& value);
+  time_record_container::const_iterator begin() const;
+  time_record_container::const_iterator end() const;
 
   time_record const* get_record(std::string const& label) const;
 
-  time_record_container::const_iterator begin() const;
-  time_record_container::const_iterator end() const;
+  size_t get_max_num_record_entries() const;
+  void set_max_num_record_entries(size_t const& value);
 
 private:
   size_t num_record_entries = 0;

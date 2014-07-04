@@ -7,11 +7,26 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include "profiling_records.h"
 
 #include <algorithm>
+#include <iostream>
 
 #include <common/fatal_error.h>
 
 namespace LE
 {
+
+//std::ostream & profiling_records::operator<<(std::ostream & os) const
+//{
+//  os << std::endl;
+//  for(auto const& record : p_records)
+//  {
+//    os <<
+//    for(auto const& record_entry : record)
+//    {
+
+//    }
+//  }
+//  os << std::endl;
+//}
 
 void profiling_records::start_new_record_entry()
 {
@@ -51,6 +66,31 @@ void profiling_records::add_to_record_entry(std::string const & label, float tim
   record.back() += time;
 }
 
+
+profiling_records::time_record_container::const_iterator profiling_records::begin() const
+{
+  return p_records.begin();
+}
+
+profiling_records::time_record_container::const_iterator profiling_records::end() const
+{
+  return p_records.end();
+}
+
+profiling_records::time_record const*
+profiling_records::get_record(std::string const& label) const
+{
+  auto record_find_it = p_records.find(label);
+  if(record_find_it != p_records.end())
+  {
+    return &(record_find_it->second);
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
 size_t profiling_records::get_max_num_record_entries() const
 {
   return max_num_record_entries;
@@ -75,30 +115,6 @@ void profiling_records::set_max_num_record_entries(size_t const& value)
   }
 
   max_num_record_entries = value;
-}
-
-profiling_records::time_record const*
-profiling_records::get_record(std::string const& label) const
-{
-  auto record_find_it = p_records.find(label);
-  if(record_find_it != p_records.end())
-  {
-    return &(record_find_it->second);
-  }
-  else
-  {
-    return nullptr;
-  }
-}
-
-profiling_records::time_record_container::const_iterator profiling_records::begin() const
-{
-  return p_records.begin();
-}
-
-profiling_records::time_record_container::const_iterator profiling_records::end() const
-{
-  return p_records.end();
 }
 
 } // namespace LE
