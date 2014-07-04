@@ -52,7 +52,7 @@ void debug_drawer_base::clear()
   p_vertices.clear();
 }
 
-void debug_drawer_base::reserve(unsigned amount)
+void debug_drawer_base::reserve(size_t amount)
 {
   p_vertices.reserve(p_vertices.size() + amount);
 }
@@ -138,23 +138,21 @@ void debug_line_drawer::add_arrow(vec2 const& p0, vec2 const& norm_dir, float le
 
 void debug_line_drawer::add_arrow(vec2 const& p0, vec2 const& v, vec4 const& color)
 {
-  vec2 v_norm = v;
   float old_len;
-  normalize(v_norm, old_len);
+  vec2 v_norm = get_normalized(v, old_len);
   add_arrow(p0, v_norm, old_len, color);
 }
 
 void debug_line_drawer::add_aabb(vec2 const& min, vec2 const& max, vec4 const& color)
 {
-  // (r)ight = max x
-  // (t)op   = max y
+  // (r)ight  = max x
+  // (l)eft   = min x
+  // (t)op    = max y  
+  // (b)ottom = min y
 
-  // (l)eft    = min x
-  // (b)ottom  = min y
-
-  vec2 lt({min[0], max[1]});
-  vec2 lb({min[0], min[1]});
-  vec2 rb({max[0], min[1]});
+  vec2 lt(min[0], max[1]);
+  vec2 lb(min[0], min[1]);
+  vec2 rb(max[0], min[1]);
   vec2 rt(max);
 
   // Front

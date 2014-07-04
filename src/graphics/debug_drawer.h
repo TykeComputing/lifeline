@@ -50,7 +50,7 @@ public:
 
   void clear();
 
-  void reserve(unsigned amount);
+  void reserve(size_t amount);
 
 protected:
   debug_drawer_base();

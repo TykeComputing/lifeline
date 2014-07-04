@@ -507,6 +507,16 @@ get_normalized(
   return normalize(result);
 }
 
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
+get_normalized(
+  vecn<N, COMP_T> const& v,
+  COMP_T & old_length)
+{
+  vecn<N, COMP_T> result{ v };
+  return normalize(result, old_length);
+}
+
 template<typename COMP_T>
 vecn<2, COMP_T>
 get_orthogonal(
