@@ -1,21 +1,6 @@
 /*
 ************************************************************************************************
-Copyright 2014 Peter Clark
-
-This file is part of Lifeline Engine.
-
-Lifeline Engine is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Lifeline Engine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
@@ -40,7 +25,7 @@ engine::engine() :
   p_window(),
   p_graphics_context(p_window)
 {
-  log_status(log_scope::ENGINE, "Base Directory: {}") << p_os_interface.get_base_dir();
+  log_status(log_scope::ENGINE, "Base Directory: {}", p_os_interface.get_base_dir());
   //log_status(log_scope::ENGINE, "Preferred Directory: {}") << p_os_interface.get_preferred_dir();
 }
 
@@ -82,13 +67,13 @@ void engine::run()
         }
         catch(LE::resource_exception const& e)
         {
-          log_error(log_scope::ENGINE, "{}") << e.what();
+          log_error(log_scope::ENGINE, "{}", e.what());
           LE_FATAL_ERROR("Uncaught resource exception!");
           return;
         }
         catch(LE::message_exception const& e)
         {
-          log_error(log_scope::ENGINE, "{}") << e.what();
+          log_error(log_scope::ENGINE, "{}", e.what());
           LE_FATAL_ERROR("Uncaught message exception!");
           return;
         }
@@ -108,7 +93,7 @@ void engine::run()
   }
   catch(LE::resource_exception const& e)
   {
-    log_error(log_scope::ENGINE, "{}") << e.what();
+    log_error(log_scope::ENGINE, "{}", e.what());
     LE_FATAL_ERROR("ERROR"); // Give time to look at error
   }
 }
@@ -132,8 +117,8 @@ void engine::set_resource_dir(std::string const& val)
     p_resource_dir.append(1, '/');
   }
 
-  log_status(log_scope::ENGINE, "Resource directory set to \"{}\"")
-    << p_resource_dir.c_str();
+  log_status(log_scope::ENGINE, "Resource directory set to \"{}\"",
+    p_resource_dir.c_str());
 }
 
 std::string const& engine::get_resource_dir() const

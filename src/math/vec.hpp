@@ -1,21 +1,6 @@
 /*
 ************************************************************************************************
-Copyright 2014 Peter Clark
-
-This file is part of Lifeline Engine.
-
-Lifeline Engine is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Lifeline Engine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
@@ -117,20 +102,15 @@ vecn<3, COMP_T>::vecn()
 template<typename COMP_T>
 vecn<3, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z)
 {
-  data[0] = x;
-  data[1] = y;
-  data[2] = z;
+  set(x, y, z);
 }
 
 template<typename COMP_T>
 void vecn<3, COMP_T>::set(COMP_T x, COMP_T y, COMP_T z)
 {
-  auto values_it = std::begin(values);
-  for(auto data_it = std::begin(data); data_it != std::end(data); ++data_it)
-  {
-    *data_it = *values_it;
-    ++values_it;
-  }
+  data[0] = x;
+  data[1] = y;
+  data[2] = z;
 }
 
 template<typename COMP_T>

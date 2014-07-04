@@ -1,21 +1,6 @@
 /*
 ************************************************************************************************
-Copyright 2014 Peter Clark
-
-This file is part of Lifeline Engine.
-
-Lifeline Engine is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Lifeline Engine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
@@ -110,12 +95,12 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
     log_error_no_prefix("== SHADER SOURCES =======");
     for(auto const& shader_source_it : shader_source_strings)
     {
-      log_error_no_prefix("({:<3}) {}")
-        << shader_source_it.get_num_lines()
-        << shader_source_it.get_file_name().c_str();
+      log_error_no_prefix("({:<3}) {}",
+        shader_source_it.get_num_lines(),
+        shader_source_it.get_file_name().c_str());
     }
     log_error_no_prefix("=== ERROR LOG ===========");
-    log_error_no_prefix("{}") << compile_log.data();
+    log_error_no_prefix("{}", compile_log.data());
     log_error_no_prefix(log_line_seperator);
 
     // cleanup from failure

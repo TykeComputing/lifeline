@@ -1,21 +1,6 @@
 /*
 ************************************************************************************************
-Copyright 2014 Peter Clark
-
-This file is part of Lifeline Engine.
-
-Lifeline Engine is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Lifeline Engine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
@@ -48,8 +33,7 @@ entity * space::create_entity(std::string const& name)
     {
       auto & new_ent = new_ent_emplace_result.first->second;
 
-      log_status(log_scope::ENGINE,
-        "Creating entity named \"{}\"") << new_ent->get_name();
+      log_status(log_scope::ENGINE, "Creating entity named \"{}\"", new_ent->get_name());
 
       new_ent->create_component<transform_component>();
       new_ent->create_component<sprite_component>();
@@ -101,7 +85,7 @@ void space::remove_dead()
     if((*it).second->is_alive() == false)
     {
       log_status(log_scope::ENGINE,
-        "Removing dead entity named \"{}\"") << (*it).second->get_name();
+        "Removing dead entity named \"{}\"", (*it).second->get_name());
 
       it = p_entities.erase(it);
     }

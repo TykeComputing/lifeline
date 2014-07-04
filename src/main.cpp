@@ -1,21 +1,6 @@
 /*
 ************************************************************************************************
-Copyright 2014 Peter Clark
-
-This file is part of Lifeline Engine.
-
-Lifeline Engine is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Lifeline Engine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
@@ -29,6 +14,10 @@ along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
 #include <common/logging.h>
 #include <common/macros.h>
 #include <engine/engine.h>
+
+// TODO - REMOVE
+#include <common/profiling_records.h>
+#include <assert.h>
 
 typedef void(*handle_arg_func)(LE::engine & game_engine, std::string const& val);
 
@@ -53,7 +42,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     if(arg_value_separator_pos == std::string::npos
     || arg_value_separator_pos >= curr_arg.size())
     {
-      LE::log_error(LE::log_scope::GLOBAL, "Malformed option specified: \"{}\"") << curr_arg;
+      LE::log_error(LE::log_scope::GLOBAL, "Malformed option specified: \"{}\"", curr_arg);
       continue;
     }
 
@@ -68,7 +57,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     }
     else
     {
-      LE::log_error(LE::log_scope::GLOBAL, "Invalid option specified: \"{}\"") << curr_arg;
+      LE::log_error(LE::log_scope::GLOBAL, "Invalid option specified: \"{}\"", curr_arg);
     }
   }
 }
@@ -87,12 +76,12 @@ int main(int arg_count, char *args[])
   }
   catch(LE::fatal_construction_exception const& e)
   {
-    LE::log_error(LE::log_scope::GLOBAL, "{}") << e.what();
+    LE::log_error(LE::log_scope::GLOBAL, "{}", e.what());
     LE_FATAL_ERROR("Unable to create engine!"); // TODO - Remove
     res = -1;
   }
 
+  // Quick and dirty unit test
   LE::log_status(LE::log_scope::GLOBAL, "Exiting...");
-
   return res;
 }

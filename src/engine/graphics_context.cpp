@@ -1,21 +1,6 @@
 /*
 ************************************************************************************************
-Copyright 2014 Peter Clark
-
-This file is part of Lifeline Engine.
-
-Lifeline Engine is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Lifeline Engine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
@@ -67,8 +52,8 @@ graphics_context::graphics_context(window & target_window)
   }
   else
   {
-    log_status(log_scope::ENGINE, "OpenGL Function Loading: Errors on glewInit: {} ...")
-      << glew_init_GL_errors.c_str();
+    log_status(log_scope::ENGINE, "OpenGL Function Loading: Errors on glewInit: {} ...",
+       glew_init_GL_errors.c_str());
   }
 
   if(!GLEW_VERSION_3_2)
@@ -80,14 +65,14 @@ graphics_context::graphics_context(window & target_window)
   log_status(log_scope::ENGINE, "Graphics Successfully Initialized");
   log_status(log_scope::ENGINE, "System OpenGL Info");
   log_status(log_scope::ENGINE, "======================");
-  log_status(log_scope::ENGINE, " Version: {}")
-    << convert_unsigned_string_to_signed( glGetString(GL_VERSION) ).c_str();
-  log_status(log_scope::ENGINE, "  Vendor: {}")
-    << convert_unsigned_string_to_signed( glGetString(GL_VENDOR) ).c_str();
-  log_status(log_scope::ENGINE, "Renderer: {}")
-    << convert_unsigned_string_to_signed( glGetString(GL_RENDERER) ).c_str();
-  log_status(log_scope::ENGINE, " Shading: {}")
-    << convert_unsigned_string_to_signed( glGetString(GL_SHADING_LANGUAGE_VERSION) ).c_str();
+  log_status(log_scope::ENGINE, " Version: {}",
+    convert_unsigned_string_to_signed( glGetString(GL_VERSION) ).c_str());
+  log_status(log_scope::ENGINE, "  Vendor: {}",
+    convert_unsigned_string_to_signed( glGetString(GL_VENDOR) ).c_str());
+  log_status(log_scope::ENGINE, "Renderer: {}",
+    convert_unsigned_string_to_signed( glGetString(GL_RENDERER) ).c_str());
+  log_status(log_scope::ENGINE, " Shading: {}",
+    convert_unsigned_string_to_signed( glGetString(GL_SHADING_LANGUAGE_VERSION) ).c_str());
   log_status(log_scope::ENGINE, log_line_seperator);
 }
 

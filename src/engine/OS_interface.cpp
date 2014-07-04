@@ -1,21 +1,6 @@
 /*
 ************************************************************************************************
-Copyright 2014 Peter Clark
-
-This file is part of Lifeline Engine.
-
-Lifeline Engine is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Lifeline Engine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
@@ -46,10 +31,10 @@ OS_interface::OS_interface()
 
     SDL_VERSION(&compiled);
     SDL_GetVersion(&linked);
-    log_status(log_scope::ENGINE, "Compiled against SDL version {}.{}.{}...")
-      << (unsigned)compiled.major << (unsigned)compiled.minor << (unsigned)compiled.patch;
-    log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{}...")
-      << (unsigned)linked.major << (unsigned)linked.minor << (unsigned)linked.patch;
+    log_status(log_scope::ENGINE, "Compiled against SDL version {}.{}.{}...",
+      (unsigned)compiled.major, (unsigned)compiled.minor, (unsigned)compiled.patch);
+    log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{}...",
+      (unsigned)linked.major, (unsigned)linked.minor, (unsigned)linked.patch);
   }
 
   auto LE_SDL_GL_SetAttribute = [](SDL_GLattr attrib, int val)->void

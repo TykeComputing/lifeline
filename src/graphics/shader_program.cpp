@@ -1,21 +1,6 @@
 /*
 ************************************************************************************************
-Copyright 2014 Peter Clark
-
-This file is part of Lifeline Engine.
-
-Lifeline Engine is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Lifeline Engine is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Lifeline Engine.  If not, see <http://www.gnu.org/licenses/>.
+Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
@@ -80,10 +65,10 @@ shader_program::shader_program(std::vector<shader*> const& shaders)
     log_error_no_prefix("== SHADER NAMES =======");
     for(auto const& shader_it : shaders)
     {
-      log_error_no_prefix("{}") << shader_it->get_file_name().c_str();
+      log_error_no_prefix("{}", shader_it->get_file_name().c_str());
     }
     log_error_no_prefix("=== ERROR LOG ===========");
-    log_error_no_prefix("{}") << link_log.data();
+    log_error_no_prefix("{}", link_log.data());
     log_error_no_prefix(log_line_seperator);
 
     // cleanup from failure
@@ -127,7 +112,7 @@ GLint shader_program::get_unform_location(char const* uniform_name) const
 
     if(uniform_index == -1)
     {
-      log_status("Uniform named \"{}\" not found!") << uniform_name;
+      log_status("Uniform named \"{}\" not found!", uniform_name);
     }
 
     return uniform_index;
