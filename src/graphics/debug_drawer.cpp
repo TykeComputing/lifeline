@@ -84,7 +84,7 @@ void debug_line_drawer::add_line(vec2 const& p0, vec2 const& p1, vec4 const& col
 
 void debug_line_drawer::add_circle(vec2 const& p, float r, vec4 const& color)
 {
-  unsigned const num_subdiv = 16;
+  unsigned const num_subdiv = 32;
   float delta_angle = (pi * 2.0f) / num_subdiv;
 
   vec2 line_vert_prev_pos = vec2mk(r, 0.0f);
@@ -132,7 +132,7 @@ void debug_line_drawer::add_aabb(vec2 const& min, vec2 const& max, vec4 const& c
 {
   // (r)ight  = max x
   // (l)eft   = min x
-  // (t)op    = max y  
+  // (t)op    = max y
   // (b)ottom = min y
 
   vec2 lt(min[0], max[1]);

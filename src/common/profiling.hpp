@@ -4,8 +4,6 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
-#include <common/profiling_records.h>
-
 namespace LE
 {
 
@@ -19,7 +17,7 @@ profiling_point<TIMER_T>::profiling_point(profiling_records & records, std::stri
 template<typename TIMER_T>
 profiling_point<TIMER_T>::~profiling_point()
 {
-  p_records.add_to_record_entry(p_timer.poll);
+  p_records.add_to_record_entry(p_name, p_timer.poll());
 }
 
 } // namespace LE

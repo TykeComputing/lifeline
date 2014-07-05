@@ -24,8 +24,6 @@ public:
   typedef std::deque<float> time_record;
   typedef std::unordered_map<std::string, time_record> time_record_container;
 
-  //std::ostream & operator<<(std::ostream & os) const;
-
   void start_new_record_entry();
 
   void add_to_record_entry(std::string const& label, float time);
@@ -38,11 +36,15 @@ public:
   size_t get_max_num_record_entries() const;
   void set_max_num_record_entries(size_t const& value);
 
+  friend std::ostream & operator<<(std::ostream & os, profiling_records const& rhs);
+
 private:
   size_t num_record_entries = 0;
   size_t max_num_record_entries = 600;
   time_record_container p_records;
 };
+
+std::ostream & operator<<(std::ostream & os, profiling_records const& rhs);
 
 } // namespace LE
 

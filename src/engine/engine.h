@@ -7,9 +7,11 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #ifndef LE_ENGINE_ENGINE_H
 #define LE_ENGINE_ENGINE_H
 
+#include <common/profiling_records.h>
+
 #include <engine/graphics_context.h>
-#include <engine/space.h>
 #include <engine/OS_interface.h>
+#include <engine/space.h>
 #include <engine/window.h>
 
 namespace LE
@@ -35,7 +37,7 @@ private:
 
   bool p_is_running = true;
 
-  // TODO - Move to more appropriate place once there is one
+  // TODO - Move to more appropriate place once there is one (resource manager)
   std::string p_resource_dir = "resources/";
 
   space p_space;

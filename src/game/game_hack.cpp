@@ -13,6 +13,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/fatal_error.h>
 #include <common/logging.h>
+#include <common/profiling.h>
 #include <common/resource_exception.h>
 
 #include <engine/engine.h>
@@ -32,6 +33,11 @@ namespace LE
 game_hack::game_hack(engine & game_engine, space & game_space)
 {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+  glLineWidth(2.0f);
+  glPointSize(5.0f);
+
+  p_profiling_records.set_max_num_record_entries(8);
 
   // TODO - Move shader loading to someplace that makes more sense once resources exist
   // Load shaders
@@ -55,13 +61,11 @@ game_hack::game_hack(engine & game_engine, space & game_space)
     new_ent->get_component<transform_component>()->set_pos(-0.5f, -0.5f);
     new_ent->get_component<sprite_component>()->m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
-
-  glLineWidth(2.0f);
-  glPointSize(5.0f);
 }
 
 game_hack::~game_hack()
 {
+  std::cout << p_profiling_records;
 }
 
 void game_hack::load_shader(
@@ -93,20 +97,14 @@ void game_hack::load_shader(
   }
 }
 
-bool game_hack::update(space & game_space, float dt)
+// returns false if a quit message has been received
+bool game_hack::input(space & game_space, float dt)
 {
-  p_line_drawer.clear();
-  p_point_drawer.clear();
-
-  //////////////////////////////////////////////////////////////////////////
-  // UPDATE
-  auto * player = game_space.find_entity("player");
+  profiling_point<> pp(p_profiling_records, "input");
 
   float const player_movement_speed = 0.8f;
-  float const bullet_movement_speed = 2.0f;
 
-  float const enemy_seek_radius = 1.0f;
-  float const enemy_movement_speed = 0.4f;
+  auto * player = game_space.find_entity("player");
 
   SDL_Event curr_event;
   while(SDL_PollEvent(&curr_event))
@@ -146,16 +144,6 @@ bool game_hack::update(space & game_space, float dt)
 
         }
       }
-    }
-    break;
-
-    case SDL_KEYUP:
-    {
-      //switch(curr_event.key.keysym.sym)
-      //{
-
-
-      //}
     }
     break;
     //////////////////////////////////////////////////////////////////////////
@@ -198,19 +186,34 @@ bool game_hack::update(space & game_space, float dt)
     {
       player_transl[0] = player_movement_speed * dt;
     }
-    player->get_component<transform_component>()->translate(player_transl);
+    player_t->translate(player_transl);
 
     if(player_transl != zero_vec2)
     {
       p_line_drawer.add_arrow(
         player_old_pos, player_transl / dt, vec4mk(1.0f, 0.0f, 0.0f, 1.0f));
 
-      p_line_drawer.add_aabb(
-        vec2mk(-0.9f, -0.9f), vec2mk(0.9f, 0.9f), vec4mk(1.0f, 1.0f, 0.0f, 1.0f));
-
       p_point_drawer.add_point(
         player_old_pos, vec4mk(0.0f, 0.0f, 1.0f, 1.0f));
     }
+  }
+
+  return true;
+}
+
+void game_hack::logic(space & game_space, float dt)
+{
+  profiling_point<> pp(p_profiling_records, "logic");
+
+  float const bullet_movement_speed = 2.0f;
+
+  float const enemy_seek_radius = 1.0f;
+  float const enemy_movement_speed = 0.4f;
+
+  auto * player = game_space.find_entity("player");
+  if(player)
+  {
+    auto * player_t = player->get_component<transform_component>();
 
     for(auto entity_it = game_space.entity_begin();
         entity_it != game_space.entity_end();
@@ -246,9 +249,14 @@ bool game_hack::update(space & game_space, float dt)
       }
     }
   }
+}
 
-  // Quick and oh so dirty hack, going to unhack soon anyway, just need to get compiling on
-  //   GCC.
+void game_hack::physics(space & game_space, float dt)
+{
+  profiling_point<> pp(p_profiling_records, "physics");
+
+  LE_UNUSED_VAR(dt);
+  // Quick and dirty hack until actual physics is in place.
   std::vector<entity *> curr_ents;
   curr_ents.reserve(game_space.entity_num());
   for(auto entity_it = game_space.entity_begin();
@@ -258,7 +266,6 @@ bool game_hack::update(space & game_space, float dt)
     curr_ents.emplace_back((*entity_it).second.get());
   }
 
-  // TODO - Stick to actual naming conventions when unhacking this
   // n^2 collision detection using circles based on pos/scale
   for(auto ent_outer_it = curr_ents.begin(); ent_outer_it != curr_ents.end(); ++ent_outer_it)
   {
@@ -338,12 +345,32 @@ bool game_hack::update(space & game_space, float dt)
       }
     }
   }
+}
+
+bool game_hack::update(space & game_space, float dt)
+{
+  p_profiling_records.start_new_record_entry();
+
+  profiling_point<> pp(p_profiling_records, "update");
+
+  p_line_drawer.clear();
+  p_point_drawer.clear();
+
+  if(input(game_space, dt) == false)
+  {
+    return false;
+  }
+
+  logic(game_space, dt);
+  physics(game_space, dt);
 
   return true;
 }
 
 void game_hack::draw(space & game_space)
 {
+  profiling_point<> pp(p_profiling_records, "draw");
+
   LE::shader_program::use(*p_shader_prog);
 
   glClear(GL_COLOR_BUFFER_BIT);
@@ -351,7 +378,7 @@ void game_hack::draw(space & game_space)
   GLint color_ul = p_shader_prog->get_unform_location("color");
   GLint model_to_world_ul = p_shader_prog->get_unform_location("model_to_world");
 
-  // Terrible game loop, HACK HACK HACK
+  // Terrible draw loop, HACK HACK HACK
   for(auto entity_it = game_space.entity_begin();
     entity_it != game_space.entity_end();
     ++entity_it)

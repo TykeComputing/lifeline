@@ -13,7 +13,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <common/logging.h>
 #include <common/timer.h>
 
-// TODO - Remove when done hacking
+// TODO - Remove once all game logic is moved from hack to logic components
 #include <game/game_hack.h>
 #include <common/resource_exception.h>
 

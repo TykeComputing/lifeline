@@ -45,6 +45,9 @@ public:
     char const* vert,
     char const* frag);
 
+  bool input(space & game_space, float dt);
+  void logic(space & game_space, float dt);
+  void physics(space & game_space, float dt);
   bool update(space & game_space, float dt);
   void draw(space & game_space);
 
@@ -53,6 +56,8 @@ private:
   std::unique_ptr<shader_program> p_debug_shader_prog;
   debug_line_drawer p_line_drawer;
   debug_point_drawer p_point_drawer;
+  // TODO - Move to engine when game_hack is removed
+  profiling_records p_profiling_records;
 };
 
 } // namespace LE

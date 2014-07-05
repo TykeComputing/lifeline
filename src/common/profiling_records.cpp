@@ -9,24 +9,11 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <algorithm>
 #include <iostream>
 
+#include <common/cppformat.h>
 #include <common/fatal_error.h>
 
 namespace LE
 {
-
-//std::ostream & profiling_records::operator<<(std::ostream & os) const
-//{
-//  os << std::endl;
-//  for(auto const& record : p_records)
-//  {
-//    os <<
-//    for(auto const& record_entry : record)
-//    {
-
-//    }
-//  }
-//  os << std::endl;
-//}
 
 void profiling_records::start_new_record_entry()
 {
@@ -35,18 +22,18 @@ void profiling_records::start_new_record_entry()
   if(num_record_entries > max_num_record_entries)
   {
     // Get rid of the oldest record entry and add new record entry.
-    for(auto & record : p_records)
+    for(auto & key_record_pair : p_records)
     {
-      record.second.pop_front();
+      key_record_pair.second.pop_front();
     }
 
     num_record_entries = max_num_record_entries;
   }
 
   // Add new record entry to all existing records
-  for(auto & record : p_records)
+  for(auto & key_record_pair : p_records)
   {
-    record.second.push_back(0.0f);
+    key_record_pair.second.push_back(0.0f);
   }
 }
 
@@ -103,11 +90,11 @@ void profiling_records::set_max_num_record_entries(size_t const& value)
     // If there are more existing record entries than the new maximum, shrink all existing
     //   records discarding the oldest entries.
     size_t num_to_discard = num_record_entries - value;
-    for(auto & record : p_records)
+    for(auto & key_record_pair : p_records)
     {
       for(unsigned i = 0; i < num_to_discard; ++i)
       {
-        record.second.pop_front();
+        key_record_pair.second.pop_front();
       }
     }
 
@@ -115,6 +102,23 @@ void profiling_records::set_max_num_record_entries(size_t const& value)
   }
 
   max_num_record_entries = value;
+}
+
+std::ostream & operator<<(std::ostream & os, profiling_records const& rhs)
+{
+  os << std::endl;
+
+  for(auto const& key_record_pair : rhs.p_records)
+  {
+    os << fmt::format("{:<10} |", key_record_pair.first);
+    for(auto const& record_entry : key_record_pair.second)
+    {
+      os << fmt::format(" {:>2.6f} |", record_entry);
+    }
+    os << std::endl;
+  }
+
+  return os;
 }
 
 } // namespace LE

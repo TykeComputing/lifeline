@@ -23,8 +23,8 @@ public:
   ~profiling_point();
 
 private:
-  std::string p_name;
   profiling_records & p_records;
+  std::string p_name;
   TIMER_T p_timer;
 };
 
