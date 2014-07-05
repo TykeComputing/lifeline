@@ -106,9 +106,7 @@ void profiling_records::set_max_num_record_entries(size_t const& value)
 
 std::ostream & operator<<(std::ostream & os, profiling_records const& rhs)
 {
-  os << std::endl;
-
-  for(auto const& key_record_pair : rhs.p_records)
+  for(auto const& key_record_pair : rhs)
   {
     os << fmt::format("{:<10} |", key_record_pair.first);
     for(auto const& record_entry : key_record_pair.second)

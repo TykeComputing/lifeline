@@ -36,8 +36,6 @@ public:
   size_t get_max_num_record_entries() const;
   void set_max_num_record_entries(size_t const& value);
 
-  friend std::ostream & operator<<(std::ostream & os, profiling_records const& rhs);
-
 private:
   size_t num_record_entries = 0;
   size_t max_num_record_entries = 600;
