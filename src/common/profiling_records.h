@@ -30,6 +30,8 @@ public:
 
   time_record_container::const_iterator begin() const;
   time_record_container::const_iterator end() const;
+  size_t get_num_records() const;
+  size_t get_num_record_entries() const;
 
   time_record const* get_record(std::string const& label) const;
 
@@ -37,8 +39,8 @@ public:
   void set_max_num_record_entries(size_t const& value);
 
 private:
-  size_t num_record_entries = 0;
-  size_t max_num_record_entries = 600;
+  size_t p_num_record_entries = 0;
+  size_t p_max_num_record_entries = 600;
   time_record_container p_records;
 };
 

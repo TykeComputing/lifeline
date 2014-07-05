@@ -8,6 +8,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #define LE_DEVUI_PERF_VIS_H
 
 #include <string>
+#include <unordered_map>
 
 #include <common/profiling_records.h>
 
@@ -40,7 +41,11 @@ public:
     vec2 const& dimensions,
     vec4 const& color) const;
 
+  void set_label_color(std::string const& label, vec4 const& color);
+  vec4 get_label_color(std::string const& label) const;
+
 private:
+  std::unordered_map<std::string, vec4> p_label_colors;
 };
 
 } // namespace LE

@@ -71,6 +71,8 @@ public:
   void add_aabb(vec2 const& min, vec2 const& max, vec4 const& color);
 
   void add_transform(mat3 const& transform, float scale);
+
+  void reserve_lines(size_t amount);
 };
 
 class debug_point_drawer : public debug_drawer_base

@@ -24,6 +24,11 @@ void perf_vis::draw(debug_line_drawer & hud_drawer, profiling_records const& rec
   vec2 const dimensions(1.8f, 1.8f);
   vec4 const color(1.0f, 1.0f, 1.0f, 1.0f);
 
+  size_t num_scaffold_lines = 1 * 3;
+  size_t num_graph_lines = records.get_num_records() * records.get_num_record_entries();
+
+  hud_drawer.reserve_lines(num_scaffold_lines + num_graph_lines);
+
   draw_scaffold(hud_drawer, bottom_left, dimensions, color);
 
   for(auto const& key_record_pair : records)
@@ -35,7 +40,7 @@ void perf_vis::draw(debug_line_drawer & hud_drawer, profiling_records const& rec
       records.get_max_num_record_entries(),
       bottom_left,
       dimensions,
-      color);
+      get_label_color(key_record_pair.first));
   }
 }
 
@@ -90,6 +95,24 @@ void perf_vis::draw_graph(
     curr_x += delta_x;
 
     prev_point = curr_point;
+  }
+}
+
+void perf_vis::set_label_color(std::string const& label, vec4 const& color)
+{
+  p_label_colors[label] = color;
+}
+
+vec4 perf_vis::get_label_color(std::string const& label) const
+{
+  auto find_it = p_label_colors.find(label);
+  if(find_it != p_label_colors.end())
+  {
+    return find_it->second;
+  }
+  else
+  {
+    return vec4(1.0f, 1.0f, 1.0f, 1.0f);
   }
 }
 

@@ -39,6 +39,11 @@ game_hack::game_hack(engine & game_engine, space & game_space)
 
   p_profiling_records.set_max_num_record_entries(600);
 
+  p_perf_vis.set_label_color("graphics", vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  p_perf_vis.set_label_color("physics", vec4(1.0f, 1.0f, 0.0f, 1.0f));
+  p_perf_vis.set_label_color("physics", vec4(0.0f, 0.0f, 1.0f, 1.0f));
+  p_perf_vis.set_label_color("update_total", vec4(0.0f, 1.0f, 0.0f, 1.0f));
+
   // TODO - Move shader loading to someplace that makes more sense once resources exist
   // Load shaders
 
@@ -350,7 +355,7 @@ bool game_hack::update(space & game_space, float dt)
 {
   p_profiling_records.start_new_record_entry();
 
-  profiling_point<> pp(p_profiling_records, "update");
+  profiling_point<> pp(p_profiling_records, "update_total");
 
   p_line_drawer.clear();
   p_point_drawer.clear();
@@ -371,7 +376,7 @@ bool game_hack::update(space & game_space, float dt)
 
 void game_hack::draw(space & game_space)
 {
-  profiling_point<> pp(p_profiling_records, "draw");
+  profiling_point<> pp(p_profiling_records, "graphics");
 
   LE::shader_program::use(*p_shader_prog);
 

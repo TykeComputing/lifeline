@@ -17,9 +17,9 @@ namespace LE
 
 void profiling_records::start_new_record_entry()
 {
-  ++num_record_entries;
+  ++p_num_record_entries;
 
-  if(num_record_entries > max_num_record_entries)
+  if(p_num_record_entries > p_max_num_record_entries)
   {
     // Get rid of the oldest record entry and add new record entry.
     for(auto & key_record_pair : p_records)
@@ -27,7 +27,7 @@ void profiling_records::start_new_record_entry()
       key_record_pair.second.pop_front();
     }
 
-    num_record_entries = max_num_record_entries;
+    p_num_record_entries = p_max_num_record_entries;
   }
 
   // Add new record entry to all existing records
@@ -39,15 +39,15 @@ void profiling_records::start_new_record_entry()
 
 void profiling_records::add_to_record_entry(std::string const & label, float time)
 {
-  if(num_record_entries == 0)
+  if(p_num_record_entries == 0)
   {
     return;
   }
 
   auto & record = p_records[label];
-  if(record.size() < num_record_entries)
+  if(record.size() < p_num_record_entries)
   {
-    record.resize(num_record_entries, 0.0f);
+    record.resize(p_num_record_entries, 0.0f);
   }
 
   record.back() += time;
@@ -62,6 +62,16 @@ profiling_records::time_record_container::const_iterator profiling_records::begi
 profiling_records::time_record_container::const_iterator profiling_records::end() const
 {
   return p_records.end();
+}
+
+size_t profiling_records::get_num_records() const
+{
+  return p_records.size();
+}
+
+size_t profiling_records::get_num_record_entries() const
+{
+  return p_num_record_entries;
 }
 
 profiling_records::time_record const*
@@ -80,16 +90,16 @@ profiling_records::get_record(std::string const& label) const
 
 size_t profiling_records::get_max_num_record_entries() const
 {
-  return max_num_record_entries;
+  return p_max_num_record_entries;
 }
 
 void profiling_records::set_max_num_record_entries(size_t const& value)
 {
-  if(value < num_record_entries)
+  if(value < p_num_record_entries)
   {
     // If there are more existing record entries than the new maximum, shrink all existing
     //   records discarding the oldest entries.
-    size_t num_to_discard = num_record_entries - value;
+    size_t num_to_discard = p_num_record_entries - value;
     for(auto & key_record_pair : p_records)
     {
       for(unsigned i = 0; i < num_to_discard; ++i)
@@ -98,10 +108,10 @@ void profiling_records::set_max_num_record_entries(size_t const& value)
       }
     }
 
-    num_record_entries = value;
+    p_num_record_entries = value;
   }
 
-  max_num_record_entries = value;
+  p_max_num_record_entries = value;
 }
 
 std::ostream & operator<<(std::ostream & os, profiling_records const& rhs)

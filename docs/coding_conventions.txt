@@ -32,6 +32,11 @@ For private member variables use p_*
 For public member variables on POD types no prefix is necessary.
 Exclusively use getters/setters for non-POD types.
 
+**** Method Naming ****
+
+For private method use p_*
+For public methods no prefix should be used.
+
 **** Templates ****
 
 template<typename ...ARGS...>

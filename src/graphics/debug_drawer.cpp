@@ -160,6 +160,11 @@ void debug_line_drawer::add_transform(mat3 const& transform, float scale)
   add_arrow(pos, up, scale, vec4mk(0.0f, 1.0f, 0.0f, 1.0f) );
 }
 
+void debug_line_drawer::reserve_lines(size_t amount)
+{
+  reserve(amount * 2);
+}
+
 /**********************************************/
 /* debug_point_drawer */
 /**********************************************/
