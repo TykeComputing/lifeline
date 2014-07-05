@@ -126,6 +126,9 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/window.cpp
   src/engine/window.h
 
+  src/devui/perf_vis.cpp
+  src/devui/perf_vis.h
+
   src/game/game_hack.cpp
   src/game/game_hack.h
 )
