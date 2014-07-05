@@ -11,6 +11,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <unordered_map>
 #include <vector>
 
+#include <devui/perf_vis.h>
+
 #include <engine/engine.h>
 #include <engine/space.h>
 
@@ -56,8 +58,12 @@ private:
   std::unique_ptr<shader_program> p_debug_shader_prog;
   debug_line_drawer p_line_drawer;
   debug_point_drawer p_point_drawer;
+
+  debug_line_drawer p_hud_line_drawer;
   // TODO - Move to engine when game_hack is removed
   profiling_records p_profiling_records;
+  // TODO - Move to its own space/scene when game_hack is removed
+  perf_vis p_perf_vis;
 };
 
 } // namespace LE

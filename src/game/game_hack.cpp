@@ -37,7 +37,7 @@ game_hack::game_hack(engine & game_engine, space & game_space)
   glLineWidth(2.0f);
   glPointSize(5.0f);
 
-  p_profiling_records.set_max_num_record_entries(8);
+  p_profiling_records.set_max_num_record_entries(600);
 
   // TODO - Move shader loading to someplace that makes more sense once resources exist
   // Load shaders
@@ -65,7 +65,6 @@ game_hack::game_hack(engine & game_engine, space & game_space)
 
 game_hack::~game_hack()
 {
-  std::cout << p_profiling_records;
 }
 
 void game_hack::load_shader(
@@ -355,6 +354,7 @@ bool game_hack::update(space & game_space, float dt)
 
   p_line_drawer.clear();
   p_point_drawer.clear();
+  p_hud_line_drawer.clear();
 
   if(input(game_space, dt) == false)
   {
@@ -363,6 +363,8 @@ bool game_hack::update(space & game_space, float dt)
 
   logic(game_space, dt);
   physics(game_space, dt);
+
+  p_perf_vis.draw(p_hud_line_drawer, p_profiling_records);
 
   return true;
 }
@@ -402,8 +404,12 @@ void game_hack::draw(space & game_space)
 
   LE::shader_program::use(*p_debug_shader_prog);
 
+  // TODO: Use camera mat
   p_line_drawer.draw();
   p_point_drawer.draw();
+
+  // TODO: Use hud mat
+  p_hud_line_drawer.draw();
 
   LE::shader_program::use_default();
 }

@@ -52,7 +52,12 @@ struct vecn<2, COMP_T>
   void set(COMP_T x, COMP_T y);
 
   COMP_T & operator[](size_t index);
-  COMP_T const& operator[](size_t index) const;  
+  COMP_T const& operator[](size_t index) const;
+
+  inline COMP_T & x() { return data[0]; }
+  inline COMP_T const& x() const { return data[0]; }
+  inline COMP_T & y() { return data[1]; }
+  inline COMP_T const& y() const { return data[1]; }
 
   COMP_T data[size];
 };
@@ -74,6 +79,13 @@ struct vecn<3, COMP_T>
   COMP_T & operator[](size_t index);
   COMP_T const& operator[](size_t index) const;
 
+  inline COMP_T & x() { return data[0]; }
+  inline COMP_T const& x() const { return data[0]; }
+  inline COMP_T & y() { return data[1]; }
+  inline COMP_T const& y() const { return data[1]; }
+  inline COMP_T & z() { return data[2]; }
+  inline COMP_T const& z() const { return data[2]; }
+
   COMP_T data[size];
 };
 
@@ -92,7 +104,16 @@ struct vecn<4, COMP_T>
   void set(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
 
   COMP_T & operator[](size_t index);
-  COMP_T const& operator[](size_t index) const;  
+  COMP_T const& operator[](size_t index) const;
+
+  inline COMP_T & x() { return data[0]; }
+  inline COMP_T const& x() const { return data[0]; }
+  inline COMP_T & y() { return data[1]; }
+  inline COMP_T const& y() const { return data[1]; }
+  inline COMP_T & z() { return data[2]; }
+  inline COMP_T const& z() const { return data[2]; }
+  inline COMP_T & w() { return data[3]; }
+  inline COMP_T const& w() const { return data[3]; }
 
   COMP_T data[size];
 };
@@ -110,15 +131,15 @@ extern vec4 const zero_vec4;
 /**********************************************************************************************/
 
 template<typename COMP_T = float>
-vecn<2, COMP_T> 
+vecn<2, COMP_T>
 vec2mk(COMP_T x, COMP_T y);
 
 template<typename COMP_T = float>
-vecn<3, COMP_T> 
+vecn<3, COMP_T>
 vec3mk(COMP_T x, COMP_T y, COMP_T z);
 
 template<typename COMP_T = float>
-vecn<4, COMP_T> 
+vecn<4, COMP_T>
 vec4mk(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
 
 /**********************************************************************************************/
