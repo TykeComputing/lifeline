@@ -42,7 +42,7 @@ void debug_drawer_base::reserve(size_t amount)
   p_vertices.reserve(p_vertices.size() + amount);
 }
 
-void debug_drawer_base::draw(GLenum mode)
+void debug_drawer_base::draw(GLenum mode) const
 {
   if(p_vertices.empty())
     return;
@@ -71,7 +71,7 @@ void debug_drawer_base::draw(GLenum mode)
 /* debug_line_drawer */
 /**********************************************/
 
-void debug_line_drawer::draw()
+void debug_line_drawer::draw() const
 {
   debug_drawer_base::draw(GL_LINES);
 }
@@ -169,7 +169,7 @@ void debug_line_drawer::reserve_lines(size_t amount)
 /* debug_point_drawer */
 /**********************************************/
 
-void debug_point_drawer::draw()
+void debug_point_drawer::draw() const
 {
   debug_drawer_base::draw(GL_POINTS);
 }

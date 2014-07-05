@@ -43,7 +43,7 @@ protected:
 
   std::vector<debug_shape_vertex> p_vertices;
 
-  void draw(GLenum prim_mode);
+  void draw(GLenum prim_mode) const;
 
 private:
   vertex_array p_VAO;
@@ -56,7 +56,7 @@ private:
 class debug_line_drawer : public debug_drawer_base
 {
 public:
-  void draw();
+  void draw() const;
 
   void add_line(vec2 const& p0, vec2 const& p1, vec4 const& color);
 
@@ -78,7 +78,7 @@ public:
 class debug_point_drawer : public debug_drawer_base
 {
 public:
-  void draw();
+  void draw() const;
 
   void add_point(vec2 const& p0, vec4 const& color);
 };

@@ -51,6 +51,12 @@ OS_interface::OS_interface()
   int const LE_GL_version_minor = 2;
   LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, LE_GL_version_major);
   LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, LE_GL_version_minor);
+#ifdef LE_MODERN_OPENGL_ONLY
+  LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#else
+  LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+#endif
+
   LE_SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 }
 

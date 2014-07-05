@@ -23,7 +23,7 @@ vertex_buffer::~vertex_buffer()
   glDeleteBuffers(1, &p_raw_name);
 }
 
-void vertex_buffer::bind(GLenum target, vertex_buffer & VBO)
+void vertex_buffer::bind(GLenum target, vertex_buffer const& VBO)
 {
   glBindBuffer(target, VBO.p_raw_name);
 }

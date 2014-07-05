@@ -53,7 +53,6 @@ void profiling_records::add_to_record_entry(std::string const & label, float tim
   record.back() += time;
 }
 
-
 profiling_records::time_record_container::const_iterator profiling_records::begin() const
 {
   return p_records.begin();

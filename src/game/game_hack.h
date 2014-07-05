@@ -16,7 +16,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <engine/engine.h>
 #include <engine/space.h>
 
-#include <graphics/debug_drawer.h>
+#include <graphics/debug_draw_manager.h>
 #include <graphics/shader_program.h>
 
 #include <math/vec.h>
@@ -56,10 +56,10 @@ public:
 private:
   std::unique_ptr<shader_program> p_shader_prog;
   std::unique_ptr<shader_program> p_debug_shader_prog;
-  debug_line_drawer p_line_drawer;
-  debug_point_drawer p_point_drawer;
 
-  debug_line_drawer p_hud_line_drawer;
+  // Move elsewhere when game_hack is removed
+  debug_draw_manager p_world_ddraw;
+  debug_draw_manager p_hud_ddraw;
   // TODO - Move to engine when game_hack is removed
   profiling_records p_profiling_records;
   // TODO - Move to its own space/scene when game_hack is removed

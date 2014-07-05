@@ -85,6 +85,8 @@ set(LE_EXECUTABLE_SRC_LIST
 
   src/graphics/debug_drawer.cpp
   src/graphics/debug_drawer.h
+  src/graphics/debug_draw_manager.cpp
+  src/graphics/debug_draw_manager.h
   src/graphics/error_checking.cpp
   src/graphics/error_checking.h
   src/graphics/shader.cpp

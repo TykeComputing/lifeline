@@ -194,10 +194,10 @@ bool game_hack::input(space & game_space, float dt)
 
     if(player_transl != zero_vec2)
     {
-      p_line_drawer.add_arrow(
+      p_world_ddraw.lines.add_arrow(
         player_old_pos, player_transl / dt, vec4mk(1.0f, 0.0f, 0.0f, 1.0f));
 
-      p_point_drawer.add_point(
+      p_world_ddraw.points.add_point(
         player_old_pos, vec4mk(0.0f, 0.0f, 1.0f, 1.0f));
     }
   }
@@ -229,7 +229,7 @@ void game_hack::logic(space & game_space, float dt)
       {
         auto * enemy_t = curr_entity->get_component<transform_component>();
 
-        p_line_drawer.add_circle(
+        p_world_ddraw.lines.add_circle(
           enemy_t->get_pos(), enemy_seek_radius, vec4mk(1.0f, .0f, 1.0f, 1.0f));
 
         vec2 dir_to_player =
@@ -241,7 +241,7 @@ void game_hack::logic(space & game_space, float dt)
         {
           enemy_t->translate(dir_to_player * enemy_movement_speed * dt);
 
-          p_line_drawer.add_arrow(
+          p_world_ddraw.lines.add_arrow(
             enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4mk(1.0f, 0.0f, 1.0f, 1.0f));
         }
       }
@@ -292,11 +292,11 @@ void game_hack::physics(space & game_space, float dt)
           ent_outer_t->get_scale_x() + ent_inner_t->get_scale_x();
       r_sum *= 0.5f; // use half of scale as radius
 
-      p_line_drawer.add_circle(
+      p_world_ddraw.lines.add_circle(
         ent_inner_t->get_pos(),
         ent_inner_t->get_scale_x() * 0.5f,
         vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
-      p_line_drawer.add_circle(
+      p_world_ddraw.lines.add_circle(
         ent_outer_t->get_pos(),
         ent_outer_t->get_scale_x() * 0.5f,
         vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
@@ -357,9 +357,9 @@ bool game_hack::update(space & game_space, float dt)
 
   profiling_point<> pp(p_profiling_records, "update_total");
 
-  p_line_drawer.clear();
-  p_point_drawer.clear();
-  p_hud_line_drawer.clear();
+  p_world_ddraw.clear();
+  p_world_ddraw.clear();
+  p_hud_ddraw.clear();
 
   if(input(game_space, dt) == false)
   {
@@ -369,7 +369,7 @@ bool game_hack::update(space & game_space, float dt)
   logic(game_space, dt);
   physics(game_space, dt);
 
-  p_perf_vis.draw(p_hud_line_drawer, p_profiling_records);
+  p_perf_vis.draw(p_hud_ddraw, p_profiling_records);
 
   return true;
 }
@@ -404,17 +404,17 @@ void game_hack::draw(space & game_space)
     curr_g_comp->unbind();
 
     // TODO - REMOVE
-    p_line_drawer.add_transform(curr_ent_t->get_matrix(), 0.1f);
+    p_world_ddraw.lines.add_transform(curr_ent_t->get_matrix(), 0.1f);
   }
 
   LE::shader_program::use(*p_debug_shader_prog);
 
   // TODO: Use camera mat
-  p_line_drawer.draw();
-  p_point_drawer.draw();
+  p_world_ddraw.draw();
+  p_world_ddraw.draw();
 
   // TODO: Use hud mat
-  p_hud_line_drawer.draw();
+  p_hud_ddraw.draw();
 
   LE::shader_program::use_default();
 }

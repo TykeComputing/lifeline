@@ -22,7 +22,7 @@ public:
   vertex_buffer();
   ~vertex_buffer();
 
-  static void bind(GLenum target, vertex_buffer & VBO);
+  static void bind(GLenum target, vertex_buffer const& VBO);
   static void unbind(GLenum target);
 
   static void specify_vertex_attrtibute(
