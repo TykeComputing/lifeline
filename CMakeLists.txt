@@ -33,6 +33,7 @@ include(${LE_CMAKE_DIR}/LifelineVars.cmake)
 include(${LE_CMAKE_DIR}/ExternalDependencyRuntimes.cmake)
 
 find_package(SDL2 REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(CPPFormat REQUIRED)
