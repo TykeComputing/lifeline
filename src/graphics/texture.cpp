@@ -34,7 +34,7 @@ texture::~texture()
 
 void texture::set_active_unit(GLuint unit_index)
 {
-  glActiveTexture(unit_index);
+  glActiveTexture(GL_TEXTURE0 + unit_index);
 }
 
 void texture::bind(GLenum target, texture const& tex)
@@ -58,11 +58,13 @@ void texture::set_data(
   GLvoid const* data)
 {
   glTexImage2D(target, level, internal_format, width, height, 0, format, type, data);
+  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 void texture::set_parameter(GLenum target, GLenum param_name, GLint param_value)
 {
   glTexParameteri(target, param_name, param_value);
+  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 /**********************************************************************************************/
@@ -79,13 +81,17 @@ texture2D::texture2D()
   set_parameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   set_parameter(GL_TEXTURE_WRAP_S, GL_CLAMP);
   set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);
-  LE_FATAL_ERROR_IF_GL_ERROR();
 
   unbind();
 }
 
 texture2D::texture2D(std::string const& texture_file_name) :
   texture2D()
+{
+  load_texture_file(texture_file_name);
+}
+
+void texture2D::load_texture_file(std::string const& texture_file_name)
 {
   unsigned char * texture_data = nullptr;
   int w = 0, h = 0;
@@ -108,7 +114,7 @@ texture2D::texture2D(std::string const& texture_file_name) :
 
 void texture2D::bind(texture2D const& tex2D)
 {
-  texture::bind(GL_TEXTURE_2D, tex2D.p_tex);
+  texture::bind(GL_TEXTURE_2D, tex2D.p_texture);
 }
 
 void texture2D::unbind()

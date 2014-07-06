@@ -11,6 +11,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/unique_id.h>
 
+#include <graphics/texture.h>
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
 
@@ -32,12 +33,14 @@ public:
 
   GLsizei get_num_verts() const;
 
-  vec4 m_color = vec4mk(1.0f, 1.0f, 1.0f, 1.0f); // TODO: Move and change method of representing colors (RGBA8?)
+  // TODO: Move and change method of representing colors (RGBA8?)
+  vec4 m_color = vec4mk(1.0f, 1.0f, 1.0f, 1.0f);
 
   static unique_id<component_base> const type_id;
 private:
   vertex_array p_VAO;
   vertex_buffer p_VBO;
+  texture2D p_texture;
 
   GLsizei num_verts = 0;
 };

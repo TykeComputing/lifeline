@@ -65,13 +65,13 @@ void engine::run()
         {
           p_is_running = game->update(p_space, update_dt);
         }
-        catch(LE::resource_exception const& e)
+        catch(resource_exception const& e)
         {
           log_error(log_scope::ENGINE, "{}", e.what());
           LE_FATAL_ERROR("Uncaught resource exception!");
           return;
         }
-        catch(LE::message_exception const& e)
+        catch(message_exception const& e)
         {
           log_error(log_scope::ENGINE, "{}", e.what());
           LE_FATAL_ERROR("Uncaught message exception!");
@@ -91,7 +91,7 @@ void engine::run()
       frame_timer.reset();
     }
   }
-  catch(LE::resource_exception const& e)
+  catch(resource_exception const& e)
   {
     log_error(log_scope::ENGINE, "{}", e.what());
     LE_FATAL_ERROR("ERROR"); // Give time to look at error

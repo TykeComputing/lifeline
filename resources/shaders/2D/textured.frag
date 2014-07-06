@@ -5,13 +5,15 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 */
 #version 150
 
-in vec2 position;
-in vec2 texcoord;
+noperspective in vec2 v_texcoord;
 
-noperspective out vec2 v_texcoord;
+out vec4 f_color;
+
+uniform sampler2D texture;
+uniform vec4 color_multiplier;
 
 void main()
 {
-  v_texcoord = texcoord;
-  gl_Position = vec4(position, 1.0f, 1.0f);
+  vec4 texture_color = texture2D(texture, v_texcoord);
+  f_color.rgba = texture_color * color_multiplier;
 }

@@ -5,15 +5,15 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 */
 #version 150
 
-noperspective in vec2 v_texcoord;
+in vec2 position;
+in vec2 texcoord;
 
-out vec4 f_color;
+noperspective out vec2 v_texcoord;
 
-uniform sampler2D texture;
+uniform mat3 model_to_world;
 
 void main()
 {
-  vec3 texture_color = texture2D(texture, v_texcoord).rgb;
-  f_color.rgb = texture_color;
-  f_color.a = 1.0f;
+  v_texcoord = texcoord;
+  gl_Position = vec4(model_to_world * vec3(position, 1.0f), 1.0f);
 }

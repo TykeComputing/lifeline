@@ -13,7 +13,6 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <devui/perf_vis.h>
 
-#include <engine/engine.h>
 #include <engine/space.h>
 
 #include <graphics/debug_draw_manager.h>
@@ -42,7 +41,6 @@ public:
   ~game_hack();
 
   void load_shader(
-    engine & game_engine,
     std::unique_ptr<shader_program> & out_sp,
     char const* vert,
     char const* frag);
@@ -54,7 +52,7 @@ public:
   void draw(space & game_space);
 
 private:
-  std::unique_ptr<shader_program> p_shader_prog;
+  std::unique_ptr<shader_program> p_textured_shader_prog;
   std::unique_ptr<shader_program> p_debug_shader_prog;
 
   // Move elsewhere when game_hack is removed
@@ -64,6 +62,8 @@ private:
   profiling_records p_profiling_records;
   // TODO - Move to its own space/scene when game_hack is removed
   perf_vis p_perf_vis;
+
+  engine & p_engine;
 };
 
 } // namespace LE

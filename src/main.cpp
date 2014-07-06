@@ -77,7 +77,6 @@ int main(int arg_count, char *args[])
     res = -1;
   }
 
-  // Quick and dirty unit test
   LE::log_status(LE::log_scope::GLOBAL, "Exiting...");
   return res;
 }

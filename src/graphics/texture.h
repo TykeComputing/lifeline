@@ -47,6 +47,8 @@ public:
   texture2D();
   explicit texture2D(std::string const& texture_file_name);
 
+  void load_texture_file(std::string const& texture_file_name);
+
   static void bind(texture2D const& tex2D);
   static void unbind();
 
@@ -63,7 +65,7 @@ public:
 private:
   // Composition to disallow conversion from texture2D to texture (which would allow binding to
   //   other targets). TODO - Evalute this decision after using.
-  texture p_tex;
+  texture p_texture;
 };
 
 } // namespace LE

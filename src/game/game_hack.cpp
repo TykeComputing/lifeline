@@ -21,6 +21,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <engine/sprite_component.h>
 #include <engine/transform_component.h>
 
+#include <graphics/error_checking.h>
 #include <graphics/shader_program.h>
 #include <graphics/vertex.h>
 #include <graphics/vertex_array.h>
@@ -30,7 +31,8 @@ namespace LE
 {
 
 //////////////////////////////////////////////////////////////////////////
-game_hack::game_hack(engine & game_engine, space & game_space)
+game_hack::game_hack(engine & game_engine, space & game_space) :
+  p_engine(game_engine)
 {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -47,8 +49,14 @@ game_hack::game_hack(engine & game_engine, space & game_space)
   // TODO - Move shader loading to someplace that makes more sense once resources exist
   // Load shaders
 
-  load_shader(game_engine, p_shader_prog, "shaders/solid_color.vert", "shaders/solid_color.frag");
-  load_shader(game_engine, p_debug_shader_prog, "shaders/debug_draw.vert", "shaders/debug_draw.frag");
+  load_shader(
+    p_textured_shader_prog,
+    "shaders/2D/textured.vert",
+    "shaders/2D/textured.frag");
+  load_shader(
+    p_debug_shader_prog,
+    "shaders/2D/debug_draw.vert",
+    "shaders/2D/debug_draw.frag");
 
   {
     auto * new_ent = game_space.create_entity("player");
@@ -73,21 +81,20 @@ game_hack::~game_hack()
 }
 
 void game_hack::load_shader(
-  engine & game_engine,
   std::unique_ptr<shader_program> & out_sp,
   char const* vert,
   char const* frag)
 {
+  log_status(log_scope::GAME, "Attempting to load shaders \"{}\" and \"{}\"", vert, frag);
+
   try
   {
-    LE_FATAL_ERROR_IF(out_sp != nullptr, "Attempting to load existing shader!");
-
     std::vector<std::shared_ptr<shader>> shaders;
     shaders.reserve(2);
     shaders.emplace_back(std::make_shared<shader>(
-      GL_VERTEX_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + vert) ));
+      GL_VERTEX_SHADER, std::vector<std::string>(1, p_engine.get_resource_dir() + vert) ));
     shaders.emplace_back(std::make_shared<shader>(
-      GL_FRAGMENT_SHADER, std::vector<std::string>(1, game_engine.get_resource_dir() + frag) ));
+      GL_FRAGMENT_SHADER, std::vector<std::string>(1, p_engine.get_resource_dir() + frag) ));
 
     // Load shader_program
     std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
@@ -137,6 +144,20 @@ bool game_hack::input(space & game_space, float dt)
             new_bullet_t->set_scale(0.05f, 0.05f);
             new_bullet->get_component<sprite_component>()->m_color.set(1.0f, 0.5f, 0.0f, 1.0f);
           }
+        }
+        break;
+
+        // Shader reloading
+        case SDLK_RETURN:
+        {
+          load_shader(
+            p_textured_shader_prog,
+            "shaders/2D/textured.vert",
+            "shaders/2D/textured.frag");
+          load_shader(
+            p_debug_shader_prog,
+            "shaders/2D/debug_draw.vert",
+            "shaders/2D/debug_draw.frag");
         }
         break;
 
@@ -378,12 +399,18 @@ void game_hack::draw(space & game_space)
 {
   profiling_point<> pp(p_profiling_records, "graphics");
 
-  LE::shader_program::use(*p_shader_prog);
+  LE::shader_program::use(*p_textured_shader_prog);
 
   glClear(GL_COLOR_BUFFER_BIT);
 
-  GLint color_ul = p_shader_prog->get_unform_location("color");
-  GLint model_to_world_ul = p_shader_prog->get_unform_location("model_to_world");
+  GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
+  GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
+  GLint model_to_world_ul = p_textured_shader_prog->get_unform_location("model_to_world");
+
+  texture::set_active_unit(0);
+  glUniform1i(texture_ul, 0);
+
+  LE_FATAL_ERROR_IF_GL_ERROR();
 
   // Terrible draw loop, HACK HACK HACK
   for(auto entity_it = game_space.entity_begin();
@@ -395,17 +422,24 @@ void game_hack::draw(space & game_space)
     auto const& model_to_world = curr_ent_t->get_matrix();
 
     auto const* curr_g_comp = curr_ent->get_component<sprite_component>();
-    glUniform4fv(color_ul, 1, curr_g_comp->m_color.data);
+    glUniform4fv(color_multiplier_ul, 1, curr_g_comp->m_color.data);
 
     glUniformMatrix3fv(model_to_world_ul, 1, GL_TRUE, model_to_world.data);
 
+    LE_FATAL_ERROR_IF_GL_ERROR();
     curr_g_comp->bind();
+    LE_FATAL_ERROR_IF_GL_ERROR();
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp->get_num_verts());
+    LE_FATAL_ERROR_IF_GL_ERROR();
     curr_g_comp->unbind();
+    LE_FATAL_ERROR_IF_GL_ERROR();
+
+    LE_FATAL_ERROR_IF_GL_ERROR();
 
     // TODO - REMOVE
     p_world_ddraw.lines.add_transform(curr_ent_t->get_matrix(), 0.1f);
   }
+  LE_FATAL_ERROR_IF_GL_ERROR();
 
   LE::shader_program::use(*p_debug_shader_prog);
 
@@ -417,6 +451,8 @@ void game_hack::draw(space & game_space)
   p_hud_ddraw.draw();
 
   LE::shader_program::use_default();
+
+  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 } // namespace LE
