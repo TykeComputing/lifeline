@@ -15,10 +15,6 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <common/macros.h>
 #include <engine/engine.h>
 
-// TODO - REMOVE
-#include <common/profiling_records.h>
-#include <assert.h>
-
 typedef void(*handle_arg_func)(LE::engine & game_engine, std::string const& val);
 
 void handle_set_resource_dir(LE::engine & game_engine, std::string const& val)
