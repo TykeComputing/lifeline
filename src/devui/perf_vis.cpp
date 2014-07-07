@@ -20,8 +20,8 @@ void perf_vis::draw(debug_draw_manager & hud_ddraw, profiling_records const& rec
 {
   LE_UNUSED_VAR(hud_ddraw);
 
-  vec2 const bottom_left(-0.9f, -0.9f);
-  vec2 const dimensions(1.8f, 1.8f);
+  vec2 const bottom_left(-400.0f, -300.0f);
+  vec2 const dimensions(800.0f, 600.0f);
   vec4 const color(1.0f, 1.0f, 1.0f, 1.0f);
 
   size_t num_scaffold_lines = 1 * 2;
