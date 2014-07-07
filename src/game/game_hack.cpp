@@ -141,7 +141,7 @@ bool game_hack::input(space & game_space, float dt)
             auto * new_bullet = game_space.create_entity("bullet");
             auto * new_bullet_t = new_bullet->get_component<transform_component>();
             new_bullet_t->set_pos(player_t->get_pos());
-            new_bullet_t->set_scale(0.05f, 0.05f);
+            new_bullet_t->set_scale(2.0f, 2.0f);
             new_bullet->get_component<sprite_component>()->m_color.set(1.0f, 0.5f, 0.0f, 1.0f);
           }
         }
@@ -194,7 +194,7 @@ bool game_hack::input(space & game_space, float dt)
 
     // 1 = key pressed, 0 = key not pressed
     auto const& player_old_pos = player->get_component<transform_component>()->get_pos();
-    vec2 player_transl = zero_vec2;
+    vec2 player_transl = vec2::zero;
     if(SDL_keys[SDL_SCANCODE_W])
     {
       player_transl[1] = player_movement_speed * dt;
@@ -213,7 +213,7 @@ bool game_hack::input(space & game_space, float dt)
     }
     player_t->translate(player_transl);
 
-    if(player_transl != zero_vec2)
+    if(player_transl != vec2::zero)
     {
       p_world_ddraw.lines.add_arrow(
         player_old_pos, player_transl / dt, vec4mk(1.0f, 0.0f, 0.0f, 1.0f));
@@ -399,13 +399,33 @@ void game_hack::draw(space & game_space)
 {
   profiling_point<> pp(p_profiling_records, "graphics");
 
+  // HACK /////////////////////////////////////////
+  auto const& window = p_engine.get_window();
+  auto window_size = window.get_size();
+
+  // Camera space =
+  mat3 world_to_camera({
+    1.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 1.0f
+  });
+
+  mat3 camera_to_NDC({
+    1.0f / (window_size.x() / 2), 0.0f, 0.0f,
+    0.0f, 1.0f / (window_size.y() / 2), 0.0f,
+    0.0f, 0.0f, 1.0f
+  });
+
+  mat3 world_to_NDC = camera_to_NDC * world_to_camera;
+  /////////////////////////////////////////////////
+
   LE::shader_program::use(*p_textured_shader_prog);
 
   glClear(GL_COLOR_BUFFER_BIT);
 
   GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
   GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
-  GLint model_to_world_ul = p_textured_shader_prog->get_unform_location("model_to_world");
+  GLint to_NDC_ul = p_textured_shader_prog->get_unform_location("to_NDC");
 
   texture::set_active_unit(0);
   glUniform1i(texture_ul, 0);
@@ -424,7 +444,8 @@ void game_hack::draw(space & game_space)
     auto const* curr_g_comp = curr_ent->get_component<sprite_component>();
     glUniform4fv(color_multiplier_ul, 1, curr_g_comp->m_color.data);
 
-    glUniformMatrix3fv(model_to_world_ul, 1, GL_TRUE, model_to_world.data);
+    mat3 model_to_NDC = world_to_NDC * model_to_world;
+    glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
 
     LE_FATAL_ERROR_IF_GL_ERROR();
     curr_g_comp->bind();
@@ -442,6 +463,9 @@ void game_hack::draw(space & game_space)
   LE_FATAL_ERROR_IF_GL_ERROR();
 
   LE::shader_program::use(*p_debug_shader_prog);
+
+  to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");
+  glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, world_to_NDC.data);
 
   // TODO: Use camera mat
   p_world_ddraw.draw();

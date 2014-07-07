@@ -98,6 +98,11 @@ void engine::run()
   }
 }
 
+window const& engine::get_window() const
+{
+  return p_window;
+}
+
 void engine::set_is_running(bool val)
 {
   p_is_running = val;

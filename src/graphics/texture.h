@@ -8,7 +8,10 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #define LE_GRAPHICS_TEXTURE_H
 
 #include <string>
+
 #include <GL/glew.h>
+
+#include <math/vec.h>
 
 namespace LE
 {
@@ -25,7 +28,7 @@ public:
   static void bind(GLenum target, texture const& tex);
   static void unbind(GLenum target);
 
-  static void set_data(
+  static void set_data_2D(
     GLenum target,
     GLint level,
     GLint internal_format,
@@ -35,10 +38,13 @@ public:
     GLenum type,
     GLvoid const* data);
 
+  ivec3 const& get_size() const;
+
   static void set_parameter(GLenum target, GLenum param_name, GLint param_value);
 
 private:
   GLuint p_raw_name = 0;
+  ivec3 p_dimensions = ivec3::zero;
 };
 
 class texture2D

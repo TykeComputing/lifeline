@@ -80,7 +80,6 @@ set(LE_EXECUTABLE_SRC_LIST
   src/math/mat.h
   src/math/transform.cpp
   src/math/transform.h
-  src/math/vec.cpp
   src/math/vec.hpp
   src/math/vec.h
 

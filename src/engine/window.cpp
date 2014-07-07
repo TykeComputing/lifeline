@@ -15,7 +15,7 @@ namespace LE
 window::window()
 {
   Uint32 sdl_window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
-  p_raw_window = SDL_CreateWindow("Lifeline Engine", 64, 64, 1280, 760, sdl_window_flags);
+  p_raw_window = SDL_CreateWindow("Lifeline Engine", 64, 64, 800, 600, sdl_window_flags);
   if(p_raw_window == nullptr)
   {
     LE_FATAL_ERROR(SDL_GetError());
@@ -32,6 +32,14 @@ window::~window()
 void window::update()
 {
   SDL_GL_SwapWindow(p_raw_window);
+}
+
+// TODO: Cache size
+ivec2 window::get_size() const
+{
+  int w, h;
+  SDL_GetWindowSize(p_raw_window, &w, &h);
+  return ivec2(w, h);
 }
 
 SDL_Window const* window::get_raw() const

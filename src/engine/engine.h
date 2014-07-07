@@ -24,6 +24,8 @@ public:
 
   void run();
 
+  window const& get_window() const;
+
   void set_is_running(bool val);
 
   // TODO - Move to more appropriate place once there is one

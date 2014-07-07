@@ -58,7 +58,7 @@ private:
   void mark_as_dirty() const;
   void mark_as_clean() const;
 
-  vec2 p_pos = zero_vec2;
+  vec2 p_pos = vec2::zero;
   float p_z_order = 0.0f;
   vec2 p_scale = vec2mk(1.0f, 1.0f);
 

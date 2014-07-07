@@ -23,12 +23,15 @@ struct vecn
   static size_t const size = N;
 
   vecn();
+  explicit vecn(COMP_T fill_val);
   vecn(std::array<COMP_T, size> const& values);
 
   void set(std::array<COMP_T, size> const& values);
 
   COMP_T & operator[](size_t index);
   COMP_T const& operator[](size_t index) const;
+
+  static vecn const zero;
 
   COMP_T data[size];
 };
@@ -47,6 +50,7 @@ struct vecn<2, COMP_T>
   static size_t const size = 2;
 
   vecn();
+  explicit vecn(COMP_T fill_val);
   vecn(COMP_T x, COMP_T y);
 
   void set(COMP_T x, COMP_T y);
@@ -58,6 +62,8 @@ struct vecn<2, COMP_T>
   inline COMP_T const& x() const { return data[0]; }
   inline COMP_T & y() { return data[1]; }
   inline COMP_T const& y() const { return data[1]; }
+
+  static vecn const zero;
 
   COMP_T data[size];
 };
@@ -72,6 +78,7 @@ struct vecn<3, COMP_T>
   static size_t const size = 3;
 
   vecn();
+  explicit vecn(COMP_T fill_val);
   vecn(COMP_T x, COMP_T y, COMP_T z);
 
   void set(COMP_T x, COMP_T y, COMP_T z);
@@ -86,6 +93,8 @@ struct vecn<3, COMP_T>
   inline COMP_T & z() { return data[2]; }
   inline COMP_T const& z() const { return data[2]; }
 
+  static vecn const zero;
+
   COMP_T data[size];
 };
 
@@ -99,6 +108,7 @@ struct vecn<4, COMP_T>
   static size_t const size = 4;
 
   vecn();
+  explicit vecn(COMP_T fill_val);
   vecn(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
 
   void set(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
@@ -115,16 +125,18 @@ struct vecn<4, COMP_T>
   inline COMP_T & w() { return data[3]; }
   inline COMP_T const& w() const { return data[3]; }
 
+  static vecn const zero;
+
   COMP_T data[size];
 };
 
 typedef vecn<2> vec2;
+typedef vecn<2, int> ivec2;
+typedef vecn<2, unsigned> uvec2;
 typedef vecn<3> vec3;
+typedef vecn<3, int> ivec3;
+typedef vecn<3, unsigned> uvec3;
 typedef vecn<4> vec4;
-
-extern vec2 const zero_vec2;
-extern vec3 const zero_vec3;
-extern vec4 const zero_vec4;
 
 /**********************************************************************************************/
 /* Creation functions */

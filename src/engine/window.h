@@ -9,6 +9,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "SDL.h"
 
+#include <math/vec.h>
+
 namespace LE
 {
 
@@ -19,6 +21,8 @@ public:
   ~window();
 
   void update();
+
+  ivec2 get_size() const;
 
   SDL_Window const* get_raw() const;
   SDL_Window * get_raw();

@@ -47,7 +47,7 @@ void texture::unbind(GLenum target)
   glBindTexture(target, 0);
 }
 
-void texture::set_data(
+void texture::set_data_2D(
   GLenum target,
   GLint level,
   GLint internal_format,
@@ -130,7 +130,7 @@ void texture2D::set_data(
   GLenum type,
   GLvoid const* data)
 {
-  texture::set_data(GL_TEXTURE_2D, 0, internal_format, width, height, format, type, data);
+  texture::set_data_2D(GL_TEXTURE_2D, 0, internal_format, width, height, format, type, data);
 }
 
 void texture2D::set_parameter(GLenum param_name, GLint param_value)

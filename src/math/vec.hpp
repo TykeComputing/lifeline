@@ -13,9 +13,29 @@ namespace LE
 {
 
 template<size_t N, typename COMP_T>
+vecn<N, COMP_T> const vecn<N, COMP_T>::zero = vecn(static_cast<COMP_T>(0));
+
+template<typename COMP_T>
+vecn<2, COMP_T> const vecn<2, COMP_T>::zero = vecn<2, COMP_T>(static_cast<COMP_T>(0));
+template<typename COMP_T>
+vecn<3, COMP_T> const vecn<3, COMP_T>::zero = vecn<3, COMP_T>(static_cast<COMP_T>(0));
+template<typename COMP_T>
+vecn<4, COMP_T> const vecn<4, COMP_T>::zero = vecn<4, COMP_T>(static_cast<COMP_T>(0));
+
+template<size_t N, typename COMP_T>
 vecn<N, COMP_T>::vecn()
 {
   // Do nothing
+}
+
+
+template<size_t N, typename COMP_T>
+vecn<N, COMP_T>::vecn(COMP_T fill_val)
+{
+  for(size_t i = 0; i < N; ++i)
+  {
+    data[i] = fill_val;
+  }
 }
 
 // Likely too expensive for something as commonly used as a vector, will worry about later.
@@ -26,7 +46,8 @@ vecn<N, COMP_T>::vecn(std::array<COMP_T, size> const& values)
 }
 
 template<size_t N, typename COMP_T>
-void vecn<N, COMP_T>::set(std::array<COMP_T, size> const& values)
+void
+vecn<N, COMP_T>::set(std::array<COMP_T, size> const& values)
 {
   auto values_it = std::begin(values);
   for(auto data_it = std::begin(data); data_it != std::end(data); ++data_it)
@@ -37,13 +58,15 @@ void vecn<N, COMP_T>::set(std::array<COMP_T, size> const& values)
 }
 
 template<size_t N, typename COMP_T>
-COMP_T & vecn<N, COMP_T>::operator[](size_t index)
+COMP_T &
+vecn<N, COMP_T>::operator[](size_t index)
 {
   return data[index];
 }
 
 template<size_t N, typename COMP_T>
-COMP_T const& vecn<N, COMP_T>::operator[](size_t index) const
+COMP_T const&
+vecn<N, COMP_T>::operator[](size_t index) const
 {
   return data[index];
 }
@@ -62,6 +85,13 @@ vecn<2, COMP_T>::vecn()
   // Do nothing
 }
 
+template<typename COMP_T>
+vecn<2, COMP_T>::vecn(COMP_T fill_val)
+{
+  data[0] = fill_val;
+  data[1] = fill_val;
+}
+
 // Likely too expensive for something as commonly used as a vector, will worry about later.
 template<typename COMP_T>
 vecn<2, COMP_T>::vecn(COMP_T x, COMP_T y)
@@ -70,20 +100,23 @@ vecn<2, COMP_T>::vecn(COMP_T x, COMP_T y)
 }
 
 template<typename COMP_T>
-void vecn<2, COMP_T>::set(COMP_T x, COMP_T y)
+void
+vecn<2, COMP_T>::set(COMP_T x, COMP_T y)
 {
   data[0] = x;
   data[1] = y;
 }
 
 template<typename COMP_T>
-COMP_T & vecn<2, COMP_T>::operator[](size_t index)
+COMP_T &
+vecn<2, COMP_T>::operator[](size_t index)
 {
   return data[index];
 }
 
 template<typename COMP_T>
-COMP_T const& vecn<2, COMP_T>::operator[](size_t index) const
+COMP_T const&
+vecn<2, COMP_T>::operator[](size_t index) const
 {
   return data[index];
 }
@@ -98,6 +131,14 @@ vecn<3, COMP_T>::vecn()
   // Do nothing
 }
 
+template<typename COMP_T>
+vecn<3, COMP_T>::vecn(COMP_T fill_val)
+{
+  data[0] = fill_val;
+  data[1] = fill_val;
+  data[2] = fill_val;
+}
+
 // Likely too expensive for something as commonly used as a vector, will worry about later.
 template<typename COMP_T>
 vecn<3, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z)
@@ -106,7 +147,8 @@ vecn<3, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z)
 }
 
 template<typename COMP_T>
-void vecn<3, COMP_T>::set(COMP_T x, COMP_T y, COMP_T z)
+void
+vecn<3, COMP_T>::set(COMP_T x, COMP_T y, COMP_T z)
 {
   data[0] = x;
   data[1] = y;
@@ -114,13 +156,15 @@ void vecn<3, COMP_T>::set(COMP_T x, COMP_T y, COMP_T z)
 }
 
 template<typename COMP_T>
-COMP_T & vecn<3, COMP_T>::operator[](size_t index)
+COMP_T &
+vecn<3, COMP_T>::operator[](size_t index)
 {
   return data[index];
 }
 
 template<typename COMP_T>
-COMP_T const& vecn<3, COMP_T>::operator[](size_t index) const
+COMP_T const&
+vecn<3, COMP_T>::operator[](size_t index) const
 {
   return data[index];
 }
@@ -135,6 +179,15 @@ vecn<4, COMP_T>::vecn()
   // Do nothing
 }
 
+template<typename COMP_T>
+vecn<4, COMP_T>::vecn(COMP_T fill_val)
+{
+  data[0] = fill_val;
+  data[1] = fill_val;
+  data[2] = fill_val;
+  data[3] = fill_val;
+}
+
 // Likely too expensive for something as commonly used as a vector, will worry about later.
 template<typename COMP_T>
 vecn<4, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
@@ -143,7 +196,8 @@ vecn<4, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
 }
 
 template<typename COMP_T>
-void vecn<4, COMP_T>::set(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
+void
+vecn<4, COMP_T>::set(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
 {
   data[0] = x;
   data[1] = y;
@@ -152,13 +206,15 @@ void vecn<4, COMP_T>::set(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
 }
 
 template<typename COMP_T>
-COMP_T & vecn<4, COMP_T>::operator[](size_t index)
+COMP_T &
+vecn<4, COMP_T>::operator[](size_t index)
 {
   return data[index];
 }
 
 template<typename COMP_T>
-COMP_T const& vecn<4, COMP_T>::operator[](size_t index) const
+COMP_T const&
+vecn<4, COMP_T>::operator[](size_t index) const
 {
   return data[index];
 }
@@ -168,7 +224,8 @@ COMP_T const& vecn<4, COMP_T>::operator[](size_t index) const
 /**********************************************************************************************/
 
 template<typename COMP_T>
-vecn<2, COMP_T> vec2mk(COMP_T x, COMP_T y)
+vecn<2, COMP_T>
+vec2mk(COMP_T x, COMP_T y)
 {
   vecn<2, COMP_T> v;
   v[0] = x;
@@ -177,7 +234,8 @@ vecn<2, COMP_T> vec2mk(COMP_T x, COMP_T y)
 }
 
 template<typename COMP_T>
-vecn<3, COMP_T> vec3mk(COMP_T x, COMP_T y, COMP_T z)
+vecn<3, COMP_T>
+vec3mk(COMP_T x, COMP_T y, COMP_T z)
 {
   vecn<3, COMP_T> v;
   v[0] = x;
@@ -187,7 +245,8 @@ vecn<3, COMP_T> vec3mk(COMP_T x, COMP_T y, COMP_T z)
 }
 
 template<typename COMP_T>
-vecn<4, COMP_T> vec4mk(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
+vecn<4, COMP_T>
+vec4mk(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
 {
   vecn<4, COMP_T> v;
   v[0] = x;
