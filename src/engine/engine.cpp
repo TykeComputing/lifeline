@@ -108,27 +108,4 @@ void engine::set_is_running(bool val)
   p_is_running = val;
 }
 
-void engine::set_resource_dir(std::string const& val)
-{
-  if(val.empty())
-  {
-    LE_FATAL_ERROR("Empty resource directory provided, ignoring.");
-    return;
-  }
-
-  p_resource_dir = val;
-  if(p_resource_dir.back() != '\\' && p_resource_dir.back() != '/')
-  {
-    p_resource_dir.append(1, '/');
-  }
-
-  log_status(log_scope::ENGINE, "Resource directory set to \"{}\"",
-    p_resource_dir.c_str());
-}
-
-std::string const& engine::get_resource_dir() const
-{
-  return p_resource_dir;
-}
-
 } // namespace LE

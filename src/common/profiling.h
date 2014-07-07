@@ -7,6 +7,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #ifndef LE_COMMON_PROFILING_H
 #define LE_COMMON_PROFILING_H
 
+#include <common/macros.h>
 #include <common/timer.h>
 
 namespace LE
@@ -19,6 +20,8 @@ template<typename TIMER_T = high_resolution_timer>
 class profiling_point
 {
 public:
+  LE_NON_COPYABLE(profiling_point);
+
   profiling_point(profiling_records & records, std::string const& name);
   ~profiling_point();
 

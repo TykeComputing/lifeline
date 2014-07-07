@@ -11,13 +11,13 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/unique_id.h>
 
+#include <engine/component_base.h>
+
 #include <graphics/texture.h>
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
 
 #include <math/vec.h>
-
-#include <engine/component_base.h>
 
 namespace LE
 {

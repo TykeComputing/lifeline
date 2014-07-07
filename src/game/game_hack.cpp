@@ -17,6 +17,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <common/resource_exception.h>
 
 #include <engine/engine.h>
+#include <engine/resource_manager.h>
 #include <engine/space.h>
 #include <engine/sprite_component.h>
 #include <engine/transform_component.h>
@@ -95,9 +96,9 @@ void game_hack::load_shader(
     std::vector<std::shared_ptr<shader>> shaders;
     shaders.reserve(2);
     shaders.emplace_back(std::make_shared<shader>(
-      GL_VERTEX_SHADER, std::vector<std::string>(1, p_engine.get_resource_dir() + vert) ));
+      GL_VERTEX_SHADER, std::vector<std::string>(1, resource_manager::get_resource_dir() + vert) ));
     shaders.emplace_back(std::make_shared<shader>(
-      GL_FRAGMENT_SHADER, std::vector<std::string>(1, p_engine.get_resource_dir() + frag) ));
+      GL_FRAGMENT_SHADER, std::vector<std::string>(1, resource_manager::get_resource_dir() + frag) ));
 
     // Load shader_program
     std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
@@ -439,8 +440,8 @@ void game_hack::draw(space & game_space)
     0.0f, 0.0f, 1.0f
   });
 
-  float const window_half_x = window_size.x() / 2;
-  float const window_half_y = window_size.y() / 2;
+  float const window_half_x = window_size.x() / 2.0f;
+  float const window_half_y = window_size.y() / 2.0f;
 
   mat3 camera_to_NDC({
     1.0f / window_half_x, 0.0f, 0.0f,

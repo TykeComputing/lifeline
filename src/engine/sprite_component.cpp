@@ -6,6 +6,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "sprite_component.h"
 
+#include <engine/resource_manager.h>
+
 #include <graphics/vertex.h>
 
 namespace LE
@@ -14,7 +16,7 @@ namespace LE
 unique_id<component_base> const sprite_component::type_id;
 
 sprite_component::sprite_component() :
-  p_texture("resources/textures/debug/linear_ramp.png")
+  p_texture(resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png")
 {
   auto const texture_dim = p_texture.get_dimensions();
   float const texture_half_x = texture_dim.x() / 2.0f;
