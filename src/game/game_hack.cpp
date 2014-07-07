@@ -115,7 +115,7 @@ void game_hack::load_shader(
 // returns false if a quit message has been received
 bool game_hack::input(space & game_space, float dt)
 {
-  profiling_point<> pp(p_profiling_records, "input");
+  high_resolution_profiling_point pp(p_profiling_records, "input");
 
   float const player_movement_speed = 128.0f;
 
@@ -242,7 +242,7 @@ bool game_hack::input(space & game_space, float dt)
 
 void game_hack::logic(space & game_space, float dt)
 {
-  profiling_point<> pp(p_profiling_records, "logic");
+  high_resolution_profiling_point pp(p_profiling_records, "logic");
 
   float const bullet_movement_speed = 512.0f;
 
@@ -298,7 +298,7 @@ void game_hack::logic(space & game_space, float dt)
 
 void game_hack::physics(space & game_space, float dt)
 {
-  profiling_point<> pp(p_profiling_records, "physics");
+  high_resolution_profiling_point pp(p_profiling_records, "physics");
 
   LE_UNUSED_VAR(dt);
   // Quick and dirty hack until actual physics is in place.
@@ -406,7 +406,7 @@ bool game_hack::update(space & game_space, float dt)
 {
   p_profiling_records.start_new_record_entry();
 
-  profiling_point<> pp(p_profiling_records, "update_total");
+  high_resolution_profiling_point pp(p_profiling_records, "update_total");
 
   p_world_ddraw.clear();
   p_world_ddraw.clear();
@@ -427,7 +427,7 @@ bool game_hack::update(space & game_space, float dt)
 
 void game_hack::draw(space & game_space)
 {
-  profiling_point<> pp(p_profiling_records, "graphics");
+  high_resolution_profiling_point pp(p_profiling_records, "graphics");
 
   // HACK /////////////////////////////////////////
   auto const& window = p_engine.get_window();

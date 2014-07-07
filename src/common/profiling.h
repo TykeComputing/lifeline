@@ -16,11 +16,11 @@ namespace LE
 // fwd-decl
 class profiling_records;
 
-template<typename TIMER_T = high_resolution_timer>
+template<typename TIMER_T>
 class profiling_point
 {
 public:
-  LE_NON_COPYABLE(profiling_point);
+  LE_NON_COPYABLE(profiling_point)
 
   profiling_point(profiling_records & records, std::string const& name);
   ~profiling_point();
@@ -30,6 +30,9 @@ private:
   std::string p_name;
   TIMER_T p_timer;
 };
+
+typedef profiling_point<high_resolution_timer> high_resolution_profiling_point;
+typedef profiling_point<steady_timer> steady_profiling_point;
 
 } // namespace LE
 

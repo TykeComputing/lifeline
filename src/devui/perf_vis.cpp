@@ -52,7 +52,7 @@ void perf_vis::draw_scaffold(
   vec2 const& dimensions,
   vec4 const& color) const
 {
-  vec2 const bottom_right(bottom_left.x() + dimensions.y(), bottom_left.y());
+  vec2 const bottom_right(bottom_left.x() + dimensions.x(), bottom_left.y());
   vec2 const top_left(bottom_left.x(), bottom_left.y() + dimensions.y());
   vec2 const top_right(bottom_left + dimensions);
 
