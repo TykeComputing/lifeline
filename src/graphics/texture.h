@@ -16,22 +16,17 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-// TODO - URGENT Refactor interface to follow conventions established by vertex_buffer.
 class texture
 {
 public:
   texture();
   ~texture();
 
-  ivec3 const& get_dimensions() const;
-
-  static void set_active_unit(GLuint unit_index);
-
-  static void bind(GLenum target, texture const& tex);
-  static void unbind(GLenum target);
-
-  static void set_data_2D(
-    texture & tex,
+  /*
+   * WARNING - Clears texture binding on target to default (0). Generally meant to be used
+   *             outside of bind/unbind pairs.
+   */
+  void set_data_2D(
     GLenum target,
     GLint level,
     GLint internal_format,
@@ -40,6 +35,13 @@ public:
     GLenum format,
     GLenum type,
     GLvoid const* data);
+
+  ivec3 const& get_dimensions() const;
+
+  static void set_active_unit(GLuint unit_index);
+
+  static void bind(GLenum target, texture const& tex);
+  static void unbind(GLenum target);
 
   static void set_parameter(GLenum target, GLenum param_name, GLint param_value);
 
@@ -56,13 +58,7 @@ public:
 
   void load_texture_file(std::string const& texture_file_name);
 
-  ivec2 get_dimensions() const;
-
-  static void bind(texture2D const& tex2D);
-  static void unbind();
-
-  static void set_data(
-    texture2D & tex,
+  void set_data(
     GLint internal_format,
     GLsizei width,
     GLsizei height,
@@ -70,11 +66,16 @@ public:
     GLenum type,
     GLvoid const* data);
 
+  ivec2 get_dimensions() const;
+
+  static void bind(texture2D const& tex2D);
+  static void unbind();
+
   static void set_parameter(GLenum param_name, GLint param_value);
 
 private:
   // Composition to disallow conversion from texture2D to texture (which would allow binding to
-  //   other targets). TODO - Evalute this decision after using.
+  //   other targets). TODO - Evalute this decision after using for a bit.
   texture p_texture;
 };
 

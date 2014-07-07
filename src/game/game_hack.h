@@ -64,6 +64,8 @@ private:
   perf_vis p_perf_vis;
 
   engine & p_engine;
+
+  bool p_ddraw_enabled = true;
 };
 
 } // namespace LE

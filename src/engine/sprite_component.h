@@ -33,6 +33,8 @@ public:
 
   GLsizei get_num_verts() const;
 
+  ivec2 get_dimensions() const;
+
   // TODO: Move and change method of representing colors (RGBA8?)
   vec4 m_color = vec4mk(1.0f, 1.0f, 1.0f, 1.0f);
 

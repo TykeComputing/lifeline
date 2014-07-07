@@ -15,7 +15,7 @@ namespace LE
 window::window()
 {
   Uint32 sdl_window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
-  p_raw_window = SDL_CreateWindow("Lifeline Engine", 64, 64, 800, 600, sdl_window_flags);
+  p_raw_window = SDL_CreateWindow("Lifeline Engine", 64, 64, 1280, 768, sdl_window_flags);
   if(p_raw_window == nullptr)
   {
     LE_FATAL_ERROR(SDL_GetError());

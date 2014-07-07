@@ -60,18 +60,21 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
 
   {
     auto * new_ent = game_space.create_entity("player");
-    new_ent->get_component<transform_component>()->set_pos(0.0f, 0.5f);
+    new_ent->get_component<transform_component>()->set_pos(0.0f, 200.0f);
+    new_ent->get_component<transform_component>()->set_scale(4.0f);
     //new_ent->get_component<sprite_component>()->m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
   }
 
   {
     auto * new_ent = game_space.create_entity("enemy");
-    new_ent->get_component<transform_component>()->set_pos(0.5f, -0.5f);
+    new_ent->get_component<transform_component>()->set_pos(-200.0f, -200.0f);
+    new_ent->get_component<transform_component>()->set_scale(8.0f);
     new_ent->get_component<sprite_component>()->m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
   {
     auto * new_ent = game_space.create_entity("enemy");
-    new_ent->get_component<transform_component>()->set_pos(-0.5f, -0.5f);
+    new_ent->get_component<transform_component>()->set_pos(200.0f, -200.0f);
+    new_ent->get_component<transform_component>()->set_scale(8.0f);
     new_ent->get_component<sprite_component>()->m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
 }
@@ -113,7 +116,7 @@ bool game_hack::input(space & game_space, float dt)
 {
   profiling_point<> pp(p_profiling_records, "input");
 
-  float const player_movement_speed = 0.8f;
+  float const player_movement_speed = 128.0f;
 
   auto * player = game_space.find_entity("player");
 
@@ -158,6 +161,13 @@ bool game_hack::input(space & game_space, float dt)
             p_debug_shader_prog,
             "shaders/2D/debug_draw.vert",
             "shaders/2D/debug_draw.frag");
+        }
+        break;
+
+        // Shader reloading
+        case SDLK_o:
+        {
+          p_ddraw_enabled = !p_ddraw_enabled;
         }
         break;
 
@@ -215,11 +225,14 @@ bool game_hack::input(space & game_space, float dt)
 
     if(player_transl != vec2::zero)
     {
-      p_world_ddraw.lines.add_arrow(
-        player_old_pos, player_transl / dt, vec4mk(1.0f, 0.0f, 0.0f, 1.0f));
+      if(p_ddraw_enabled)
+      {
+        p_world_ddraw.lines.add_arrow(
+          player_old_pos, player_transl / dt, vec4mk(1.0f, 0.0f, 0.0f, 1.0f));
 
-      p_world_ddraw.points.add_point(
-        player_old_pos, vec4mk(0.0f, 0.0f, 1.0f, 1.0f));
+        p_world_ddraw.points.add_point(
+          player_old_pos, vec4mk(0.0f, 0.0f, 1.0f, 1.0f));
+      }
     }
   }
 
@@ -230,10 +243,10 @@ void game_hack::logic(space & game_space, float dt)
 {
   profiling_point<> pp(p_profiling_records, "logic");
 
-  float const bullet_movement_speed = 2.0f;
+  float const bullet_movement_speed = 512.0f;
 
-  float const enemy_seek_radius = 1.0f;
-  float const enemy_movement_speed = 0.4f;
+  float const enemy_seek_radius = 256.0f;
+  float const enemy_movement_speed = 64.0f;
 
   auto * player = game_space.find_entity("player");
   if(player)
@@ -250,8 +263,11 @@ void game_hack::logic(space & game_space, float dt)
       {
         auto * enemy_t = curr_entity->get_component<transform_component>();
 
-        p_world_ddraw.lines.add_circle(
-          enemy_t->get_pos(), enemy_seek_radius, vec4mk(1.0f, .0f, 1.0f, 1.0f));
+        if(p_ddraw_enabled)
+        {
+          p_world_ddraw.lines.add_circle(
+            enemy_t->get_pos(), enemy_seek_radius, vec4mk(1.0f, .0f, 1.0f, 1.0f));
+        }
 
         vec2 dir_to_player =
             player_t->get_pos() - enemy_t->get_pos();
@@ -262,8 +278,11 @@ void game_hack::logic(space & game_space, float dt)
         {
           enemy_t->translate(dir_to_player * enemy_movement_speed * dt);
 
-          p_world_ddraw.lines.add_arrow(
-            enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4mk(1.0f, 0.0f, 1.0f, 1.0f));
+          if(p_ddraw_enabled)
+          {
+            p_world_ddraw.lines.add_arrow(
+              enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4mk(1.0f, 0.0f, 1.0f, 1.0f));
+          }
         }
       }
       // Bullet logic
@@ -307,20 +326,30 @@ void game_hack::physics(space & game_space, float dt)
       auto * ent_outer_t = ent_outer->get_component<transform_component>();
       auto * ent_inner_t = ent_inner->get_component<transform_component>();
 
-      float dist_sq =
-          length_sq(ent_inner_t->get_pos() - ent_outer_t->get_pos());
-      float r_sum =
-          ent_outer_t->get_scale_x() + ent_inner_t->get_scale_x();
-      r_sum *= 0.5f; // use half of scale as radius
+      auto * ent_outer_sprite = ent_outer->get_component<sprite_component>();
+      auto * ent_inner_sprite = ent_inner->get_component<sprite_component>();
 
-      p_world_ddraw.lines.add_circle(
-        ent_inner_t->get_pos(),
-        ent_inner_t->get_scale_x() * 0.5f,
-        vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
-      p_world_ddraw.lines.add_circle(
-        ent_outer_t->get_pos(),
-        ent_outer_t->get_scale_x() * 0.5f,
-        vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
+      float const ent_outer_radius =
+        ent_outer_t->get_scale_x() * ent_outer_sprite->get_dimensions().x() * 0.5f;
+
+      float const ent_inner_radius =
+        ent_inner_t->get_scale_x() * ent_inner_sprite->get_dimensions().x() * 0.5f;
+
+      float const dist_sq =
+        length_sq(ent_inner_t->get_pos() - ent_outer_t->get_pos());
+      float const r_sum = ent_outer_radius + ent_inner_radius;
+
+      if(p_ddraw_enabled)
+      {
+        p_world_ddraw.lines.add_circle(
+          ent_inner_t->get_pos(),
+          ent_inner_radius,
+          vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
+        p_world_ddraw.lines.add_circle(
+          ent_outer_t->get_pos(),
+          ent_outer_radius,
+          vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
+      }
 
       float r_sum_sq = r_sum * r_sum;
       if(dist_sq <= r_sum_sq)
@@ -410,9 +439,12 @@ void game_hack::draw(space & game_space)
     0.0f, 0.0f, 1.0f
   });
 
+  float const window_half_x = window_size.x() / 2;
+  float const window_half_y = window_size.y() / 2;
+
   mat3 camera_to_NDC({
-    1.0f / (window_size.x() / 2), 0.0f, 0.0f,
-    0.0f, 1.0f / (window_size.y() / 2), 0.0f,
+    1.0f / window_half_x, 0.0f, 0.0f,
+    0.0f, 1.0f / window_half_y, 0.0f,
     0.0f, 0.0f, 1.0f
   });
 
@@ -430,8 +462,6 @@ void game_hack::draw(space & game_space)
   texture::set_active_unit(0);
   glUniform1i(texture_ul, 0);
 
-  LE_FATAL_ERROR_IF_GL_ERROR();
-
   // Terrible draw loop, HACK HACK HACK
   for(auto entity_it = game_space.entity_begin();
     entity_it != game_space.entity_end();
@@ -447,18 +477,15 @@ void game_hack::draw(space & game_space)
     mat3 model_to_NDC = world_to_NDC * model_to_world;
     glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
 
-    LE_FATAL_ERROR_IF_GL_ERROR();
     curr_g_comp->bind();
-    LE_FATAL_ERROR_IF_GL_ERROR();
     LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp->get_num_verts());
-    LE_FATAL_ERROR_IF_GL_ERROR();
     curr_g_comp->unbind();
-    LE_FATAL_ERROR_IF_GL_ERROR();
-
-    LE_FATAL_ERROR_IF_GL_ERROR();
 
     // TODO - REMOVE
-    p_world_ddraw.lines.add_transform(curr_ent_t->get_matrix(), 0.1f);
+    if(p_ddraw_enabled)
+    {
+      p_world_ddraw.lines.add_transform(curr_ent_t->get_matrix(), 64.0f);
+    }
   }
   LE_FATAL_ERROR_IF_GL_ERROR();
 

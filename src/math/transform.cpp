@@ -55,10 +55,16 @@ vec2 const& transform::translate(vec2 const& value)
 /**********************************************/
 /* Scale */
 /**********************************************/
+
+void transform::set_scale(float val)
+{
+  set_scale(val, val);
+}
+
 void transform::set_scale(float x, float y)
 {
-  p_scale.set(x, y);
   mark_as_dirty();
+  p_scale.set(x, y);
 }
 
 void transform::set_scale(vec2 const& value)

@@ -40,6 +40,7 @@ public:
   float get_scale_x() const { return p_scale[0]; }
   float get_scale_y() const { return p_scale[1]; }
 
+  void set_scale(float val);
   void set_scale(float x, float y);
   void set_scale(vec2 const& value);
   void set_scale_x(float value);

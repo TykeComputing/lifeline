@@ -32,6 +32,26 @@ texture::~texture()
   glDeleteTextures(1, &p_raw_name);
 }
 
+void texture::set_data_2D(
+  GLenum target,
+  GLint level,
+  GLint internal_format,
+  GLsizei width,
+  GLsizei height,
+  GLenum format,
+  GLenum type,
+  GLvoid const* data)
+{
+  bind(target, *this);
+
+  p_dimensions.x() = width;
+  p_dimensions.y() = height;
+  glTexImage2D(target, level, internal_format, width, height, 0, format, type, data);
+  LE_FATAL_ERROR_IF_GL_ERROR();
+
+  unbind(target);
+}
+
 ivec3 const& texture::get_dimensions() const
 {
   return p_dimensions;
@@ -50,23 +70,6 @@ void texture::bind(GLenum target, texture const& tex)
 void texture::unbind(GLenum target)
 {
   glBindTexture(target, 0);
-}
-
-void texture::set_data_2D(
-  texture & tex,
-  GLenum target,
-  GLint level,
-  GLint internal_format,
-  GLsizei width,
-  GLsizei height,
-  GLenum format,
-  GLenum type,
-  GLvoid const* data)
-{
-  tex.p_dimensions.x() = width;
-  tex.p_dimensions.y() = height;
-  glTexImage2D(target, level, internal_format, width, height, 0, format, type, data);
-  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 void texture::set_parameter(GLenum target, GLenum param_name, GLint param_value)
@@ -113,11 +116,28 @@ void texture2D::load_texture_file(std::string const& texture_file_name)
      texture_file_name, stbi_failure_reason()) );
   }
 
-  bind(*this);
-  set_data(*this, GL_SRGB8_ALPHA8, w, h, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);
+  set_data(GL_SRGB8_ALPHA8, w, h, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);
   stbi_image_free(texture_data);
-  unbind();
   LE_FATAL_ERROR_IF_GL_ERROR();
+}
+
+void texture2D::set_data(
+  GLint internal_format,
+  GLsizei width,
+  GLsizei height,
+  GLenum format,
+  GLenum type,
+  GLvoid const* data)
+{
+  p_texture.set_data_2D(
+    GL_TEXTURE_2D,
+    0,
+    internal_format,
+    width,
+    height,
+    format,
+    type,
+    data);
 }
 
 ivec2 texture2D::get_dimensions() const
@@ -133,27 +153,6 @@ void texture2D::bind(texture2D const& tex2D)
 void texture2D::unbind()
 {
   texture::unbind(GL_TEXTURE_2D);
-}
-
-void texture2D::set_data(
-  texture2D & tex,
-  GLint internal_format,
-  GLsizei width,
-  GLsizei height,
-  GLenum format,
-  GLenum type,
-  GLvoid const* data)
-{
-  texture::set_data_2D(
-    tex.p_texture,
-    GL_TEXTURE_2D,
-    0,
-    internal_format,
-    width,
-    height,
-    format,
-    type,
-    data);
 }
 
 void texture2D::set_parameter(GLenum param_name, GLint param_value)
