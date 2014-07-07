@@ -14,6 +14,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <engine/component_base.h>
 #include <engine/entity.h>
+#include <engine/graphics_system.h>
 
 namespace LE
 {
@@ -49,9 +50,12 @@ public:
   void remove_dead();
 
 private:
+  // TODO: Move to array of isystem pointers?
+  graphics_system p_graphics_sys;
+
   entity_owning_container p_entities;
 
-   component_owning_container p_components;
+  component_owning_container p_components;
 };
 
 } // namespace LE

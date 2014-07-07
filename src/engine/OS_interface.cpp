@@ -36,28 +36,6 @@ OS_interface::OS_interface()
     log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{}...",
       (unsigned)linked.major, (unsigned)linked.minor, (unsigned)linked.patch);
   }
-
-  auto LE_SDL_GL_SetAttribute = [](SDL_GLattr attrib, int val)->void
-  {
-    int set_attrib_res = SDL_GL_SetAttribute(attrib, val);
-    if(set_attrib_res != 0)
-    {
-      LE_FATAL_ERROR(SDL_GetError());
-      SDL_ClearError();
-    }
-  };
-
-  int const LE_GL_version_major = 3;
-  int const LE_GL_version_minor = 2;
-  LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, LE_GL_version_major);
-  LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, LE_GL_version_minor);
-#ifdef LE_MODERN_OPENGL_ONLY
-  LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-#else
-  LE_SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-#endif
-
-  LE_SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 }
 
 OS_interface::~OS_interface()

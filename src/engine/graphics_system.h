@@ -10,6 +10,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
+// TODO: Implement and use
 class graphics_system
 {
 public:

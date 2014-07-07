@@ -22,13 +22,13 @@ sprite_component::sprite_component() :
   vertex::specify_vertex_attributes();
   vertex verts[] =
   {
-    { vec2mk(-0.5f, -0.5f), vec2mk(0.0f, 0.0f) },
-    { vec2mk( 0.5f, -0.5f), vec2mk(1.0f, 0.0f) },
-    { vec2mk(-0.5f,  0.5f), vec2mk(0.0f, 1.0f) },
+    { vec2mk(-0.5f, -0.5f), vec2mk(0.0f, 1.0f) },
+    { vec2mk( 0.5f, -0.5f), vec2mk(1.0f, 1.0f) },
+    { vec2mk(-0.5f,  0.5f), vec2mk(0.0f, 0.0f) },
 
-    { vec2mk(-0.5f,  0.5f), vec2mk(0.0f, 1.0f) },
-    { vec2mk( 0.5f, -0.5f), vec2mk(1.0f, 0.0f) },
-    { vec2mk( 0.5f,  0.5f), vec2mk(1.0f, 1.0f) }
+    { vec2mk(-0.5f,  0.5f), vec2mk(0.0f, 0.0f) },
+    { vec2mk( 0.5f, -0.5f), vec2mk(1.0f, 1.0f) },
+    { vec2mk( 0.5f,  0.5f), vec2mk(1.0f, 0.0f) }
   };
   num_verts = sizeof(verts) / sizeof(vertex);
 

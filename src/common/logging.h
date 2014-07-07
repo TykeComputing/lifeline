@@ -61,6 +61,8 @@ FMT_VARIADIC(void, log_error, log_scope::value, const char *)
 std::string convert_unsigned_string_to_signed(unsigned char const* unsigned_message);
 
 extern char const* const log_line_seperator;
+extern char const* const log_line_seperator_sub_1;
+extern char const* const log_line_seperator_sub_2;
 
 }
 

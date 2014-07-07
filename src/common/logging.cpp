@@ -102,4 +102,10 @@ std::string convert_unsigned_string_to_signed(unsigned char const* unsigned_mess
 
 char const* const log_line_seperator =
   "----------------------------------------------------------------";
+
+char const* const log_line_seperator_sub_1 =
+  "--------------------------------";
+
+char const* const log_line_seperator_sub_2 =
+  "----------------";
 }
