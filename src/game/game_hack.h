@@ -13,7 +13,9 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <devui/perf_vis.h>
 
+#include <engine/component_base.h>
 #include <engine/space.h>
+#include <engine/sprite_component.h>
 
 #include <graphics/debug_draw_manager.h>
 #include <graphics/shader_program.h>
@@ -25,11 +27,16 @@ namespace LE
 {
 
 //////////////////////////////////////////////////////////////////////////
-class physics_component_hack
-{
-public:
-  vec2 m_velocity = vec2::zero;
-};
+//class sprite_text_component_hack : public component_base
+//{
+//  //sprite_text_component_hack();
+//  sprite_text_component_hack()
+//  {
+
+//  }
+
+//  sprite_component p_sprite;
+//};
 
 //////////////////////////////////////////////////////////////////////////
 class engine;

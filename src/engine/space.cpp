@@ -36,7 +36,6 @@ entity * space::create_entity(std::string const& name)
       log_status(log_scope::ENGINE, "Creating entity named \"{}\"", new_ent->get_name());
 
       new_ent->create_component<transform_component>();
-      new_ent->create_component<sprite_component>();
       return new_ent.get();
     }
     else

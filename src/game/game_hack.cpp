@@ -19,7 +19,6 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <engine/engine.h>
 #include <engine/resource_manager.h>
 #include <engine/space.h>
-#include <engine/sprite_component.h>
 #include <engine/transform_component.h>
 
 #include <graphics/error_checking.h>
@@ -63,6 +62,9 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
     auto * new_ent = game_space.create_entity("player");
     new_ent->get_component<transform_component>()->set_pos(0.0f, 200.0f);
     new_ent->get_component<transform_component>()->set_scale(4.0f);
+
+    new_ent->create_component<sprite_component>(
+      resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png");
     //new_ent->get_component<sprite_component>()->m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
   }
 
@@ -70,12 +72,19 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
     auto * new_ent = game_space.create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(-200.0f, -200.0f);
     new_ent->get_component<transform_component>()->set_scale(8.0f);
+
+    new_ent->create_component<sprite_component>(
+      resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png");
     new_ent->get_component<sprite_component>()->m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
   {
     auto * new_ent = game_space.create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(200.0f, -200.0f);
     new_ent->get_component<transform_component>()->set_scale(8.0f);
+
+    new_ent->create_component<sprite_component>(
+      resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png");
+
     new_ent->get_component<sprite_component>()->m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
 }
@@ -146,6 +155,9 @@ bool game_hack::input(space & game_space, float dt)
             auto * new_bullet_t = new_bullet->get_component<transform_component>();
             new_bullet_t->set_pos(player_t->get_pos());
             new_bullet_t->set_scale(2.0f, 2.0f);
+
+            new_bullet->create_component<sprite_component>(
+              resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png");
             new_bullet->get_component<sprite_component>()->m_color.set(1.0f, 0.5f, 0.0f, 1.0f);
           }
         }

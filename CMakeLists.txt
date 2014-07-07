@@ -123,6 +123,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/space.h
   src/engine/sprite_component.cpp
   src/engine/sprite_component.h
+  src/engine/sprite_text_system.cpp
+  src/engine/sprite_text_system.h
   src/engine/system_base.cpp
   src/engine/system_base.h
   src/engine/transform_component.cpp
@@ -274,6 +276,7 @@ target_include_directories(${PROJECT_NAME}
   PUBLIC
     ${GLEW_INCLUDE_PATH}
     ${SDL2_INCLUDE_DIR}
+    ${SDL2_TTF_INCLUDE_DIR}
     ${CPPFORMAT_INCLUDE_PATH}
 
     ${LE_EXTERNAL_INCLUDE_DIR}
@@ -284,6 +287,7 @@ target_link_libraries(${PROJECT_NAME}
     general ${GLEW_LIBRARY}
     general ${OPENGL_gl_LIBRARY}
     general ${SDL2_LIBRARY}
+    general ${SDL2_TTF_LIBRARY}
 
   $<$<CXX_COMPILER_ID:MSVC>:
     debug ${CPPFORMAT_LIBRARY_DEBUG}

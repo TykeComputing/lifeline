@@ -12,6 +12,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <engine/graphics_context.h>
 #include <engine/OS_interface.h>
 #include <engine/space.h>
+#include <engine/sprite_text_system.h>
 #include <engine/window.h>
 
 namespace LE
@@ -32,6 +33,9 @@ private:
   OS_interface p_os_interface;
   window p_window;
   graphics_context p_graphics_context;
+
+  sprite_text_system p_sprite_text_sys;
+
   space p_space;
 
   bool p_is_running = true;

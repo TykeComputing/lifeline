@@ -15,8 +15,8 @@ namespace LE
 
 unique_id<component_base> const sprite_component::type_id;
 
-sprite_component::sprite_component() :
-  p_texture(resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png")
+sprite_component::sprite_component(std::string const& texture_file_name) :
+  p_texture(texture_file_name)
 {
   auto const texture_dim = p_texture.get_dimensions();
   float const texture_half_x = texture_dim.x() / 2.0f;
@@ -41,12 +41,6 @@ sprite_component::sprite_component() :
   vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
 
   vertex_array::unbind();
-}
-
-sprite_component::sprite_component(vec4 const& color) :
-  sprite_component()
-{
-  m_color = color;
 }
 
 void sprite_component::bind() const

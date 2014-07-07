@@ -25,8 +25,8 @@ namespace LE
 class sprite_component : public component_base
 {
 public:
-  sprite_component();
-  explicit sprite_component(vec4 const& color);
+  //explicit sprite_component();
+  explicit sprite_component(std::string const& texture_file_name);
 
   void bind() const;
   void unbind() const;

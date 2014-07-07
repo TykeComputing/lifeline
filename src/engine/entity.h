@@ -49,12 +49,14 @@ public:
       static_cast<entity const&>(*this).get_component<COMP_T>());
   }
 
-  template<typename COMP_T>
+  template<typename COMP_T, typename... ARG_TS>
   COMP_T *
-  create_component()
+  create_component(ARG_TS &&... args)
   {
     auto new_comp_it = p_components.emplace(
-      std::make_pair(COMP_T::type_id, std::unique_ptr<COMP_T>{new COMP_T}));
+      std::make_pair(
+        COMP_T::type_id,
+        std::unique_ptr<COMP_T>{ new COMP_T{std::forward<ARG_TS>(args)...} } ));
 
     if(new_comp_it.second)
     {

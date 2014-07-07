@@ -17,24 +17,24 @@ namespace LE
 
 OS_interface::OS_interface()
 {
-  int sdl_init_res = SDL_Init(SDL_INIT_VIDEO);
-  if(sdl_init_res != 0)
+  SDL_version compiled;
+  SDL_version linked;
+
+  SDL_VERSION(&compiled);
+  SDL_GetVersion(&linked);
+
+  log_status(log_scope::ENGINE, log_line_seperator);
+  log_status(log_scope::ENGINE, "Compiled against SDL version {}.{}.{}...",
+    (unsigned)compiled.major, (unsigned)compiled.minor, (unsigned)compiled.patch);
+  log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{}...",
+    (unsigned)linked.major, (unsigned)linked.minor, (unsigned)linked.patch);
+  log_status(log_scope::ENGINE, log_line_seperator);
+
+  if(SDL_Init(SDL_INIT_VIDEO) != 0)
   {
     LE_FATAL_ERROR(SDL_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error initializing SDL, exiting...\n");
-  }
-
-  {
-    SDL_version compiled;
-    SDL_version linked;
-
-    SDL_VERSION(&compiled);
-    SDL_GetVersion(&linked);
-    log_status(log_scope::ENGINE, "Compiled against SDL version {}.{}.{}...",
-      (unsigned)compiled.major, (unsigned)compiled.minor, (unsigned)compiled.patch);
-    log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{}...",
-      (unsigned)linked.major, (unsigned)linked.minor, (unsigned)linked.patch);
   }
 }
 
