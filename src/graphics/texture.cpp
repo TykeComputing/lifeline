@@ -32,6 +32,11 @@ texture::~texture()
   glDeleteTextures(1, &p_raw_name);
 }
 
+ivec3 const& texture::get_dimensions() const
+{
+  return p_dimensions;
+}
+
 void texture::set_active_unit(GLuint unit_index)
 {
   glActiveTexture(GL_TEXTURE0 + unit_index);
@@ -48,6 +53,7 @@ void texture::unbind(GLenum target)
 }
 
 void texture::set_data_2D(
+  texture & tex,
   GLenum target,
   GLint level,
   GLint internal_format,
@@ -57,6 +63,8 @@ void texture::set_data_2D(
   GLenum type,
   GLvoid const* data)
 {
+  tex.p_dimensions.x() = width;
+  tex.p_dimensions.y() = height;
   glTexImage2D(target, level, internal_format, width, height, 0, format, type, data);
   LE_FATAL_ERROR_IF_GL_ERROR();
 }
@@ -106,10 +114,15 @@ void texture2D::load_texture_file(std::string const& texture_file_name)
   }
 
   bind(*this);
-  set_data(GL_SRGB8_ALPHA8, w, h, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);
+  set_data(*this, GL_SRGB8_ALPHA8, w, h, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);
   stbi_image_free(texture_data);
   unbind();
   LE_FATAL_ERROR_IF_GL_ERROR();
+}
+
+ivec2 texture2D::get_dimensions() const
+{
+  return ivec2(p_texture.get_dimensions());
 }
 
 void texture2D::bind(texture2D const& tex2D)
@@ -123,6 +136,7 @@ void texture2D::unbind()
 }
 
 void texture2D::set_data(
+  texture2D & tex,
   GLint internal_format,
   GLsizei width,
   GLsizei height,
@@ -130,7 +144,16 @@ void texture2D::set_data(
   GLenum type,
   GLvoid const* data)
 {
-  texture::set_data_2D(GL_TEXTURE_2D, 0, internal_format, width, height, format, type, data);
+  texture::set_data_2D(
+    tex.p_texture,
+    GL_TEXTURE_2D,
+    0,
+    internal_format,
+    width,
+    height,
+    format,
+    type,
+    data);
 }
 
 void texture2D::set_parameter(GLenum param_name, GLint param_value)

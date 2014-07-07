@@ -23,12 +23,15 @@ public:
   texture();
   ~texture();
 
+  ivec3 const& get_dimensions() const;
+
   static void set_active_unit(GLuint unit_index);
 
   static void bind(GLenum target, texture const& tex);
   static void unbind(GLenum target);
 
   static void set_data_2D(
+    texture & tex,
     GLenum target,
     GLint level,
     GLint internal_format,
@@ -37,8 +40,6 @@ public:
     GLenum format,
     GLenum type,
     GLvoid const* data);
-
-  ivec3 const& get_size() const;
 
   static void set_parameter(GLenum target, GLenum param_name, GLint param_value);
 
@@ -55,10 +56,13 @@ public:
 
   void load_texture_file(std::string const& texture_file_name);
 
+  ivec2 get_dimensions() const;
+
   static void bind(texture2D const& tex2D);
   static void unbind();
 
   static void set_data(
+    texture2D & tex,
     GLint internal_format,
     GLsizei width,
     GLsizei height,

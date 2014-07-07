@@ -100,6 +100,20 @@ vecn<2, COMP_T>::vecn(COMP_T x, COMP_T y)
 }
 
 template<typename COMP_T>
+vecn<2, COMP_T>::vecn(vecn<3, COMP_T> const& rhs)
+{
+  data[0] = rhs[0];
+  data[1] = rhs[1];
+}
+
+template<typename COMP_T>
+vecn<2, COMP_T>::vecn(vecn<4, COMP_T> const& rhs)
+{
+  data[0] = rhs[0];
+  data[1] = rhs[1];
+}
+
+template<typename COMP_T>
 void
 vecn<2, COMP_T>::set(COMP_T x, COMP_T y)
 {
@@ -144,6 +158,22 @@ template<typename COMP_T>
 vecn<3, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z)
 {
   set(x, y, z);
+}
+
+template<typename COMP_T>
+vecn<3, COMP_T>::vecn(vecn<2, COMP_T> const& rhs, COMP_T z)
+{
+  data[0] = rhs[0];
+  data[1] = rhs[1];
+  data[2] = z;
+}
+
+template<typename COMP_T>
+vecn<3, COMP_T>::vecn(vecn<4, COMP_T> const& rhs)
+{
+  data[0] = rhs[0];
+  data[1] = rhs[1];
+  data[2] = rhs[2];
 }
 
 template<typename COMP_T>
@@ -193,6 +223,24 @@ template<typename COMP_T>
 vecn<4, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
 {
   set(x, y, z, w);
+}
+
+template<typename COMP_T>
+vecn<4, COMP_T>::vecn(vecn<2, COMP_T> const& rhs, COMP_T z, COMP_T w)
+{
+  data[0] = rhs[0];
+  data[1] = rhs[1];
+  data[2] = z;
+  data[3] = w;
+}
+
+template<typename COMP_T>
+vecn<4, COMP_T>::vecn(vecn<3, COMP_T> const& rhs, COMP_T w)
+{
+  data[0] = rhs[0];
+  data[1] = rhs[1];
+  data[2] = rhs[2];
+  data[3] = w;
 }
 
 template<typename COMP_T>

@@ -53,6 +53,9 @@ struct vecn<2, COMP_T>
   explicit vecn(COMP_T fill_val);
   vecn(COMP_T x, COMP_T y);
 
+  vecn(vecn<3, COMP_T> const& rhs);
+  vecn(vecn<4, COMP_T> const& rhs);
+
   void set(COMP_T x, COMP_T y);
 
   COMP_T & operator[](size_t index);
@@ -80,6 +83,9 @@ struct vecn<3, COMP_T>
   vecn();
   explicit vecn(COMP_T fill_val);
   vecn(COMP_T x, COMP_T y, COMP_T z);
+
+  vecn(vecn<2, COMP_T> const& rhs, COMP_T z);
+  vecn(vecn<4, COMP_T> const& rhs);
 
   void set(COMP_T x, COMP_T y, COMP_T z);
 
@@ -110,6 +116,9 @@ struct vecn<4, COMP_T>
   vecn();
   explicit vecn(COMP_T fill_val);
   vecn(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
+
+  vecn(vecn<2, COMP_T> const& rhs, COMP_T z, COMP_T w);
+  vecn(vecn<3, COMP_T> const& rhs, COMP_T w);
 
   void set(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
 
