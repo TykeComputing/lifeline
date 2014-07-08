@@ -39,6 +39,9 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
   glLineWidth(2.0f);
   glPointSize(5.0f);
 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   p_profiling_records.set_max_num_record_entries(600);
 
   p_perf_vis.set_label_color("graphics", vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -64,7 +67,7 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
     new_ent->get_component<transform_component>()->set_scale(4.0f);
 
     new_ent->create_component<sprite_component>(
-      resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png");
+      resource_manager::get_resource_dir() + "textures/player.png");
     //new_ent->get_component<sprite_component>()->m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
   }
 
@@ -74,7 +77,7 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
     new_ent->get_component<transform_component>()->set_scale(8.0f);
 
     new_ent->create_component<sprite_component>(
-      resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png");
+      resource_manager::get_resource_dir() + "textures/enemy.png");
     new_ent->get_component<sprite_component>()->m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
   {
@@ -83,7 +86,7 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
     new_ent->get_component<transform_component>()->set_scale(8.0f);
 
     new_ent->create_component<sprite_component>(
-      resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png");
+      resource_manager::get_resource_dir() + "textures/enemy.png");
 
     new_ent->get_component<sprite_component>()->m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
@@ -157,7 +160,7 @@ bool game_hack::input(space & game_space, float dt)
             new_bullet_t->set_scale(2.0f, 2.0f);
 
             new_bullet->create_component<sprite_component>(
-              resource_manager::get_resource_dir() + "textures/debug/linear_ramp.png");
+              resource_manager::get_resource_dir() + "textures/bullet.png");
             new_bullet->get_component<sprite_component>()->m_color.set(1.0f, 0.5f, 0.0f, 1.0f);
           }
         }
@@ -432,7 +435,7 @@ bool game_hack::update(space & game_space, float dt)
   logic(game_space, dt);
   physics(game_space, dt);
 
-  p_perf_vis.draw(p_hud_ddraw, p_profiling_records);
+  //p_perf_vis.draw(p_hud_ddraw, p_profiling_records);
 
   return true;
 }

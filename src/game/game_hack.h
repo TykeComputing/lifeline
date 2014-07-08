@@ -72,7 +72,7 @@ private:
 
   engine & p_engine;
 
-  bool p_ddraw_enabled = true;
+  bool p_ddraw_enabled = false;
 };
 
 } // namespace LE
