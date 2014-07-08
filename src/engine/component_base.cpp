@@ -16,19 +16,19 @@ component_base::component_base()
 
 }
 
-//entity const* component_base::get_owner() const
-//{
-//  return p_owner;
-//}
+entity const* component_base::get_owner() const
+{
+  return p_owner;
+}
 
-//entity * component_base::get_owner()
-//{
-//  return p_owner;
-//}
+entity * component_base::get_owner()
+{
+  return p_owner;
+}
 
-//void component_base::set_owner(entity * new_owner)
-//{
-//  p_owner = new_owner;
-//}
+void component_base::set_owner(entity * new_owner)
+{
+  p_owner = new_owner;
+}
 
 } // namespace LE

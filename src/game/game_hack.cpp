@@ -68,7 +68,6 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
 
     new_ent->create_component<sprite_component>(
       resource_manager::get_resource_dir() + "textures/player.png");
-    //new_ent->get_component<sprite_component>()->m_color.set(0.0f, 1.0f, 0.0f, 1.0f);
   }
 
   {
@@ -78,7 +77,6 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
 
     new_ent->create_component<sprite_component>(
       resource_manager::get_resource_dir() + "textures/enemy.png");
-    new_ent->get_component<sprite_component>()->m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
   {
     auto * new_ent = game_space.create_entity("enemy");
@@ -87,8 +85,6 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
 
     new_ent->create_component<sprite_component>(
       resource_manager::get_resource_dir() + "textures/enemy.png");
-
-    new_ent->get_component<sprite_component>()->m_color.set(1.0f, 0.0f, 0.0f, 1.0f);
   }
 }
 
@@ -129,7 +125,7 @@ bool game_hack::input(space & game_space, float dt)
 {
   high_resolution_profiling_point pp(p_profiling_records, "input");
 
-  float const player_movement_speed = 128.0f;
+  float const player_movement_speed = 256.0f;
 
   auto * player = game_space.find_entity("player");
 
@@ -157,11 +153,10 @@ bool game_hack::input(space & game_space, float dt)
             auto * new_bullet = game_space.create_entity("bullet");
             auto * new_bullet_t = new_bullet->get_component<transform_component>();
             new_bullet_t->set_pos(player_t->get_pos());
-            new_bullet_t->set_scale(2.0f, 2.0f);
+            new_bullet_t->set_scale(2.0f);
 
             new_bullet->create_component<sprite_component>(
               resource_manager::get_resource_dir() + "textures/bullet.png");
-            new_bullet->get_component<sprite_component>()->m_color.set(1.0f, 0.5f, 0.0f, 1.0f);
           }
         }
         break;

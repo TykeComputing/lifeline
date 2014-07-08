@@ -14,22 +14,23 @@ namespace LE
 {
 
 class entity;
+class space;
 
-// TODO - UNHACK
 class component_base
 {
 public:
   component_base();
   virtual ~component_base() {}
-  //entity const* get_owner() const;
-  //entity * get_owner();
+
+  entity const* get_owner() const;
+  entity * get_owner();
 
 private:
-  //void set_owner(entity * new_owner);
+  void set_owner(entity * new_owner);
 
-  //entity * p_owner = nullptr;
+  entity * p_owner = nullptr;
 
-  friend class entity_manager;
+  friend class space;
 };
 
 } // namespace LE

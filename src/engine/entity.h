@@ -19,6 +19,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
+class space;
+
 class entity
 {
 public:
@@ -71,12 +73,23 @@ public:
 
   void kill();
 
+  space const* get_owner() const;
+  space * get_owner();
+
   unique_id<entity> const& get_id() { return p_id; }
+
   std::string const& get_name() { return p_name; }
+
   bool is_alive() const { return p_is_alive; }
 
 private:
-  std::unordered_map<unique_id<component_base>, std::unique_ptr<component_base>> p_components;
+  void set_owner(space * new_owner);
+
+  space * p_owner = nullptr;
+
+  std::unordered_map<
+    unique_id<component_base>,
+    std::unique_ptr<component_base>> p_components;
 
   std::string p_name = "unnamed";
   unique_id<entity> const p_id;
