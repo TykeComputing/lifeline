@@ -36,6 +36,7 @@ public:
   void set_is_running(bool val);
 
   profiling_records & get_profiling_records();
+  profiling_records const& get_profiling_records() const;
 
 private:
   void step(float dt);

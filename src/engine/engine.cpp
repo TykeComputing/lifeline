@@ -98,6 +98,16 @@ void engine::set_is_running(bool val)
   p_is_running = val;
 }
 
+profiling_records &engine::get_profiling_records()
+{
+  return p_profiling_records;
+}
+
+profiling_records const& engine::get_profiling_records() const
+{
+  return p_profiling_records;
+}
+
 void engine::step(float dt)
 {
   high_resolution_profiling_point pp(p_profiling_records, "update");

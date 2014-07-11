@@ -38,7 +38,9 @@ entity * space::create_entity(std::string const& name)
     if(new_ent_emplace_result.second)
     {
       auto & new_ent = new_ent_emplace_result.first->second;
-      log_status(log_scope::ENGINE, "Creating entity named \"{}\"", new_ent->get_name());
+      log_status(log_scope::ENGINE,
+        "Creating entity named \"{}\", {} entities now in this space.",
+          new_ent->get_name(), p_entities.size());
 
       new_ent->set_owner(this);
       new_ent->create_component<transform_component>();
