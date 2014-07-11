@@ -126,15 +126,18 @@ void graphics_system::render(space & target)
     auto const* curr_ent_t = curr_ent->get_component<transform_component>();
     auto const& model_to_world = curr_ent_t->get_matrix();
 
-    auto const* curr_g_comp = curr_ent->get_component<sprite_component>();
-    glUniform4fv(color_multiplier_ul, 1, curr_g_comp->m_color.data);
+    auto const* curr_sprite_comp = curr_ent->get_component<sprite_component>();
+    if(curr_sprite_comp)
+    {
+      glUniform4fv(color_multiplier_ul, 1, curr_sprite_comp->m_color.data);
 
-    mat3 model_to_NDC = world_to_NDC * model_to_world;
-    glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
+      mat3 model_to_NDC = world_to_NDC * model_to_world;
+      glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
 
-    curr_g_comp->bind();
-    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp->get_num_verts());
-    curr_g_comp->unbind();
+      curr_sprite_comp->bind();
+      LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_sprite_comp->get_num_verts());
+      curr_sprite_comp->unbind();
+    }
   }
   LE_FATAL_ERROR_IF_GL_ERROR();
 

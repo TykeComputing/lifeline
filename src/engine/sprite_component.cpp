@@ -13,7 +13,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-unique_id<component_base> const sprite_component::type_id;
+unique_id<engine_component_base> const sprite_component::type_id;
 
 sprite_component::sprite_component(std::string const& texture_file_name) :
   p_texture(texture_file_name)

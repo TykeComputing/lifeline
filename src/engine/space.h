@@ -20,6 +20,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
+class engine;
+
 class space
 {
 public:
@@ -32,9 +34,7 @@ public:
 
   typedef std::vector<component_base *> component_type_container;
 
-  typedef std::unordered_map<
-    unique_id<component_base>::value_type,
-    component_type_container > component_container;
+  space(engine & owner);
 
   entity * create_entity(std::string const& name);
 
@@ -63,8 +63,16 @@ public:
   debug_draw_manager m_world_ddraw;
   debug_draw_manager m_hud_ddraw;
 
+  /**********************************************/
+  /* Utility */
+  /**********************************************/
+  engine & get_owner();
+  engine const& get_owner() const;
+
 private:
   entity_container p_entities;
+
+  engine & p_owner;
 };
 
 } // namespace LE

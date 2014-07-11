@@ -25,24 +25,21 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-class space;
-
-class game_hack_scene
+class game_hack_scene : public logic_component_base
 {
 public:
-  explicit game_hack_scene(space * game_space);
-  ~game_hack_scene();
+  virtual void initialize();
+  virtual void update(float dt);
 
-  bool input(space & game_space, float dt);
-  void logic(space & game_space, float dt);
-  void physics(space & game_space, float dt);
-  bool update(space & game_space, float dt);
+  static unique_id<logic_component_base> const type_id;
 
 private:
+  bool p_input(space * game_space, float dt);
+  void p_logic(space * game_space, float dt);
+  void p_physics(space * game_space, float dt);
+
   // TODO - Move to its own space/scene when game_hack_scene is removed
   perf_vis p_perf_vis;
-
-  space * p_owner;
 
   bool p_ddraw_enabled = false;
 };

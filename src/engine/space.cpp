@@ -8,10 +8,17 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/logging.h>
 
+#include <engine/engine.h>
 #include <engine/transform_component.h>
 
 namespace LE
 {
+
+space::space(engine & owner) :
+  p_owner(owner)
+{
+
+}
 
 /**********************************************/
 /* Entity Management */
@@ -101,6 +108,19 @@ void space::clear_ddraw()
 {
   m_world_ddraw.clear();
   m_hud_ddraw.clear();
+}
+
+/**********************************************/
+/* Utility */
+/**********************************************/
+engine & space::get_owner()
+{
+  return p_owner;
+}
+
+engine const& space::get_owner() const
+{
+  return p_owner;
 }
 
 } // namespace LE

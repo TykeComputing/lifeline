@@ -10,7 +10,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <math/transform.h>
 #include <math/vec.h>
 
-#include <engine/component_base.h>
+#include <engine/engine_component_base.h>
 
 namespace LE
 {
@@ -19,12 +19,12 @@ namespace LE
 //          final transform/transform_component design.
 //      - Trying inheiritance based approch for now. I should evaluate if this is desirable
 //          when implementing parenting.
-class transform_component : public component_base, public transform
+class transform_component : public engine_component_base, public transform
 {
 public:
   transform_component();
 
-  static unique_id<component_base> const type_id;
+  static unique_id<engine_component_base> const type_id;
 };
 
 } // namespace LE

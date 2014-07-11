@@ -7,13 +7,15 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #ifndef LE_ENGINE_LOGIC_SYSTEM_H
 #define LE_ENGINE_LOGIC_SYSTEM_H
 
+#include <engine/space.h>
+
 namespace LE
 {
 
 class logic_system
 {
 public:
-  logic_system();
+  void update(space & target, float dt);
 
 private:
 };

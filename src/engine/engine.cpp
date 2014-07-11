@@ -24,7 +24,8 @@ namespace LE
 engine::engine() :
   p_os_interface(),
   p_window(),
-  p_graphics_context(p_window)
+  p_graphics_context(p_window),
+  p_space(*this)
 {
   log_status(log_scope::ENGINE, "Base Directory: {}", p_os_interface.get_base_dir());
   //log_status(log_scope::ENGINE, "Preferred Directory: {}") << p_os_interface.get_preferred_dir();
@@ -94,9 +95,6 @@ void engine::set_is_running(bool val)
 
 void engine::step(float dt)
 {
-  // TODO - Remove and replace with scene added to space
-  static std::unique_ptr<game_hack_scene> game{new game_hack_scene{&p_space}};
-
   high_resolution_profiling_point pp(p_profiling_records, "update");
 
   try
@@ -106,7 +104,7 @@ void engine::step(float dt)
     // We only want to render debug drawing from most recent update.
     p_space.clear_ddraw();
 
-    p_is_running = game->update(p_space, dt);
+    p_logic_sys.update(p_space, dt);
   }
   catch(resource_exception const& e)
   {

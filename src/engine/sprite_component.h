@@ -11,7 +11,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/unique_id.h>
 
-#include <engine/component_base.h>
+#include <engine/engine_component_base.h>
 
 #include <graphics/texture.h>
 #include <graphics/vertex_array.h>
@@ -22,7 +22,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-class sprite_component : public component_base
+class sprite_component : public engine_component_base
 {
 public:
   //explicit sprite_component();
@@ -38,7 +38,7 @@ public:
   // TODO: Move and change method of representing colors (RGBA8?)
   vec4 m_color = vec4mk(1.0f, 1.0f, 1.0f, 1.0f);
 
-  static unique_id<component_base> const type_id;
+  static unique_id<engine_component_base> const type_id;
 private:
   vertex_array p_VAO;
   vertex_buffer p_VBO;

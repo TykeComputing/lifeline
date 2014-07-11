@@ -11,6 +11,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <engine/graphics_context.h>
 #include <engine/graphics_system.h>
+#include <engine/logic_system.h>
 #include <engine/OS_interface.h>
 #include <engine/space.h>
 #include <engine/sprite_text_system.h>
@@ -44,6 +45,7 @@ private:
   window p_window;
   graphics_context p_graphics_context;
 
+  logic_system p_logic_sys;
   graphics_system p_graphics_sys;
   sprite_text_system p_sprite_text_sys; // TODO - merge or move into graphics system?
 
