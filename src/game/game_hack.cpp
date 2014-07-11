@@ -20,8 +20,9 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <engine/engine.h>
 #include <engine/space.h>
-#include <engine/transform_component.h>
+#include <engine/logic_component_base.h>
 #include <engine/sprite_component.h>
+#include <engine/transform_component.h>
 
 #include <graphics/error_checking.h>
 #include <graphics/shader_program.h>

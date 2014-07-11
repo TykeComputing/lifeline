@@ -12,7 +12,7 @@ namespace LE
 {
 
 // HELPERS
-namespace detail
+namespace internal
 {
 
 void log_prefix(FILE * const out_file, char const* log_type, log_scope::value scope)
@@ -21,7 +21,7 @@ void log_prefix(FILE * const out_file, char const* log_type, log_scope::value sc
     log_timer::get_log_time(), log_type, log_scope::c_str[scope]);
 }
 
-} // namespace detail
+} // namespace internal
 
 
 steady_timer log_timer::p_timer = {};
@@ -56,28 +56,28 @@ void log_error_no_prefix(char const* format, fmt::ArgList const& args)
 void log_status(char const* format, fmt::ArgList const& args)
 {
   auto * const out_file = status_file;
-  detail::log_prefix(out_file, "STATUS", log_scope::GLOBAL);
+  internal::log_prefix(out_file, "STATUS", log_scope::GLOBAL);
   log(out_file, format, args);
 }
 
 void log_error(char const* format, fmt::ArgList const& args)
 {
   auto * const out_file = error_file;
-  detail::log_prefix(out_file, "ERROR", log_scope::GLOBAL);
+  internal::log_prefix(out_file, "ERROR", log_scope::GLOBAL);
   log(out_file, format, args);
 }
 
 void log_status(log_scope::value scope, char const* format, fmt::ArgList const& args)
 {
   auto * const out_file = status_file;
-  detail::log_prefix(out_file, "STATUS", scope);
+  internal::log_prefix(out_file, "STATUS", scope);
   log(out_file, format, args);
 }
 
 void log_error(log_scope::value scope, char const* format, fmt::ArgList const& args)
 {
   auto * const out_file = error_file;
-  detail::log_prefix(out_file, "ERROR", scope);
+  internal::log_prefix(out_file, "ERROR", scope);
   log(out_file, format, args);
 }
 

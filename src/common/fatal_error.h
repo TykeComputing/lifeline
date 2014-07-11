@@ -23,7 +23,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #define LE_FATAL_ERROR(msg) \
 { \
-  ::LE::detail::display_assert(__FILE__, __FUNCTION__, __LINE__, msg);\
+  ::LE::internal::display_assert(__FILE__, __FUNCTION__, __LINE__, msg);\
   LE_HALT_PROGRAM(); \
 }
 #define LE_FATAL_ERROR_IF(cond, msg) { if(cond) { LE_FATAL_ERROR(msg); } }
@@ -31,7 +31,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-namespace detail
+namespace internal
 {
   void display_assert(
     std::string const& file,

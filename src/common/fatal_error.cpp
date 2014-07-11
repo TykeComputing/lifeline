@@ -17,7 +17,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-namespace detail
+namespace internal
 {
 
 void display_assert(

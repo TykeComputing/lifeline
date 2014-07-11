@@ -19,6 +19,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
+// fwd-decls
 class space;
 
 class entity
@@ -28,11 +29,37 @@ public:
 
   explicit entity(std::string const& name);
 
+  template<typename COMP_T, typename... ARG_TS>
+  COMP_T *
+  create_component(ARG_TS &&... args)
+  {
+    LE_FATAL_ERROR_IF(p_owner == nullptr, "Owner is null!");
+
+    auto new_comp_it = p_components.emplace(
+      std::make_pair(
+        COMP_T::type_id.value(),
+        std::unique_ptr<COMP_T>{ new COMP_T{std::forward<ARG_TS>(args)...} } ));
+
+    if(new_comp_it.second)
+    {
+      COMP_T * new_comp = static_cast<COMP_T *>(new_comp_it.first->second.get());
+      new_comp->set_owner(this);
+
+      return new_comp;
+    }
+    else
+    {
+      // Component already exists, duplicates not allowed.
+      LE_FATAL_ERROR("Unable to add component!");
+      return nullptr;
+    }
+  }
+
   template<typename COMP_T>
   COMP_T const*
   get_component() const
   {
-    auto find_it = p_components.find(COMP_T::type_id);
+    auto find_it = p_components.find(COMP_T::type_id.value());
 
     if(find_it != p_components.end())
     {
@@ -52,32 +79,6 @@ public:
       static_cast<entity const&>(*this).get_component<COMP_T>());
   }
 
-  template<typename COMP_T, typename... ARG_TS>
-  COMP_T *
-  create_component(ARG_TS &&... args)
-  {
-    LE_FATAL_ERROR_IF(p_owner == nullptr, "Owner is null!");
-
-    auto new_comp_it = p_components.emplace(
-      std::make_pair(
-        COMP_T::type_id,
-        std::unique_ptr<COMP_T>{ new COMP_T{std::forward<ARG_TS>(args)...} } ));
-
-    if(new_comp_it.second)
-    {
-      COMP_T * new_comp = static_cast<COMP_T *>(new_comp_it.first->second.get());
-      new_comp->set_owner(this);
-
-      return new_comp;
-    }
-    else
-    {
-      // Component already exists, duplicates not allowed.
-      LE_FATAL_ERROR("Unable to add component!");
-      return nullptr;
-    }
-  }
-
   void kill();
 
   space const* get_owner() const;
@@ -95,7 +96,7 @@ private:
   space * p_owner = nullptr;
 
   std::unordered_map<
-    unique_id<component_base>,
+    unique_id<component_base>::value_type,
     std::unique_ptr<component_base>> p_components;
 
   std::string p_name = "unnamed";
