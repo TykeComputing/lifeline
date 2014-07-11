@@ -21,20 +21,20 @@ class graphics_system
 public:
   graphics_system();
 
-  void load_shader(
-    std::unique_ptr<shader_program> & out_sp,
-    char const* vert,
-    char const* frag);
-
-  void update(space & target);
+  void render(space & target);
 
   /*
    * Calculates a new render target size based on window_size that will keep 1 pixel in the
-   *  render target scalable to one pixel in the window.
+   *   render target scalable to one pixel in the window.
    */
   void update_render_target_size(uvec2 const& window_size);
 
 private:
+  void p_load_shader(
+    std::unique_ptr<shader_program> & out_sp,
+    char const* vert,
+    char const* frag);
+
   std::unique_ptr<shader_program> p_textured_shader_prog;
   std::unique_ptr<shader_program> p_debug_shader_prog;
 

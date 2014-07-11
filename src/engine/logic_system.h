@@ -4,14 +4,20 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
-#include "system_base.h"
+#ifndef LE_ENGINE_LOGIC_SYSTEM_H
+#define LE_ENGINE_LOGIC_SYSTEM_H
 
 namespace LE
 {
 
-system_base::system_base()
+class logic_system
 {
-  
-}
+public:
+  logic_system();
+
+private:
+};
 
 } // namespace LE
+
+#endif // LE_ENGINE_LOGIC_SYSTEM_H

@@ -50,9 +50,6 @@ game_hack_scene::game_hack_scene(space * owner) :
   p_perf_vis.set_label_color("physics", vec4(0.0f, 0.0f, 1.0f, 1.0f));
   p_perf_vis.set_label_color("update_total", vec4(0.0f, 1.0f, 0.0f, 1.0f));
 
-  // TODO - Move shader loading to someplace that makes more sense once resources exist
-  // Load shaders
-
   {
     auto * new_ent = p_owner->create_entity("player");
     new_ent->get_component<transform_component>()->set_pos(0.0f, 100.0f);
@@ -61,7 +58,6 @@ game_hack_scene::game_hack_scene(space * owner) :
     new_ent->create_component<sprite_component>(
       resource_manager::get_resource_dir() + "textures/player.png");
   }
-
   {
     auto * new_ent = p_owner->create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(-200.0f, -100.0f);

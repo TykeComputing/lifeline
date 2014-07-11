@@ -73,45 +73,17 @@ graphics_system::graphics_system()
 
   glEnable(GL_FRAMEBUFFER_SRGB);
 
-  load_shader(
+  p_load_shader(
     p_textured_shader_prog,
     "shaders/2D/textured.vert",
     "shaders/2D/textured.frag");
-  load_shader(
+  p_load_shader(
     p_debug_shader_prog,
     "shaders/2D/debug_draw.vert",
     "shaders/2D/debug_draw.frag");
 }
 
-void graphics_system::load_shader(
-  std::unique_ptr<shader_program> & out_sp,
-  char const* vert,
-  char const* frag)
-{
-  log_status(log_scope::GAME, "Attempting to load shaders \"{}\" and \"{}\"", vert, frag);
-
-  try
-  {
-    std::vector<std::shared_ptr<shader>> shaders;
-    shaders.reserve(2);
-    shaders.emplace_back(std::make_shared<shader>(
-      GL_VERTEX_SHADER, std::vector<std::string>(1, resource_manager::get_resource_dir() + vert) ));
-    shaders.emplace_back(std::make_shared<shader>(
-      GL_FRAGMENT_SHADER, std::vector<std::string>(1, resource_manager::get_resource_dir() + frag) ));
-
-    // Load shader_program
-    std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
-    out_sp = std::unique_ptr<shader_program>{new shader_program{shader_prog_input}};
-  }
-  catch(LE::resource_exception const& e)
-  {
-    log_error(log_scope::GAME, "{}", e.what());
-    LE_FATAL_ERROR("Error loading shader!");
-    return;
-  }
-}
-
-void graphics_system::update(space & target)
+void graphics_system::render(space & target)
 {
   // HACK /////////////////////////////////////////
 
@@ -201,6 +173,34 @@ void graphics_system::update_render_target_size(uvec2 const& window_size)
   p_render_target_size = scaled_window_size;
 
   log_status(log_scope::ENGINE, "Render target size: {}", p_render_target_size);
+}
+
+void graphics_system::p_load_shader(
+  std::unique_ptr<shader_program> & out_sp,
+  char const* vert,
+  char const* frag)
+{
+  log_status(log_scope::GAME, "Attempting to load shaders \"{}\" and \"{}\"", vert, frag);
+
+  try
+  {
+    std::vector<std::shared_ptr<shader>> shaders;
+    shaders.reserve(2);
+    shaders.emplace_back(std::make_shared<shader>(
+      GL_VERTEX_SHADER, std::vector<std::string>(1, resource_manager::get_resource_dir() + vert) ));
+    shaders.emplace_back(std::make_shared<shader>(
+      GL_FRAGMENT_SHADER, std::vector<std::string>(1, resource_manager::get_resource_dir() + frag) ));
+
+    // Load shader_program
+    std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
+    out_sp = std::unique_ptr<shader_program>{new shader_program{shader_prog_input}};
+  }
+  catch(LE::resource_exception const& e)
+  {
+    log_error(log_scope::GAME, "{}", e.what());
+    LE_FATAL_ERROR("Error loading shader!");
+    return;
+  }
 }
 
 } // namespace LE

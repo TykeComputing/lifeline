@@ -119,6 +119,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/graphics_system.h
   src/engine/logic_component_base.cpp
   src/engine/logic_component_base.h
+  src/engine/logic_system.cpp
+  src/engine/logic_system.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
   src/engine/space.cpp
@@ -127,8 +129,6 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/sprite_component.h
   src/engine/sprite_text_system.cpp
   src/engine/sprite_text_system.h
-  src/engine/system_base.cpp
-  src/engine/system_base.h
   src/engine/transform_component.cpp
   src/engine/transform_component.h
   src/engine/window.cpp

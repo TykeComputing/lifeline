@@ -128,7 +128,7 @@ void engine::render_frame()
 {
   {
     high_resolution_profiling_point pp(p_profiling_records, "graphics_system");
-    p_graphics_sys.update(p_space);
+    p_graphics_sys.render(p_space);
   }
 
   {
