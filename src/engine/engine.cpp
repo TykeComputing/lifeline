@@ -37,6 +37,11 @@ void engine::run()
 {
   try
   {
+    auto * game_hack_ent = p_space.create_entity("game_hack");
+    auto * game_hack = game_hack_ent->create_component<game_hack_scene_component>();
+    game_hack->initialize();
+
+
     // Credit for method of fixed time stepping:
     // http://ludobloom.com/tutorials/timestep.html
     // TODO - Test and improve.

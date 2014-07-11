@@ -25,7 +25,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-class game_hack_scene : public logic_component_base
+class game_hack_scene_component : public logic_component_base
 {
 public:
   virtual void initialize();

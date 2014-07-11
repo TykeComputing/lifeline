@@ -33,7 +33,9 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-void game_hack_scene::initialize()
+unique_id<logic_component_base> const game_hack_scene_component::type_id;
+
+void game_hack_scene_component::initialize()
 {
   LE_FATAL_ERROR_IF(get_owner() == nullptr, "Owner is null!");
   LE_FATAL_ERROR_IF(get_owner()->get_owner() == nullptr, "Space is null!");
@@ -78,7 +80,7 @@ void game_hack_scene::initialize()
   }
 }
 
-void game_hack_scene::update(float dt)
+void game_hack_scene_component::update(float dt)
 {
   LE_FATAL_ERROR_IF(get_owner() == nullptr, "Owner is null!");
   LE_FATAL_ERROR_IF(get_owner()->get_owner() == nullptr, "Space is null!");
@@ -99,7 +101,7 @@ void game_hack_scene::update(float dt)
 }
 
 // returns false if a quit message has been received
-bool game_hack_scene::p_input(space * game_space, float dt)
+bool game_hack_scene_component::p_input(space * game_space, float dt)
 {
   float const player_movement_speed = 256.0f;
 
@@ -219,7 +221,7 @@ bool game_hack_scene::p_input(space * game_space, float dt)
   return true;
 }
 
-void game_hack_scene::p_logic(space * game_space, float dt)
+void game_hack_scene_component::p_logic(space * game_space, float dt)
 {
   float const bullet_movement_speed = 512.0f;
 
@@ -273,7 +275,7 @@ void game_hack_scene::p_logic(space * game_space, float dt)
   }
 }
 
-void game_hack_scene::p_physics(space * game_space, float dt)
+void game_hack_scene_component::p_physics(space * game_space, float dt)
 {
   LE_UNUSED_VAR(dt);
   // Quick and dirty hack until actual physics is in place.
@@ -294,16 +296,17 @@ void game_hack_scene::p_physics(space * game_space, float dt)
     {
       auto ent_outer = (*ent_outer_it);
       auto ent_inner = (*ent_inner_it);
-      if(!ent_outer || !ent_inner)
-      {
-        continue;
-      }
 
       auto * ent_outer_t = ent_outer->get_component<transform_component>();
       auto * ent_inner_t = ent_inner->get_component<transform_component>();
 
       auto * ent_outer_sprite = ent_outer->get_component<sprite_component>();
       auto * ent_inner_sprite = ent_inner->get_component<sprite_component>();
+
+      if(!ent_outer_sprite || !ent_inner_sprite)
+      {
+        continue;
+      }
 
       float const ent_outer_radius =
         ent_outer_t->get_scale_x() * ent_outer_sprite->get_dimensions().x() * 0.5f;

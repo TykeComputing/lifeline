@@ -171,7 +171,7 @@ public:
     // TODO - Come up with a better method of specifying component types, this is ugly and
     //          potentially error-prone. Some safety-netting here.
     static_assert(
-      std::is_same<engine_component_base, typename decltype(COMP_T::type_id)::scope>::value,
+      std::is_same<logic_component_base, typename decltype(COMP_T::type_id)::scope>::value,
       "Mismatch between component type and type used for unique_id!");
 
     LE_FATAL_ERROR_IF(p_owner == nullptr, "Owner is null!");
