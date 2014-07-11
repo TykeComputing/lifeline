@@ -14,7 +14,6 @@ namespace LE
 {
 
 class entity;
-class space;
 
 class component_base
 {
@@ -30,7 +29,7 @@ private:
 
   entity * p_owner = nullptr;
 
-  friend class space;
+  friend class entity;
 };
 
 } // namespace LE

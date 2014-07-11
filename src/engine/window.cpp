@@ -35,11 +35,11 @@ void window::update()
 }
 
 // TODO: Cache size
-ivec2 window::get_size() const
+uvec2 window::get_size() const
 {
   int w, h;
   SDL_GetWindowSize(p_raw_window, &w, &h);
-  return ivec2(w, h);
+  return uvec2(static_cast<unsigned>(w), static_cast<unsigned>(h));
 }
 
 SDL_Window const* window::get_raw() const

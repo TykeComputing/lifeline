@@ -11,6 +11,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/fatal_error.h>
 #include <common/logging.h>
+#include <common/profiling.h>
 #include <common/timer.h>
 
 // TODO - Remove once all game logic is moved from hack to logic components
@@ -27,15 +28,14 @@ engine::engine() :
 {
   log_status(log_scope::ENGINE, "Base Directory: {}", p_os_interface.get_base_dir());
   //log_status(log_scope::ENGINE, "Preferred Directory: {}") << p_os_interface.get_preferred_dir();
+
+  p_graphics_sys.update_render_target_size(p_window.get_size());
 }
 
 void engine::run()
 {
   try
   {
-    std::unique_ptr<game_hack> game{new game_hack{*this, p_space}};
-
-
     // Credit for method of fixed time stepping:
     // http://ludobloom.com/tutorials/timestep.html
     // TODO - Test and improve.
@@ -51,6 +51,9 @@ void engine::run()
     p_is_running = true;
     while(p_is_running)
     {
+      p_profiling_records.start_new_record_entry();
+      high_resolution_profiling_point pp(p_profiling_records, "total_frame");
+
       // Cap maximum number of iterations per frame. If there is a massive spike
       //   in frame time for any reason this will prevent the game from completely
       //   stalling while trying to update too many times.
@@ -58,33 +61,14 @@ void engine::run()
 
       while(current_dt > update_dt)
       {
-        // Temp hack to allow quiting
-        set_is_running(p_os_interface.update());
+        p_os_interface.update();
 
-        try
-        {
-          p_is_running = game->update(p_space, update_dt);
-        }
-        catch(resource_exception const& e)
-        {
-          log_error(log_scope::ENGINE, "{}", e.what());
-          LE_FATAL_ERROR("Uncaught resource exception!");
-          return;
-        }
-        catch(message_exception const& e)
-        {
-          log_error(log_scope::ENGINE, "{}", e.what());
-          LE_FATAL_ERROR("Uncaught message exception!");
-          return;
-        }
-
-        p_space.remove_dead();
+        step(update_dt);
 
         current_dt -= update_dt;
       }
 
-      game->draw(p_space);
-      p_window.update();
+      render_frame();
 
       // Add the new dt to any leftover dt from updating.
       current_dt += frame_timer.poll();
@@ -94,7 +78,7 @@ void engine::run()
   catch(resource_exception const& e)
   {
     log_error(log_scope::ENGINE, "{}", e.what());
-    LE_FATAL_ERROR("ERROR"); // Give time to look at error
+    LE_FATAL_ERROR("ERROR");
   }
 }
 
@@ -106,6 +90,51 @@ window const& engine::get_window() const
 void engine::set_is_running(bool val)
 {
   p_is_running = val;
+}
+
+void engine::step(float dt)
+{
+  // TODO - Remove and replace with scene added to space
+  static std::unique_ptr<game_hack_scene> game{new game_hack_scene{&p_space}};
+
+  high_resolution_profiling_point pp(p_profiling_records, "update");
+
+  try
+  {
+    // TODO - Iterate over all spaces
+
+    // We only want to render debug drawing from most recent update.
+    p_space.clear_ddraw();
+
+    p_is_running = game->update(p_space, dt);
+  }
+  catch(resource_exception const& e)
+  {
+    log_error(log_scope::ENGINE, "{}", e.what());
+    LE_FATAL_ERROR("Uncaught resource exception!");
+    return;
+  }
+  catch(message_exception const& e)
+  {
+    log_error(log_scope::ENGINE, "{}", e.what());
+    LE_FATAL_ERROR("Uncaught message exception!");
+    return;
+  }
+
+  p_space.remove_dead();
+}
+
+void engine::render_frame()
+{
+  {
+    high_resolution_profiling_point pp(p_profiling_records, "graphics_system");
+    p_graphics_sys.update(p_space);
+  }
+
+  {
+    high_resolution_profiling_point pp(p_profiling_records, "buffer_swap");
+    p_window.update();
+  }
 }
 
 } // namespace LE

@@ -22,7 +22,7 @@ public:
 
   void update();
 
-  ivec2 get_size() const;
+  uvec2 get_size() const;
 
   SDL_Window const* get_raw() const;
   SDL_Window * get_raw();

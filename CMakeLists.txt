@@ -67,6 +67,8 @@ set(LE_EXECUTABLE_SRC_LIST
   #src/common/resource_manager.h
   src/common/resource_exception.cpp
   src/common/resource_exception.h
+  src/common/resource_manager.cpp
+  src/common/resource_manager.h
   src/common/timer.h
   src/common/timer.cpp
   src/common/unique_id.hpp
@@ -117,8 +119,6 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/graphics_system.h
   src/engine/OS_interface.cpp
   src/engine/OS_interface.h
-  src/engine/resource_manager.cpp
-  src/engine/resource_manager.h
   src/engine/space.cpp
   src/engine/space.h
   src/engine/sprite_component.cpp

@@ -33,13 +33,14 @@ public:
   get_component() const
   {
     auto find_it = p_components.find(COMP_T::type_id);
-    if(find_it == p_components.end())
+
+    if(find_it != p_components.end())
     {
-      return nullptr;
+      return static_cast<COMP_T const*>(find_it->second.get());
     }
     else
     {
-      return static_cast<COMP_T const*>(find_it->second.get());
+      return nullptr;
     }
   }
 
@@ -55,6 +56,8 @@ public:
   COMP_T *
   create_component(ARG_TS &&... args)
   {
+    LE_FATAL_ERROR_IF(p_owner == nullptr, "Owner is null!");
+
     auto new_comp_it = p_components.emplace(
       std::make_pair(
         COMP_T::type_id,
@@ -62,10 +65,14 @@ public:
 
     if(new_comp_it.second)
     {
-      return static_cast<COMP_T *>(new_comp_it.first->second.get());
+      COMP_T * new_comp = static_cast<COMP_T *>(new_comp_it.first->second.get());
+      new_comp->set_owner(this);
+
+      return new_comp;
     }
     else
     {
+      // Component already exists, duplicates not allowed.
       LE_FATAL_ERROR("Unable to add component!");
       return nullptr;
     }
@@ -95,6 +102,8 @@ private:
   unique_id<entity> const p_id;
 
   bool p_is_alive = true;
+
+  friend class space;
 };
 
 } // namespace LE

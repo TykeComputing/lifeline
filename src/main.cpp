@@ -13,9 +13,9 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <common/fatal_construction_exception.h>
 #include <common/logging.h>
 #include <common/macros.h>
+#include <common/resource_manager.h>
 
 #include <engine/engine.h>
-#include <engine/resource_manager.h>
 
 typedef void(*handle_arg_func)(LE::engine & game_engine, std::string const& val);
 

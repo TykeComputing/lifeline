@@ -27,7 +27,7 @@ public:
   std::string get_base_dir() const;
   std::string get_preferred_dir() const; // UNIMPL - TODO
 
-  bool update();
+  void update();
 
 private:
 };

@@ -44,9 +44,9 @@ OS_interface::~OS_interface()
 }
 
 // TODO - Remove return value, have quit signaled via message once messaging system in place.
-bool OS_interface::update()
+void OS_interface::update()
 {
-  // TODO - Fully integrate here one game_hack is done (PollEvent loop is currently there to make hacking game input easier)
+  // TODO - Fully integrate here one game_hack_scene is done (PollEvent loop is currently there to make hacking game input easier)
   //SDL_Event curr_event;
   //while(SDL_PollEvent(&curr_event))
   //{
@@ -61,7 +61,6 @@ bool OS_interface::update()
   //}
 
   //return true;
-  return true;
 }
 
 std::string OS_interface::get_base_dir() const

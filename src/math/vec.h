@@ -331,6 +331,17 @@ operator!=(
   vecn<N, COMP_T> const& lhs,
   vecn<N, COMP_T> const& rhs);
 
+/**********************************************************************************************/
+/* Stream Operations */
+/**********************************************************************************************/
+
+template<size_t N, typename COMP_T>
+std::ostream &
+operator<<(
+  std::ostream & os,
+  vecn<N, COMP_T> const& rhs);
+
+
 } // namespace LE
 
 #include "vec.hpp"

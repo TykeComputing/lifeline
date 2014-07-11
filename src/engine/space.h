@@ -14,7 +14,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <engine/component_base.h>
 #include <engine/entity.h>
-#include <engine/graphics_system.h>
+
+#include <graphics/debug_draw_manager.h>
 
 namespace LE
 {
@@ -49,13 +50,21 @@ public:
 
   void remove_dead();
 
+  /**********************************************/
+  /* Debug Drawing */
+  /**********************************************/
+  void clear_ddraw();
+
+  /*
+   * Each space has its own debug drawers to ensure that all debug drawing is properly layered.
+   *   For example, this can be used to ensure that a performance visualze will not draw overtop
+   *   a debug console (or visa verca as desired).
+   */
+  debug_draw_manager m_world_ddraw;
+  debug_draw_manager m_hud_ddraw;
+
 private:
-  // TODO: Move to array of isystem pointers?
-  graphics_system p_graphics_sys;
-
   entity_container p_entities;
-
-  component_container p_components;
 };
 
 } // namespace LE

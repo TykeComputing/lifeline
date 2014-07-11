@@ -5,6 +5,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 */
 
 #include <cmath>
+#include <iostream>
 #include <type_traits>
 
 #include <math/float.h>
@@ -675,5 +676,33 @@ operator!=(
 {
   return !(lhs == rhs);
 }
+
+/**********************************************************************************************/
+/* Stream Operations */
+/**********************************************************************************************/
+
+template<size_t N, typename COMP_T>
+std::ostream &
+operator<<(
+  std::ostream & os,
+  vecn<N, COMP_T> const& rhs)
+{
+  os << "{ ";
+
+  for(size_t i = 0; i < N; ++i)
+  {
+    os << rhs[i];
+
+    if(i < N - 1)
+    {
+      os << ", ";
+    }
+  }
+
+  os << " }";
+
+  return os;
+}
+
 
 } // namespace LE

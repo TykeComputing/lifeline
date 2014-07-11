@@ -6,7 +6,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "sprite_component.h"
 
-#include <engine/resource_manager.h>
+#include <common/resource_manager.h>
 
 #include <graphics/vertex.h>
 

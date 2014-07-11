@@ -13,13 +13,15 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/fatal_error.h>
 #include <common/logging.h>
-#include <common/profiling.h>
+
 #include <common/resource_exception.h>
+#include <common/resource_manager.h>
+#include <engine/transform_component.h>
 
 #include <engine/engine.h>
-#include <engine/resource_manager.h>
 #include <engine/space.h>
 #include <engine/transform_component.h>
+#include <engine/sprite_component.h>
 
 #include <graphics/error_checking.h>
 #include <graphics/shader_program.h>
@@ -31,8 +33,8 @@ namespace LE
 {
 
 //////////////////////////////////////////////////////////////////////////
-game_hack::game_hack(engine & game_engine, space & game_space) :
-  p_engine(game_engine)
+game_hack_scene::game_hack_scene(space * owner) :
+  p_owner(owner)
 {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -42,8 +44,6 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  p_profiling_records.set_max_num_record_entries(600);
-
   p_perf_vis.set_label_color("graphics", vec4(1.0f, 0.0f, 0.0f, 1.0f));
   p_perf_vis.set_label_color("physics", vec4(1.0f, 1.0f, 0.0f, 1.0f));
   p_perf_vis.set_label_color("physics", vec4(0.0f, 0.0f, 1.0f, 1.0f));
@@ -52,17 +52,8 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
   // TODO - Move shader loading to someplace that makes more sense once resources exist
   // Load shaders
 
-  load_shader(
-    p_textured_shader_prog,
-    "shaders/2D/textured.vert",
-    "shaders/2D/textured.frag");
-  load_shader(
-    p_debug_shader_prog,
-    "shaders/2D/debug_draw.vert",
-    "shaders/2D/debug_draw.frag");
-
   {
-    auto * new_ent = game_space.create_entity("player");
+    auto * new_ent = p_owner->create_entity("player");
     new_ent->get_component<transform_component>()->set_pos(0.0f, 200.0f);
     new_ent->get_component<transform_component>()->set_scale(4.0f);
 
@@ -71,7 +62,7 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
   }
 
   {
-    auto * new_ent = game_space.create_entity("enemy");
+    auto * new_ent = p_owner->create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(-200.0f, -200.0f);
     new_ent->get_component<transform_component>()->set_scale(8.0f);
 
@@ -79,7 +70,7 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
       resource_manager::get_resource_dir() + "textures/enemy.png");
   }
   {
-    auto * new_ent = game_space.create_entity("enemy");
+    auto * new_ent = p_owner->create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(200.0f, -200.0f);
     new_ent->get_component<transform_component>()->set_scale(8.0f);
 
@@ -88,43 +79,13 @@ game_hack::game_hack(engine & game_engine, space & game_space) :
   }
 }
 
-game_hack::~game_hack()
+game_hack_scene::~game_hack_scene()
 {
-}
-
-void game_hack::load_shader(
-  std::unique_ptr<shader_program> & out_sp,
-  char const* vert,
-  char const* frag)
-{
-  log_status(log_scope::GAME, "Attempting to load shaders \"{}\" and \"{}\"", vert, frag);
-
-  try
-  {
-    std::vector<std::shared_ptr<shader>> shaders;
-    shaders.reserve(2);
-    shaders.emplace_back(std::make_shared<shader>(
-      GL_VERTEX_SHADER, std::vector<std::string>(1, resource_manager::get_resource_dir() + vert) ));
-    shaders.emplace_back(std::make_shared<shader>(
-      GL_FRAGMENT_SHADER, std::vector<std::string>(1, resource_manager::get_resource_dir() + frag) ));
-
-    // Load shader_program
-    std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
-    out_sp = std::unique_ptr<shader_program>{new shader_program{shader_prog_input}};
-  }
-  catch(LE::resource_exception const& e)
-  {
-    log_error(log_scope::GAME, "{}", e.what());
-    LE_FATAL_ERROR("Error loading shader!");
-    return;
-  }
 }
 
 // returns false if a quit message has been received
-bool game_hack::input(space & game_space, float dt)
+bool game_hack_scene::input(space & game_space, float dt)
 {
-  high_resolution_profiling_point pp(p_profiling_records, "input");
-
   float const player_movement_speed = 256.0f;
 
   auto * player = game_space.find_entity("player");
@@ -164,14 +125,7 @@ bool game_hack::input(space & game_space, float dt)
         // Shader reloading
         case SDLK_RETURN:
         {
-          load_shader(
-            p_textured_shader_prog,
-            "shaders/2D/textured.vert",
-            "shaders/2D/textured.frag");
-          load_shader(
-            p_debug_shader_prog,
-            "shaders/2D/debug_draw.vert",
-            "shaders/2D/debug_draw.frag");
+
         }
         break;
 
@@ -238,10 +192,10 @@ bool game_hack::input(space & game_space, float dt)
     {
       if(p_ddraw_enabled)
       {
-        p_world_ddraw.lines.add_arrow(
+        p_owner->m_world_ddraw.lines.add_arrow(
           player_old_pos, player_transl / dt, vec4mk(1.0f, 0.0f, 0.0f, 1.0f));
 
-        p_world_ddraw.points.add_point(
+        p_owner->m_world_ddraw.points.add_point(
           player_old_pos, vec4mk(0.0f, 0.0f, 1.0f, 1.0f));
       }
     }
@@ -250,10 +204,8 @@ bool game_hack::input(space & game_space, float dt)
   return true;
 }
 
-void game_hack::logic(space & game_space, float dt)
+void game_hack_scene::logic(space & game_space, float dt)
 {
-  high_resolution_profiling_point pp(p_profiling_records, "logic");
-
   float const bullet_movement_speed = 512.0f;
 
   float const enemy_seek_radius = 256.0f;
@@ -276,7 +228,7 @@ void game_hack::logic(space & game_space, float dt)
 
         if(p_ddraw_enabled)
         {
-          p_world_ddraw.lines.add_circle(
+          p_owner->m_world_ddraw.lines.add_circle(
             enemy_t->get_pos(), enemy_seek_radius, vec4mk(1.0f, .0f, 1.0f, 1.0f));
         }
 
@@ -291,7 +243,7 @@ void game_hack::logic(space & game_space, float dt)
 
           if(p_ddraw_enabled)
           {
-            p_world_ddraw.lines.add_arrow(
+            p_owner->m_world_ddraw.lines.add_arrow(
               enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4mk(1.0f, 0.0f, 1.0f, 1.0f));
           }
         }
@@ -306,10 +258,8 @@ void game_hack::logic(space & game_space, float dt)
   }
 }
 
-void game_hack::physics(space & game_space, float dt)
+void game_hack_scene::physics(space & game_space, float dt)
 {
-  high_resolution_profiling_point pp(p_profiling_records, "physics");
-
   LE_UNUSED_VAR(dt);
   // Quick and dirty hack until actual physics is in place.
   std::vector<entity *> curr_ents;
@@ -352,11 +302,11 @@ void game_hack::physics(space & game_space, float dt)
 
       if(p_ddraw_enabled)
       {
-        p_world_ddraw.lines.add_circle(
+        p_owner->m_world_ddraw.lines.add_circle(
           ent_inner_t->get_pos(),
           ent_inner_radius,
           vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
-        p_world_ddraw.lines.add_circle(
+        p_owner->m_world_ddraw.lines.add_circle(
           ent_outer_t->get_pos(),
           ent_outer_radius,
           vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
@@ -412,16 +362,8 @@ void game_hack::physics(space & game_space, float dt)
   }
 }
 
-bool game_hack::update(space & game_space, float dt)
+bool game_hack_scene::update(space & game_space, float dt)
 {
-  p_profiling_records.start_new_record_entry();
-
-  high_resolution_profiling_point pp(p_profiling_records, "update_total");
-
-  p_world_ddraw.clear();
-  p_world_ddraw.clear();
-  p_hud_ddraw.clear();
-
   if(input(game_space, dt) == false)
   {
     return false;
@@ -433,88 +375,6 @@ bool game_hack::update(space & game_space, float dt)
   //p_perf_vis.draw(p_hud_ddraw, p_profiling_records);
 
   return true;
-}
-
-void game_hack::draw(space & game_space)
-{
-  high_resolution_profiling_point pp(p_profiling_records, "graphics");
-
-  // HACK /////////////////////////////////////////
-  auto const& window = p_engine.get_window();
-  auto window_size = window.get_size();
-
-  // Camera space =
-  mat3 world_to_camera({
-    1.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 1.0f
-  });
-
-  float const window_half_x = window_size.x() / 2.0f;
-  float const window_half_y = window_size.y() / 2.0f;
-
-  mat3 camera_to_NDC({
-    1.0f / window_half_x, 0.0f, 0.0f,
-    0.0f, 1.0f / window_half_y, 0.0f,
-    0.0f, 0.0f, 1.0f
-  });
-
-  mat3 world_to_NDC = camera_to_NDC * world_to_camera;
-  /////////////////////////////////////////////////
-
-  LE::shader_program::use(*p_textured_shader_prog);
-
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
-  GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
-  GLint to_NDC_ul = p_textured_shader_prog->get_unform_location("to_NDC");
-
-  texture::set_active_unit(0);
-  glUniform1i(texture_ul, 0);
-
-  // Terrible draw loop, HACK HACK HACK
-  for(auto entity_it = game_space.entity_begin();
-    entity_it != game_space.entity_end();
-    ++entity_it)
-  {
-    auto & curr_ent = (*entity_it).second;
-    auto const* curr_ent_t = curr_ent->get_component<transform_component>();
-    auto const& model_to_world = curr_ent_t->get_matrix();
-
-    auto const* curr_g_comp = curr_ent->get_component<sprite_component>();
-    glUniform4fv(color_multiplier_ul, 1, curr_g_comp->m_color.data);
-
-    mat3 model_to_NDC = world_to_NDC * model_to_world;
-    glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
-
-    curr_g_comp->bind();
-    LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_g_comp->get_num_verts());
-    curr_g_comp->unbind();
-
-    // TODO - REMOVE
-    if(p_ddraw_enabled)
-    {
-      p_world_ddraw.lines.add_transform(curr_ent_t->get_matrix(), 64.0f);
-    }
-  }
-  LE_FATAL_ERROR_IF_GL_ERROR();
-
-  LE::shader_program::use(*p_debug_shader_prog);
-
-  to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");
-  glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, world_to_NDC.data);
-
-  // TODO: Use camera mat
-  p_world_ddraw.draw();
-  p_world_ddraw.draw();
-
-  // TODO: Use hud mat
-  p_hud_ddraw.draw();
-
-  LE::shader_program::use_default();
-
-  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 } // namespace LE

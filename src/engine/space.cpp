@@ -8,7 +8,6 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/logging.h>
 
-#include <engine/sprite_component.h>
 #include <engine/transform_component.h>
 
 namespace LE
@@ -32,9 +31,9 @@ entity * space::create_entity(std::string const& name)
     if(new_ent_emplace_result.second)
     {
       auto & new_ent = new_ent_emplace_result.first->second;
-
       log_status(log_scope::ENGINE, "Creating entity named \"{}\"", new_ent->get_name());
 
+      new_ent->set_owner(this);
       new_ent->create_component<transform_component>();
       return new_ent.get();
     }
@@ -93,6 +92,15 @@ void space::remove_dead()
       ++it;
     }
   }
+}
+
+/**********************************************/
+/* Debug Drawing */
+/**********************************************/
+void space::clear_ddraw()
+{
+  m_world_ddraw.clear();
+  m_hud_ddraw.clear();
 }
 
 } // namespace LE
