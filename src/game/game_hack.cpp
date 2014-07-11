@@ -54,8 +54,8 @@ game_hack_scene::game_hack_scene(space * owner) :
 
   {
     auto * new_ent = p_owner->create_entity("player");
-    new_ent->get_component<transform_component>()->set_pos(0.0f, 200.0f);
-    new_ent->get_component<transform_component>()->set_scale(4.0f);
+    new_ent->get_component<transform_component>()->set_pos(0.0f, 100.0f);
+    new_ent->get_component<transform_component>()->set_scale(1.0f);
 
     new_ent->create_component<sprite_component>(
       resource_manager::get_resource_dir() + "textures/player.png");
@@ -63,16 +63,16 @@ game_hack_scene::game_hack_scene(space * owner) :
 
   {
     auto * new_ent = p_owner->create_entity("enemy");
-    new_ent->get_component<transform_component>()->set_pos(-200.0f, -200.0f);
-    new_ent->get_component<transform_component>()->set_scale(8.0f);
+    new_ent->get_component<transform_component>()->set_pos(-200.0f, -100.0f);
+    new_ent->get_component<transform_component>()->set_scale(2.0f);
 
     new_ent->create_component<sprite_component>(
       resource_manager::get_resource_dir() + "textures/enemy.png");
   }
   {
     auto * new_ent = p_owner->create_entity("enemy");
-    new_ent->get_component<transform_component>()->set_pos(200.0f, -200.0f);
-    new_ent->get_component<transform_component>()->set_scale(8.0f);
+    new_ent->get_component<transform_component>()->set_pos(200.0f, -100.0f);
+    new_ent->get_component<transform_component>()->set_scale(2.0f);
 
     new_ent->create_component<sprite_component>(
       resource_manager::get_resource_dir() + "textures/enemy.png");
@@ -114,7 +114,7 @@ bool game_hack_scene::input(space & game_space, float dt)
             auto * new_bullet = game_space.create_entity("bullet");
             auto * new_bullet_t = new_bullet->get_component<transform_component>();
             new_bullet_t->set_pos(player_t->get_pos());
-            new_bullet_t->set_scale(2.0f);
+            new_bullet_t->set_scale(1.0f);
 
             new_bullet->create_component<sprite_component>(
               resource_manager::get_resource_dir() + "textures/bullet.png");
