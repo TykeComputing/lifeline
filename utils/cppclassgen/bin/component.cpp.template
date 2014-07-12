@@ -9,7 +9,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace %NAMESPACE_NAME%
 {
 
-unique_id<%COMPONENT_TYPE%_base> const %CLASS_NAME%::type_id;
+unique_id<%COMPONENT_TYPE%_component_base> const %CLASS_NAME%::type_id;
 
 %CLASS_NAME%::%CLASS_NAME%(entity & owner) :
   %COMPONENT_TYPE%_component_base(owner)
