@@ -11,6 +11,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <unordered_map>
 #include <vector>
 
+#include <common/unique_id.h>
+
 #include <devui/perf_vis.h>
 
 #include <engine/component_base.h>
@@ -39,8 +41,6 @@ private:
   void p_physics(space * game_space, float dt);
 
   // TODO - Move to its own space/scene when game_hack_scene is removed
-  perf_vis p_perf_vis;
-
   bool p_ddraw_enabled = false;
 };
 

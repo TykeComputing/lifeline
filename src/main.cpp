@@ -4,7 +4,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
-#include <map>
+#include <unordered_map>
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
@@ -27,7 +27,7 @@ void handle_set_resource_dir(LE::engine & game_engine, std::string const& val)
 
 void handle_args(LE::engine & game_engine, int arg_count, char *args[])
 {
-  std::map<std::string, handle_arg_func> options(
+  std::unordered_map<std::string, handle_arg_func> options(
   {
     { "--resource-dir", handle_set_resource_dir }
   });

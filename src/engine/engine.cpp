@@ -16,6 +16,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 // TODO - Remove once all game logic is moved from hack to logic components
 #include <game/game_hack.h>
+#include <devui/perf_vis.h>
 #include <common/resource_exception.h>
 
 namespace LE
@@ -42,6 +43,8 @@ void engine::run()
     // TODO - Remove
     auto * game_hack_ent = p_space.create_entity("game_hack");
     game_hack_ent->create_component<game_hack_component>();
+    auto * perf_vis_ent = p_space.create_entity("perf_vis");
+    perf_vis_ent->create_component<perf_vis>();
     /////////////////////////////////////////////////////
 
     // Credit for method of fixed time stepping:

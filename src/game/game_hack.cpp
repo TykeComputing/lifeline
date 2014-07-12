@@ -50,11 +50,6 @@ game_hack_component::game_hack_component(entity & owner) :
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  p_perf_vis.set_label_color("update", vec4(0.0f, 0.0f, 1.0f, 1.0f));
-  p_perf_vis.set_label_color("graphics_system", vec4(1.0f, 0.0f, 0.0f, 1.0f));
-  p_perf_vis.set_label_color("buffer_swap", vec4(1.0f, 1.0f, 0.0f, 1.0f));
-  p_perf_vis.set_label_color("total_frame", vec4(0.0f, 1.0f, 0.0f, 1.0f));
-
   {
     auto * new_ent = game_space->create_entity("player");
     new_ent->get_component<transform_component>()->set_pos(0.0f, 100.0f);
@@ -97,8 +92,6 @@ void game_hack_component::update(float dt)
 
   p_logic(game_space, dt);
   p_physics(game_space, dt);
-
-  p_perf_vis.draw(game_space->m_hud_ddraw, game_space->get_owner().get_profiling_records());
 }
 
 // returns false if a quit message has been received

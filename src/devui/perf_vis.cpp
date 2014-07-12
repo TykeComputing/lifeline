@@ -8,18 +8,36 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <graphics/debug_draw_manager.h>
 
+#include <engine/engine.h>
+#include <engine/entity.h>
+#include <engine/space.h>
+
 namespace LE
 {
 
-perf_vis::perf_vis()
-{
+unique_id<logic_component_base> const perf_vis::type_id;
 
+perf_vis::perf_vis(entity & owner) :
+  logic_component_base(owner)
+{
+  // TODO - Move to devui setup component?
+  set_label_color("update", vec4(0.0f, 0.0f, 1.0f, 1.0f));
+  set_label_color("graphics_system", vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  set_label_color("buffer_swap", vec4(1.0f, 1.0f, 0.0f, 1.0f));
+  set_label_color("total_frame", vec4(0.0f, 1.0f, 0.0f, 1.0f));
+}
+
+void perf_vis::update(float dt)
+{
+  LE_UNUSED_VAR(dt);
+
+  auto * owning_space = get_owner()->get_owner();
+  auto const& owning_engine = owning_space->get_owner();
+  draw(owning_space->m_hud_ddraw, owning_engine.get_profiling_records());
 }
 
 void perf_vis::draw(debug_draw_manager & hud_ddraw, profiling_records const& records) const
 {
-  LE_UNUSED_VAR(hud_ddraw);
-
   vec2 const bottom_left(-300.0f, -150.0f);
   vec2 const dimensions(600.0f, 300.0f);
   vec4 const color(1.0f, 1.0f, 1.0f, 1.0f);
