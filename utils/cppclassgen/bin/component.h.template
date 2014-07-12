@@ -1,0 +1,30 @@
+/*
+************************************************************************************************
+Copyright 2014 by Peter Clark. All Rights Reserved.
+************************************************************************************************
+*/
+
+#ifndef %HEADERGUARD_BEGIN%_%MODULE_NAME_UPPER%_%CLASS_NAME_UPPER%_H
+#define %HEADERGUARD_BEGIN%_%MODULE_NAME_UPPER%_%CLASS_NAME_UPPER%_H
+
+#include <common/unique_id.h>
+
+#include <engine/%COMPONENT_TYPE%_component_base.h>
+
+namespace %NAMESPACE_NAME%
+{
+
+class %CLASS_NAME% : public %COMPONENT_TYPE%_component_base
+{
+public:
+  %CLASS_NAME%(entity & owner);
+  virtual ~%CLASS_NAME%() {}
+
+  static unique_id<%COMPONENT_TYPE%_component_base> const type_id;
+
+private:
+};
+
+} // namespace %NAMESPACE_NAME%
+
+#endif // %HEADERGUARD_BEGIN%_%MODULE_NAME_UPPER%_%CLASS_NAME_UPPER%_H
