@@ -18,7 +18,7 @@ class entity;
 class component_base
 {
 public:
-  component_base();
+  explicit component_base(entity & owner);
   virtual ~component_base() {}
 
   entity const* get_owner() const;

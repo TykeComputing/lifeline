@@ -15,12 +15,10 @@ namespace LE
 class logic_component_base : public component_base
 {
 public:
-  logic_component_base();
+  explicit logic_component_base(entity & owner);
   virtual ~logic_component_base() {}
 
-  virtual void initialize() {}
   virtual void update(float dt) { LE_UNUSED_VAR(dt); }
-  virtual void teardown() {}
 
 private:
 };

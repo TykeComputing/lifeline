@@ -33,9 +33,10 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-unique_id<logic_component_base> const game_hack_scene_component::type_id;
+unique_id<logic_component_base> const game_hack_component::type_id;
 
-void game_hack_scene_component::initialize()
+game_hack_component::game_hack_component(entity & owner) :
+  logic_component_base(owner)
 {
   LE_FATAL_ERROR_IF(get_owner() == nullptr, "Owner is null!");
   LE_FATAL_ERROR_IF(get_owner()->get_owner() == nullptr, "Space is null!");
@@ -80,7 +81,7 @@ void game_hack_scene_component::initialize()
   }
 }
 
-void game_hack_scene_component::update(float dt)
+void game_hack_component::update(float dt)
 {
   LE_FATAL_ERROR_IF(get_owner() == nullptr, "Owner is null!");
   LE_FATAL_ERROR_IF(get_owner()->get_owner() == nullptr, "Space is null!");
@@ -101,7 +102,7 @@ void game_hack_scene_component::update(float dt)
 }
 
 // returns false if a quit message has been received
-bool game_hack_scene_component::p_input(space * game_space, float dt)
+bool game_hack_component::p_input(space * game_space, float dt)
 {
   float const player_movement_speed = 256.0f;
 
@@ -221,7 +222,7 @@ bool game_hack_scene_component::p_input(space * game_space, float dt)
   return true;
 }
 
-void game_hack_scene_component::p_logic(space * game_space, float dt)
+void game_hack_component::p_logic(space * game_space, float dt)
 {
   float const bullet_movement_speed = 512.0f;
 
@@ -275,7 +276,7 @@ void game_hack_scene_component::p_logic(space * game_space, float dt)
   }
 }
 
-void game_hack_scene_component::p_physics(space * game_space, float dt)
+void game_hack_component::p_physics(space * game_space, float dt)
 {
   LE_UNUSED_VAR(dt);
   // Quick and dirty hack until actual physics is in place.

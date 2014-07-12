@@ -15,6 +15,7 @@ namespace LE
 class engine_component_base : public component_base
 {
 public:
+  explicit engine_component_base(entity & owner);
   virtual ~engine_component_base() {}
 
 private:

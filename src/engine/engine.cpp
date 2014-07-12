@@ -37,10 +37,12 @@ void engine::run()
 {
   try
   {
+    /////////////////////////////////////////////////////
+    // HACK
+    // TODO - Remove
     auto * game_hack_ent = p_space.create_entity("game_hack");
-    auto * game_hack = game_hack_ent->create_component<game_hack_scene_component>();
-    game_hack->initialize();
-
+    game_hack_ent->create_component<game_hack_component>();
+    /////////////////////////////////////////////////////
 
     // Credit for method of fixed time stepping:
     // http://ludobloom.com/tutorials/timestep.html
@@ -60,9 +62,9 @@ void engine::run()
       p_profiling_records.start_new_record_entry();
       high_resolution_profiling_point pp(p_profiling_records, "total_frame");
 
-      // Cap maximum number of iterations per frame. If there is a massive spike
-      //   in frame time for any reason this will prevent the game from completely
-      //   stalling while trying to update too many times.
+      // Cap maximum number of iterations per frame. If there is a massive spike in frame time
+      //   for any reason this will prevent the game from completely stalling while trying to
+      //   update too many times.
       current_dt = std::min(current_dt, max_iterations_per_frame * update_dt);
 
       while(current_dt > update_dt)

@@ -25,10 +25,10 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-class game_hack_scene_component : public logic_component_base
+class game_hack_component : public logic_component_base
 {
 public:
-  virtual void initialize();
+  explicit game_hack_component(entity & owner);
   virtual void update(float dt);
 
   static unique_id<logic_component_base> const type_id;

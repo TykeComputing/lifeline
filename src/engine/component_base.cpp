@@ -11,7 +11,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-component_base::component_base()
+component_base::component_base(entity & owner) :
+  p_owner(&owner)
 {
 
 }

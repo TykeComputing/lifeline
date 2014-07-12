@@ -108,14 +108,11 @@ public:
     auto new_comp_it = p_engine_components.emplace(
       std::make_pair(
         COMP_T::type_id.value(),
-        std::unique_ptr<COMP_T>{ new COMP_T{std::forward<ARG_TS>(args)...} } ));
+        std::unique_ptr<COMP_T>{ new COMP_T{*this, std::forward<ARG_TS>(args)...} } ));
 
     if(new_comp_it.second)
     {
-      COMP_T * new_comp = static_cast<COMP_T *>(new_comp_it.first->second.get());
-      new_comp->set_owner(this);
-
-      return new_comp;
+      return static_cast<COMP_T *>(new_comp_it.first->second.get());
     }
     else
     {
@@ -179,7 +176,7 @@ public:
     auto new_comp_it = p_logic_components.emplace(
       std::make_pair(
         COMP_T::type_id.value(),
-        std::unique_ptr<COMP_T>{ new COMP_T{std::forward<ARG_TS>(args)...} } ));
+        std::unique_ptr<COMP_T>{ new COMP_T{*this, std::forward<ARG_TS>(args)...} } ));
 
     if(new_comp_it.second)
     {
