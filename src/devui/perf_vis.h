@@ -52,6 +52,21 @@ public:
 
   static unique_id<logic_component_base> const type_id;
 
+  /*
+   * The bottom left of the first drawn graph in hud space.
+   */
+  vec2 m_bottom_left = vec2(-200.0f, -100.0f);
+
+  /*
+   * How far apart graphs will be drawn from eachother, excluding graph dimensions.
+   */
+  vec2 m_offset = vec2::zero;
+
+  /*
+   * Dimensions of a single graph in hud space.
+   */
+  vec2 m_dimensions = vec2(400.0f, 200.0f);
+
 private:
   std::unordered_map<std::string, vec4> p_label_colors;
 };

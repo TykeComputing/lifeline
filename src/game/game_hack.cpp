@@ -42,14 +42,6 @@ game_hack_component::game_hack_component(entity & owner) :
   LE_FATAL_ERROR_IF(get_owner()->get_owner() == nullptr, "Space is null!");
   space * game_space = get_owner()->get_owner();
 
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-  glLineWidth(2.0f);
-  glPointSize(5.0f);
-
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
   {
     auto * new_ent = game_space->create_entity("player");
     new_ent->get_component<transform_component>()->set_pos(0.0f, 100.0f);
@@ -99,101 +91,46 @@ bool game_hack_component::p_input(space * game_space, float dt)
 {
   float const player_movement_speed = 256.0f;
 
+  // TODO - Really consider changing get_owner to get_* where * is the name of the owner (space,
+  //          entity, etc.)
+  auto const& input_sys = get_owner()->get_owner()->get_owner()->get_input_system();
   auto * player = game_space->find_entity("player");
 
-  SDL_Event curr_event;
-  while(SDL_PollEvent(&curr_event))
+  if(input_sys.is_key_pressed(SDLK_o))
   {
-    switch(curr_event.type)
-    {
-
-    //////////////////////////////////////////////////////////////////////////
-    // Hacky handling of triggered/release key states
-    case SDL_KEYDOWN:
-    {
-      if(curr_event.key.repeat == false)
-      {
-        switch(curr_event.key.keysym.sym)
-        {
-
-        case SDLK_SPACE:
-        {
-          if(player)
-          {
-            auto * player_t = player->get_component<transform_component>();
-
-            auto * new_bullet = game_space->create_entity("bullet");
-            auto * new_bullet_t = new_bullet->get_component<transform_component>();
-            new_bullet_t->set_pos(player_t->get_pos());
-            new_bullet_t->set_scale(1.0f);
-
-            new_bullet->create_component<sprite_component>(
-              resource_manager::get_resource_dir() + "textures/bullet.png");
-          }
-        }
-        break;
-
-        // Shader reloading
-        case SDLK_RETURN:
-        {
-
-        }
-        break;
-
-        // Shader reloading
-        case SDLK_o:
-        {
-          p_ddraw_enabled = !p_ddraw_enabled;
-        }
-        break;
-
-        case SDLK_ESCAPE:
-        {
-          return false;
-        }
-        break;
-
-        }
-      }
-    }
-    break;
-    //////////////////////////////////////////////////////////////////////////
-
-    case SDL_QUIT:
-    {
-      return false;
-    }
-    break;
-
-    }
+    p_ddraw_enabled = !p_ddraw_enabled;
   }
-
-  // Hacky handling of pressed key states
-  // Per SDL2 documentation, (https://wiki.libsdl.org/SDL_GetKeyboardState) pointer returned by
-  //   SDL_GetKeyboardState is valid for lifetime of program, thus I only get it once.
-  int num_SDL_keys;
-  static Uint8 const* const SDL_keys = SDL_GetKeyboardState(&num_SDL_keys);
 
   if(player)
   {
     auto * player_t = player->get_component<transform_component>();
 
-    // 1 = key pressed, 0 = key not pressed
+    if(input_sys.is_key_triggered(SDLK_SPACE))
+    {
+      auto * new_bullet = game_space->create_entity("bullet");
+      auto * new_bullet_t = new_bullet->get_component<transform_component>();
+      new_bullet_t->set_pos(player_t->get_pos());
+      new_bullet_t->set_scale(1.0f);
+
+      new_bullet->create_component<sprite_component>(
+      resource_manager::get_resource_dir() + "textures/bullet.png");
+    }
+
     auto const& player_old_pos = player->get_component<transform_component>()->get_pos();
     vec2 player_transl = vec2::zero;
-    if(SDL_keys[SDL_SCANCODE_W])
+    if(input_sys.is_key_pressed(SDLK_w))
     {
       player_transl[1] = player_movement_speed * dt;
     }
-    if(SDL_keys[SDL_SCANCODE_S])
+    if(input_sys.is_key_pressed(SDLK_s))
     {
       player_transl[1] = -player_movement_speed * dt;
     }
-    if(SDL_keys[SDL_SCANCODE_A])
+    if(input_sys.is_key_pressed(SDLK_a))
     {
       player_transl[0] = -player_movement_speed * dt;
     }
-    if(SDL_keys[SDL_SCANCODE_D])
+    if(input_sys.is_key_pressed(SDLK_d))
     {
       player_transl[0] = player_movement_speed * dt;
     }

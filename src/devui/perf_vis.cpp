@@ -38,28 +38,28 @@ void perf_vis::update(float dt)
 
 void perf_vis::draw(debug_draw_manager & hud_ddraw, profiling_records const& records) const
 {
-  vec2 const bottom_left(-300.0f, -150.0f);
-  vec2 const dimensions(600.0f, 300.0f);
-  vec4 const color(1.0f, 1.0f, 1.0f, 1.0f);
-
-  size_t num_scaffold_lines = 1 * 2;
+  size_t num_scaffold_lines = records.get_num_records() * 2;
   size_t num_graph_lines = records.get_num_records() * records.get_num_record_entries();
-  size_t num_scaffold_dashed_lines = 1;
+
+  size_t num_scaffold_dashed_lines = records.get_num_records() * 1;
 
   hud_ddraw.lines.reserve_lines(num_scaffold_lines + num_graph_lines);
   hud_ddraw.dashed_lines.reserve_lines(num_scaffold_dashed_lines);
 
-  draw_scaffold(hud_ddraw, bottom_left, dimensions, color);
+  vec2 curr_bottom_left = m_bottom_left;
 
   for(auto const& key_record_pair : records)
   {
+    draw_scaffold(hud_ddraw, m_bottom_left, m_dimensions, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+    curr_bottom_left += m_dimensions + m_offset;
     draw_graph(
       hud_ddraw,
       key_record_pair.first,
       key_record_pair.second,
       records.get_max_num_record_entries(),
-      bottom_left,
-      dimensions,
+      m_bottom_left,
+      m_dimensions,
       get_label_color(key_record_pair.first));
   }
 }
@@ -89,6 +89,7 @@ void perf_vis::draw_graph(
   vec4 const& color) const
 {
   LE_UNUSED_VAR(name);
+
   if(record.empty())
     return;
 

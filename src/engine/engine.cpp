@@ -60,7 +60,7 @@ void engine::run()
 
       while(current_dt > update_dt)
       {
-        p_os_interface.update();
+        p_os_interface.update(*this, p_input_sys);
 
         step(update_dt);
 
@@ -138,9 +138,9 @@ window const& engine::get_window() const
   return p_window;
 }
 
-void engine::set_is_running(bool val)
+input_system const& engine::get_input_system() const
 {
-  p_is_running = val;
+  return p_input_sys;
 }
 
 profiling_records &engine::get_profiling_records()
@@ -151,6 +151,11 @@ profiling_records &engine::get_profiling_records()
 profiling_records const& engine::get_profiling_records() const
 {
   return p_profiling_records;
+}
+
+void engine::set_is_running(bool val)
+{
+  p_is_running = val;
 }
 
 void engine::step(float dt)

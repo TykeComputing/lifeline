@@ -119,6 +119,8 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/graphics_context.h
   src/engine/graphics_system.cpp
   src/engine/graphics_system.h
+  src/engine/input_system.cpp
+  src/engine/input_system.h
   src/engine/logic_component_base.cpp
   src/engine/logic_component_base.h
   src/engine/logic_system.cpp

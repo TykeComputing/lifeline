@@ -12,6 +12,9 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <common/fatal_error.h>
 #include <common/fatal_construction_exception.h>
 
+// TODO - Remove if messaging is implemented
+#include <engine/engine.h>
+
 namespace LE
 {
 
@@ -44,23 +47,25 @@ OS_interface::~OS_interface()
 }
 
 // TODO - Remove return value, have quit signaled via message once messaging system in place.
-void OS_interface::update()
+void OS_interface::update(engine & e, input_system & input_sys)
 {
-  // TODO - Fully integrate here one game_hack_scene is done (PollEvent loop is currently there to make hacking game input easier)
-  //SDL_Event curr_event;
-  //while(SDL_PollEvent(&curr_event))
-  //{
-  //  switch(curr_event.type)
-  //  {
-  //    case SDL_QUIT:
-  //    {
-  //      return false;
-  //    }
-  //    break;
-  //  }
-  //}
+  SDL_Event curr_event;
+  while(SDL_PollEvent(&curr_event))
+  {
+    switch(curr_event.type)
+    {
+      case SDL_QUIT:
+      {
+        e.set_is_running(false);
+      }
+      break;
+    }
+  }
 
-  //return true;
+  // Quick super easy hack
+  // NOTE: Must be called after all SDL_PollEvents
+  // TODO - Consider updating based on SDL_Events?
+  input_sys.update_keystates();
 }
 
 std::string OS_interface::get_base_dir() const

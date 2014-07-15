@@ -14,6 +14,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <engine/graphics_context.h>
 #include <engine/graphics_system.h>
+#include <engine/input_system.h>
 #include <engine/logic_system.h>
 #include <engine/OS_interface.h>
 #include <engine/space.h>
@@ -41,10 +42,12 @@ public:
 
   window const& get_window() const;
 
-  void set_is_running(bool val);
+  input_system const& get_input_system() const;
 
   profiling_records & get_profiling_records();
   profiling_records const& get_profiling_records() const;
+
+  void set_is_running(bool val);
 
 private:
   void step(float dt);
@@ -55,6 +58,7 @@ private:
   window p_window;
   graphics_context p_graphics_context;
 
+  input_system p_input_sys;
   logic_system p_logic_sys;
   graphics_system p_graphics_sys;
   sprite_text_system p_sprite_text_sys; // TODO - merge or move into graphics system?

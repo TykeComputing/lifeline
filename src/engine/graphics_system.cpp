@@ -81,6 +81,16 @@ graphics_system::graphics_system()
     p_debug_shader_prog,
     "shaders/2D/debug_draw.vert",
     "shaders/2D/debug_draw.frag");
+
+
+  // Set some initial OpenGL state
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+  glLineWidth(2.0f);
+  glPointSize(5.0f);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void graphics_system::clear_render_target()

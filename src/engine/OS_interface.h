@@ -10,11 +10,12 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <string>
 
 #include "graphics_context.h"
-#include "window.h"
+#include <engine/input_system.h>
 
 namespace LE
 {
 
+// TODO - Remove if messaging is implemented
 // fwd-decl
 class engine;
 
@@ -24,10 +25,11 @@ public:
   OS_interface();
   ~OS_interface();
 
+  // TODO - Remove engine parameter if messaging is implemented
+  void update(engine & e, input_system & input_sys);
+
   std::string get_base_dir() const;
   std::string get_preferred_dir() const; // UNIMPL - TODO
-
-  void update();
 
 private:
 };
