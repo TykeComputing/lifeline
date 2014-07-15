@@ -22,8 +22,6 @@ namespace LE
 class transform_component : public engine_component_base, public transform
 {
 public:
-  explicit transform_component(entity & owner);
-
   static unique_id<engine_component_base> const type_id;
 };
 

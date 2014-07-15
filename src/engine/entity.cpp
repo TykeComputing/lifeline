@@ -16,6 +16,13 @@ entity::entity(std::string const& name) :
 {
 }
 
+entity::~entity()
+{
+  for(auto const& curr_logic_comp : p_logic_components)
+  {
+    curr_logic_comp.second->teardown();
+  }
+}
 
 /**********************************************/
 /* Lifespan */

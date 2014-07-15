@@ -15,10 +15,9 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-unique_id<logic_component_base> const perf_vis::type_id;
+unique_id<logic_component_base> const perf_vis_component::type_id;
 
-perf_vis::perf_vis(entity & owner) :
-  logic_component_base(owner)
+perf_vis_component::perf_vis_component()
 {
   // TODO - Move to devui setup component?
   set_label_color("update", vec4(0.0f, 0.0f, 1.0f, 1.0f));
@@ -27,7 +26,7 @@ perf_vis::perf_vis(entity & owner) :
   set_label_color("total_frame", vec4(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
-void perf_vis::update(float dt)
+void perf_vis_component::update(float dt)
 {
   LE_UNUSED_VAR(dt);
 
@@ -36,7 +35,7 @@ void perf_vis::update(float dt)
   draw(owning_space->m_hud_ddraw, owning_engine->get_profiling_records());
 }
 
-void perf_vis::draw(debug_draw_manager & hud_ddraw, profiling_records const& records) const
+void perf_vis_component::draw(debug_draw_manager & hud_ddraw, profiling_records const& records) const
 {
   // Reserve space for all lines upfront
   size_t const num_scaffold_lines = records.get_num_records() * 2;
@@ -72,7 +71,7 @@ void perf_vis::draw(debug_draw_manager & hud_ddraw, profiling_records const& rec
   }
 }
 
-void perf_vis::draw_scaffold(
+void perf_vis_component::draw_scaffold(
   debug_draw_manager & hud_ddraw,
   vec2 const& bottom_left,
   vec2 const& dimensions,
@@ -87,7 +86,7 @@ void perf_vis::draw_scaffold(
   hud_ddraw.dashed_lines.add_line(top_left, top_right, color * 0.5f);
 }
 
-void perf_vis::draw_graph(
+void perf_vis_component::draw_graph(
   debug_draw_manager & hud_ddraw,
   std::string const& name,
   profiling_records::time_record const& record,
@@ -127,12 +126,12 @@ void perf_vis::draw_graph(
   }
 }
 
-void perf_vis::set_label_color(std::string const& label, vec4 const& color)
+void perf_vis_component::set_label_color(std::string const& label, vec4 const& color)
 {
   p_label_colors[label] = color;
 }
 
-vec4 perf_vis::get_label_color(std::string const& label) const
+vec4 perf_vis_component::get_label_color(std::string const& label) const
 {
   auto find_it = p_label_colors.find(label);
   if(find_it != p_label_colors.end())

@@ -30,7 +30,7 @@ namespace LE
 class game_hack_component : public logic_component_base
 {
 public:
-  explicit game_hack_component(entity & owner);
+  virtual void initialize();
   virtual void update(float dt);
 
   static unique_id<logic_component_base> const type_id;

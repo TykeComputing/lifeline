@@ -31,6 +31,7 @@ public:
   LE_NON_COPYABLE(entity)
 
   explicit entity(std::string const& name);
+  ~entity();
 
   /**********************************************/
   /* General Component */
@@ -108,11 +109,13 @@ public:
     auto new_comp_it = p_engine_components.emplace(
       std::make_pair(
         COMP_T::type_id.value(),
-        std::unique_ptr<COMP_T>{ new COMP_T{*this, std::forward<ARG_TS>(args)...} } ));
+        std::unique_ptr<COMP_T>{ new COMP_T{std::forward<ARG_TS>(args)...} } ));
 
     if(new_comp_it.second)
     {
-      return static_cast<COMP_T *>(new_comp_it.first->second.get());
+      auto * new_comp = static_cast<COMP_T *>(new_comp_it.first->second.get());
+      new_comp->set_owner(this);
+      return new_comp;
     }
     else
     {
@@ -176,12 +179,14 @@ public:
     auto new_comp_it = p_logic_components.emplace(
       std::make_pair(
         COMP_T::type_id.value(),
-        std::unique_ptr<COMP_T>{ new COMP_T{*this, std::forward<ARG_TS>(args)...} } ));
+        std::unique_ptr<COMP_T>{ new COMP_T{std::forward<ARG_TS>(args)...} } ));
 
     if(new_comp_it.second)
     {
       COMP_T * new_comp = static_cast<COMP_T *>(new_comp_it.first->second.get());
       new_comp->set_owner(this);
+
+      new_comp->initialize();
 
       return new_comp;
     }
@@ -190,6 +195,23 @@ public:
       // Component already exists, duplicates not allowed.
       LE_FATAL_ERROR("Unable to add component!");
       return nullptr;
+    }
+  }
+
+  template<typename COMP_T>
+  void
+  remove_logic_component()
+  {
+    static_assert(std::is_base_of<logic_component_base, COMP_T>::value,
+      "Cannot use with non-logic component!");
+    static_assert(std::is_same<logic_component_base, COMP_T>::value == false,
+      "Cannot remove base component!");
+
+    auto find_it = p_logic_components.find(COMP_T::type_id.value());
+    if(find_it != p_logic_components.end())
+    {
+      (*find_it).second->tear_down();
+      p_logic_components.erase(find_it);
     }
   }
 

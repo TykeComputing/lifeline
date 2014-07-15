@@ -15,8 +15,8 @@ namespace LE
 
 unique_id<engine_component_base> const sprite_component::type_id;
 
-sprite_component::sprite_component(entity & owner, std::string const& texture_file_name) :
-  engine_component_base(owner), p_texture(texture_file_name)
+sprite_component::sprite_component(std::string const& texture_file_name) :
+  p_texture(texture_file_name)
 {
   auto const texture_dim = p_texture.get_dimensions();
   float const texture_half_x = texture_dim.x() / 2.0f;

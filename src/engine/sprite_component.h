@@ -25,7 +25,7 @@ namespace LE
 class sprite_component : public engine_component_base
 {
 public:
-  sprite_component(entity & owner, std::string const& texture_file_name);
+  sprite_component(std::string const& texture_file_name);
 
   void bind() const;
   void unbind() const;

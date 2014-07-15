@@ -35,8 +35,7 @@ namespace LE
 
 unique_id<logic_component_base> const game_hack_component::type_id;
 
-game_hack_component::game_hack_component(entity & owner) :
-  logic_component_base(owner)
+void game_hack_component::initialize()
 {
   LE_FATAL_ERROR_IF(get_owning_entity() == nullptr, "Owner is null!");
   LE_FATAL_ERROR_IF(get_owning_entity()->get_owning_space() == nullptr, "Space is null!");
@@ -107,7 +106,7 @@ void game_hack_component::p_input(float dt)
     return game_engine->find_space("perf_vis");
   };
 
-  auto get_perf_vis_component = [get_perf_vis_space, game_engine]()->perf_vis *
+  auto get_perf_vis_component = [get_perf_vis_space, game_engine]()->perf_vis_component *
   {
     auto * perf_vis_space = get_perf_vis_space();
     if(perf_vis_space)
@@ -115,7 +114,7 @@ void game_hack_component::p_input(float dt)
       auto * perf_vis_ent = perf_vis_space->find_entity("perf_vis");
       if(perf_vis_ent)
       {
-        return perf_vis_ent->get_component<perf_vis>();
+        return perf_vis_ent->get_component<perf_vis_component>();
       }
     }
 
@@ -138,7 +137,7 @@ void game_hack_component::p_input(float dt)
     auto * perf_vis_comp = get_perf_vis_component();
     if(perf_vis_comp)
     {
-      perf_vis_comp->m_settings = perf_vis::settings{};
+      perf_vis_comp->m_settings = perf_vis_component::settings{};
     }
   }
 

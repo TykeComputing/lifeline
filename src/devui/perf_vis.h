@@ -22,7 +22,7 @@ namespace LE
 
 class debug_draw_manager;
 
-class perf_vis : public logic_component_base
+class perf_vis_component : public logic_component_base
 {
 public:
   struct settings
@@ -55,8 +55,8 @@ public:
     float max_time = 0.016f;
   };
 
-  perf_vis(entity & owner);
-  virtual ~perf_vis() {}
+  perf_vis_component();
+  virtual ~perf_vis_component() {}
 
   virtual void update(float dt);
 

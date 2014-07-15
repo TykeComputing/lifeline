@@ -12,10 +12,15 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
+/*
+ * WARNING: Funtionality that requires access to any portion of the engine, such as access to
+ *   owning entity, should **never** be used in the constructor (and should be avoided in
+ *   destructor). Engine components should be self contained and not require other components -
+ *   even transform - while constructing/destructing.
+ */
 class engine_component_base : public component_base
 {
 public:
-  explicit engine_component_base(entity & owner);
   virtual ~engine_component_base() {}
 
 private:
