@@ -135,4 +135,14 @@ void space::set_owner(engine * new_owner)
   p_owner = new_owner;
 }
 
+void space::set_is_active(bool value)
+{
+  p_is_active = value;
+}
+
+bool space::get_is_active() const
+{
+  return p_is_active;
+}
+
 } // namespace LE

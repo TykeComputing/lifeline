@@ -84,15 +84,16 @@ void debug_line_drawer::add_line(vec2 const& p0, vec2 const& p1, vec4 const& col
 
 void debug_line_drawer::add_circle(vec2 const& p, float r, vec4 const& color)
 {
-  unsigned const num_subdiv = 32;
-  float delta_angle = (pi * 2.0f) / num_subdiv;
+  float const delta_angle = (pi * 2.0f) / m_settings.circle_num_lines;
 
-  vec2 line_vert_prev_pos = vec2mk(r, 0.0f);
+  float curr_angle = 0.0f;
+
+  vec2 line_vert_prev_pos = vec2(r, 0.0f);
   line_vert_prev_pos += p;
-  for(unsigned i = 0; i <= num_subdiv; ++i)
+  for(unsigned i = 0; i < m_settings.circle_num_lines; ++i)
   {
-    float angle = i * delta_angle;
-    vec2 line_vert_pos({std::cos(angle) * r, std::sin(angle) * r});
+    curr_angle += delta_angle;
+    vec2 line_vert_pos({std::cos(curr_angle) * r, std::sin(curr_angle) * r});
     line_vert_pos += p;
 
     add_line(line_vert_prev_pos, line_vert_pos, color);
@@ -109,8 +110,9 @@ void debug_line_drawer::add_arrow(vec2 const& p0, vec2 const& norm_dir, float le
   add_line(p0, p1, color);
 
   // Arrow head
-  float const arrow_head_size_percent = 0.1f;
-  float arrow_head_length = min(length * arrow_head_size_percent, 0.25f);
+  float const arrow_head_size_percent = m_settings.arrow_head_size_percent;
+  float arrow_head_length =
+    min(length * arrow_head_size_percent, m_settings.max_arrow_head_size);
 
   vec2 orthog_vec_norm = get_orthogonal(norm_dir);
 
@@ -156,8 +158,8 @@ void debug_line_drawer::add_transform(mat3 const& transform, float scale)
   normalize(right);
   normalize(up);
 
-  add_arrow(pos, right, scale, vec4mk(1.0f, 0.0f, 0.0f, 1.0f) );
-  add_arrow(pos, up, scale, vec4mk(0.0f, 1.0f, 0.0f, 1.0f) );
+  add_arrow(pos, right, scale, vec4(1.0f, 0.0f, 0.0f, 1.0f) );
+  add_arrow(pos, up, scale, vec4(0.0f, 1.0f, 0.0f, 1.0f) );
 }
 
 void debug_line_drawer::reserve_lines(size_t amount)

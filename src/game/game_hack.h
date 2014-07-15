@@ -36,9 +36,9 @@ public:
   static unique_id<logic_component_base> const type_id;
 
 private:
-  void p_input(space * game_space, float dt);
-  void p_logic(space * game_space, float dt);
-  void p_physics(space * game_space, float dt);
+  void p_input(float dt);
+  void p_logic(float dt);
+  void p_physics(float dt);
 
   // TODO - Move to its own space/scene when game_hack_scene is removed
   bool p_ddraw_enabled = false;

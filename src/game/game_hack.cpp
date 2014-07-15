@@ -72,31 +72,51 @@ void game_hack_component::update(float dt)
 {
   LE_FATAL_ERROR_IF(get_owning_entity() == nullptr, "Owner is null!");
   LE_FATAL_ERROR_IF(get_owning_entity()->get_owning_space() == nullptr, "Space is null!");
-  space * game_space = get_owning_entity()->get_owning_space();
 
-  p_input(get_owning_entity()->get_owning_space(), dt);
-  p_logic(game_space, dt);
-  p_physics(game_space, dt);
+  p_input(dt);
+  p_logic(dt);
+  p_physics(dt);
 }
 
-void game_hack_component::p_input(space * game_space, float dt)
+void game_hack_component::p_input(float dt)
 {
   float const player_movement_speed = 256.0f;
 
-  // TODO - get_owning_entity vs get_entity?
-  auto const* game_engine = get_owning_entity()->get_owning_space()->get_owning_engine();
+  // TODO - get_owning_entity vs get_entity (etc.)?
+  auto * const game_space = get_owning_entity()->get_owning_space();
+  auto * const game_engine = game_space->get_owning_engine();
   auto const& input_sys = game_engine->get_input_system();
-  auto * player = game_space->find_entity("player");
+  auto * const player = game_space->find_entity("player");
 
-  if(input_sys.is_key_pressed(SDLK_o))
+  // Exit
+  if(input_sys.is_key_triggered(SDLK_ESCAPE))
+  {
+    game_engine->set_is_running(false);
+  }
+
+  // Toggle debug drawing on/off
+  if(input_sys.is_key_triggered(SDLK_o))
   {
     p_ddraw_enabled = !p_ddraw_enabled;
   }
 
+
+  // Toggle perf vis on/off
+  if(input_sys.is_key_triggered(SDLK_p))
+  {
+    auto * perf_vis_space = game_engine->find_space("perf_vis");
+    if(perf_vis_space)
+    {
+      perf_vis_space->set_is_active(!perf_vis_space->get_is_active());
+    }
+  }
+
+  // Player controls
   if(player)
   {
-    auto * player_t = player->get_component<transform_component>();
+    auto * const player_t = player->get_component<transform_component>();
 
+    // Shooting
     if(input_sys.is_key_triggered(SDLK_SPACE))
     {
       auto * new_bullet = game_space->create_entity("bullet");
@@ -108,6 +128,7 @@ void game_hack_component::p_input(space * game_space, float dt)
       resource_manager::get_resource_dir() + "textures/bullet.png");
     }
 
+    // Movement
     auto const& player_old_pos = player->get_component<transform_component>()->get_pos();
     vec2 player_transl = vec2::zero;
     if(input_sys.is_key_pressed(SDLK_w))
@@ -133,26 +154,29 @@ void game_hack_component::p_input(space * game_space, float dt)
       if(p_ddraw_enabled)
       {
         game_space->m_world_ddraw.lines.add_arrow(
-          player_old_pos, player_transl / dt, vec4mk(1.0f, 0.0f, 0.0f, 1.0f));
+          player_old_pos, player_transl / dt, vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
         game_space->m_world_ddraw.points.add_point(
-          player_old_pos, vec4mk(0.0f, 0.0f, 1.0f, 1.0f));
+          player_old_pos, vec4(0.0f, 0.0f, 1.0f, 1.0f));
       }
     }
   }
 }
 
-void game_hack_component::p_logic(space * game_space, float dt)
+// Super hacky/simple game logic
+void game_hack_component::p_logic(float dt)
 {
   float const bullet_movement_speed = 512.0f;
 
   float const enemy_seek_radius = 256.0f;
   float const enemy_movement_speed = 64.0f;
 
-  auto * player = game_space->find_entity("player");
+  auto * game_space = get_owning_entity()->get_owning_space();
+
+  auto * const player = game_space->find_entity("player");
   if(player)
   {
-    auto * player_t = player->get_component<transform_component>();
+    auto * const player_t = player->get_component<transform_component>();
 
     for(auto entity_it = game_space->entity_begin();
         entity_it != game_space->entity_end();
@@ -162,12 +186,12 @@ void game_hack_component::p_logic(space * game_space, float dt)
       auto & curr_entity = (*entity_it).second;
       if(curr_entity->get_name() == "enemy")
       {
-        auto * enemy_t = curr_entity->get_component<transform_component>();
+        auto * const enemy_t = curr_entity->get_component<transform_component>();
 
         if(p_ddraw_enabled)
         {
           game_space->m_world_ddraw.lines.add_circle(
-            enemy_t->get_pos(), enemy_seek_radius, vec4mk(1.0f, .0f, 1.0f, 1.0f));
+            enemy_t->get_pos(), enemy_seek_radius, vec4(1.0f, .0f, 1.0f, 1.0f));
         }
 
         vec2 dir_to_player =
@@ -182,7 +206,7 @@ void game_hack_component::p_logic(space * game_space, float dt)
           if(p_ddraw_enabled)
           {
             game_space->m_world_ddraw.lines.add_arrow(
-              enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4mk(1.0f, 0.0f, 1.0f, 1.0f));
+              enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4(1.0f, 0.0f, 1.0f, 1.0f));
           }
         }
       }
@@ -196,9 +220,12 @@ void game_hack_component::p_logic(space * game_space, float dt)
   }
 }
 
-void game_hack_component::p_physics(space * game_space, float dt)
+void game_hack_component::p_physics(float dt)
 {
   LE_UNUSED_VAR(dt);
+
+  auto * game_space = get_owning_entity()->get_owning_space();
+
   // Quick and dirty hack until actual physics is in place.
   std::vector<entity *> curr_ents;
   curr_ents.reserve(game_space->entity_num());
@@ -244,11 +271,11 @@ void game_hack_component::p_physics(space * game_space, float dt)
         game_space->m_world_ddraw.lines.add_circle(
           ent_inner_t->get_pos(),
           ent_inner_radius,
-          vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
+          vec4(1.0f, 1.0f, 1.0f, 1.0f));
         game_space->m_world_ddraw.lines.add_circle(
           ent_outer_t->get_pos(),
           ent_outer_radius,
-          vec4mk(1.0f, 1.0f, 1.0f, 1.0f));
+          vec4(1.0f, 1.0f, 1.0f, 1.0f));
       }
 
       float r_sum_sq = r_sum * r_sum;

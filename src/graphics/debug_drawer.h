@@ -56,6 +56,13 @@ private:
 class debug_line_drawer : public debug_drawer_base
 {
 public:
+  struct settings
+  {
+    float arrow_head_size_percent = 0.1f;
+    float max_arrow_head_size = 64.0f;
+    unsigned circle_num_lines = 36;
+  };
+
   void draw() const;
 
   void add_line(vec2 const& p0, vec2 const& p1, vec4 const& color);
@@ -73,6 +80,8 @@ public:
   void add_transform(mat3 const& transform, float scale);
 
   void reserve_lines(size_t amount);
+
+  settings m_settings;
 };
 
 class debug_point_drawer : public debug_drawer_base

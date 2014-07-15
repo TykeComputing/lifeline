@@ -35,7 +35,7 @@ public:
   ivec2 get_dimensions() const;
 
   // TODO: Move and change method of representing colors (RGBA8?)
-  vec4 m_color = vec4mk(1.0f, 1.0f, 1.0f, 1.0f);
+  vec4 m_color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
   static unique_id<engine_component_base> const type_id;
 private:

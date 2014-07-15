@@ -153,6 +153,11 @@ void engine::step(float dt)
 
   for(auto const& curr_space : p_spaces)
   {
+    if(curr_space->get_is_active() == false)
+    {
+      continue;
+    }
+
     curr_space->clear_ddraw();
 
     p_logic_sys.update(*curr_space, dt);
@@ -170,6 +175,11 @@ void engine::render_frame()
 
     for(auto const& curr_space : p_spaces)
     {
+      if(curr_space->get_is_active() == false)
+      {
+        continue;
+      }
+
       p_graphics_sys.render(*curr_space);
     }
   }

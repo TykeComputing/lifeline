@@ -61,7 +61,7 @@ private:
 
   vec2 p_pos = vec2::zero;
   float p_z_order = 0.0f;
-  vec2 p_scale = vec2mk(1.0f, 1.0f);
+  vec2 p_scale = vec2(1.0f, 1.0f);
 
   // TODO - Rotation
 

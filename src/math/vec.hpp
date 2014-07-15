@@ -269,70 +269,6 @@ vecn<4, COMP_T>::operator[](size_t index) const
 }
 
 /**********************************************************************************************/
-/* Creation functions */
-/**********************************************************************************************/
-
-template<typename COMP_T>
-vecn<2, COMP_T>
-vec2mk(COMP_T x, COMP_T y)
-{
-  vecn<2, COMP_T> v;
-  v[0] = x;
-  v[1] = y;
-  return v;
-}
-
-template<typename COMP_T>
-vecn<3, COMP_T>
-vec3mk(COMP_T x, COMP_T y, COMP_T z)
-{
-  vecn<3, COMP_T> v;
-  v[0] = x;
-  v[1] = y;
-  v[2] = z;
-  return v;
-}
-
-template<typename COMP_T>
-vecn<4, COMP_T>
-vec4mk(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
-{
-  vecn<4, COMP_T> v;
-  v[0] = x;
-  v[1] = y;
-  v[2] = z;
-  v[3] = w;
-  return v;
-}
-
-//template<typename COMP_T>
-//vecn<2, COMP_T>
-//vec2mk(COMP_T x, COMP_T y)
-//{
-//  vecn<2, COMP_T> v;
-//  set(v, x, y);
-//  return v;
-//}
-//
-//template<typename COMP_T>
-//vecn<3, COMP_T>
-//vec3mk(COMP_T x, COMP_T y, COMP_T z)
-//{
-//  vecn<3, COMP_T> v;
-//  set(v, x, y, z);
-//  return v;
-//}
-//
-//template<typename COMP_T>
-//vecn<4, COMP_T>
-//vec4mk(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
-//{
-//  vecn<4, COMP_T> v;
-//  set(v, x, y, z, w);
-//  return v;
-//}
-
-/**********************************************************************************************/
 /* Vector Arithmetic Operators */
 /**********************************************************************************************/
 
@@ -610,7 +546,7 @@ vecn<2, COMP_T>
 get_orthogonal(
   vecn<2, COMP_T> const& v)
 {
-  return vec2mk(v[1], -v[0]);
+  return vec2(v[1], -v[0]);
 }
 
 /**********************************************************************************************/

@@ -73,6 +73,9 @@ public:
   engine * get_owning_engine();
   engine const* get_owning_engine() const;
 
+  void set_is_active(bool value);
+  bool get_is_active() const;
+
 private:
   void set_owner(engine * new_owner);
 
@@ -80,6 +83,8 @@ private:
   entity_container p_entities;
 
   engine * p_owner = nullptr;
+
+  bool p_is_active = true;
 
   friend engine;
 };

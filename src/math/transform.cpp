@@ -43,7 +43,7 @@ void transform::set_z_order(float value)
 
 vec2 const& transform::translate(float x, float y)
 {
-  return translate(vec2mk(x, y));
+  return translate(vec2(x, y));
 }
 
 vec2 const& transform::translate(vec2 const& value)
@@ -91,7 +91,7 @@ vec2 const& transform::scale_by(float value)
 
 vec2 const& transform::scale_by(float x, float y)
 {
-  return scale_by(vec2mk(x, y));
+  return scale_by(vec2(x, y));
 }
 
 vec2 const& transform::scale_by(vec2 const& value)

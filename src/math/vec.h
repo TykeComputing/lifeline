@@ -148,22 +148,6 @@ typedef vecn<3, unsigned> uvec3;
 typedef vecn<4> vec4;
 
 /**********************************************************************************************/
-/* Creation functions */
-/**********************************************************************************************/
-
-template<typename COMP_T = float>
-vecn<2, COMP_T>
-vec2mk(COMP_T x, COMP_T y);
-
-template<typename COMP_T = float>
-vecn<3, COMP_T>
-vec3mk(COMP_T x, COMP_T y, COMP_T z);
-
-template<typename COMP_T = float>
-vecn<4, COMP_T>
-vec4mk(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
-
-/**********************************************************************************************/
 /* Vector Arithmetic Operators */
 /**********************************************************************************************/
 

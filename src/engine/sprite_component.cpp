@@ -28,13 +28,13 @@ sprite_component::sprite_component(entity & owner, std::string const& texture_fi
   vertex::specify_vertex_attributes();
   vertex verts[] =
   {
-    { vec2mk(-texture_half_x, -texture_half_y), vec2mk(0.0f, 1.0f) },
-    { vec2mk( texture_half_x, -texture_half_y), vec2mk(1.0f, 1.0f) },
-    { vec2mk(-texture_half_x,  texture_half_y), vec2mk(0.0f, 0.0f) },
+    { vec2(-texture_half_x, -texture_half_y), vec2(0.0f, 1.0f) },
+    { vec2( texture_half_x, -texture_half_y), vec2(1.0f, 1.0f) },
+    { vec2(-texture_half_x,  texture_half_y), vec2(0.0f, 0.0f) },
 
-    { vec2mk(-texture_half_x,  texture_half_y), vec2mk(0.0f, 0.0f) },
-    { vec2mk( texture_half_x, -texture_half_y), vec2mk(1.0f, 1.0f) },
-    { vec2mk( texture_half_x,  texture_half_y), vec2mk(1.0f, 0.0f) }
+    { vec2(-texture_half_x,  texture_half_y), vec2(0.0f, 0.0f) },
+    { vec2( texture_half_x, -texture_half_y), vec2(1.0f, 1.0f) },
+    { vec2( texture_half_x,  texture_half_y), vec2(1.0f, 0.0f) }
   };
   num_verts = sizeof(verts) / sizeof(vertex);
 
