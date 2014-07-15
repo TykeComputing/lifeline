@@ -21,15 +21,14 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <game/game_hack.h>
 
-typedef void(*handle_arg_func)(LE::engine & game_engine, std::string const& val);
+typedef void(*handle_arg_func)(std::string const& val);
 
-void handle_set_resource_dir(LE::engine & game_engine, std::string const& val)
+void handle_set_resource_dir(std::string const& val)
 {
-  LE_UNUSED_VAR(game_engine);
   LE::resource_manager::set_resource_dir(val);
 }
 
-void handle_args(LE::engine & game_engine, int arg_count, char *args[])
+void handle_args(int arg_count, char *args[])
 {
   std::unordered_map<std::string, handle_arg_func> options(
   {
@@ -56,7 +55,7 @@ void handle_args(LE::engine & game_engine, int arg_count, char *args[])
     auto handler_find_it = options.find(curr_arg);
     if(handler_find_it != options.end())
     {
-      handler_find_it->second(game_engine, curr_val);
+      handler_find_it->second(curr_val);
     }
     else
     {
@@ -69,10 +68,11 @@ int main(int arg_count, char *args[])
 {
   int res = 0;
 
+  handle_args(arg_count, args);
+
   try
   {
     LE::engine game_engine;
-    handle_args(game_engine,  arg_count, args);
 
     auto * dev_ui_space = game_engine.create_space("perf_vis");
     auto * perf_vis_ent = dev_ui_space->create_entity("perf_vis");
@@ -81,8 +81,6 @@ int main(int arg_count, char *args[])
     auto * game_space = game_engine.create_space("game");
     auto * game_hack_ent = game_space->create_entity("game_hack");
     game_hack_ent->create_component<LE::game_hack_component>();
-
-
 
     game_engine.run();
   }
