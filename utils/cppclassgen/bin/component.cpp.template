@@ -11,8 +11,7 @@ namespace %NAMESPACE_NAME%
 
 unique_id<%COMPONENT_TYPE%_component_base> const %CLASS_NAME%::type_id;
 
-%CLASS_NAME%::%CLASS_NAME%(entity & owner) :
-  %COMPONENT_TYPE%_component_base(owner)
+%CLASS_NAME%::%CLASS_NAME%(entity & owner)
 {
   
 }

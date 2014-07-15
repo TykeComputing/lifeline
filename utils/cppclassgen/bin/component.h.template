@@ -17,7 +17,7 @@ namespace %NAMESPACE_NAME%
 class %CLASS_NAME% : public %COMPONENT_TYPE%_component_base
 {
 public:
-  %CLASS_NAME%(entity & owner);
+  %CLASS_NAME%();
   virtual ~%CLASS_NAME%() {}
 
   static unique_id<%COMPONENT_TYPE%_component_base> const type_id;
