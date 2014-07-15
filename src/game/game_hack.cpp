@@ -175,19 +175,19 @@ void game_hack_component::p_input(float dt)
     vec2 player_transl = vec2::zero;
     if(input_sys.is_key_pressed(SDLK_w))
     {
-      player_transl[1] = player_movement_speed * dt;
+      player_transl.y() = player_movement_speed * dt;
     }
     if(input_sys.is_key_pressed(SDLK_s))
     {
-      player_transl[1] = -player_movement_speed * dt;
+      player_transl.y() = -player_movement_speed * dt;
     }
     if(input_sys.is_key_pressed(SDLK_a))
     {
-      player_transl[0] = -player_movement_speed * dt;
+      player_transl.x() = -player_movement_speed * dt;
     }
     if(input_sys.is_key_pressed(SDLK_d))
     {
-      player_transl[0] = player_movement_speed * dt;
+      player_transl.x() = player_movement_speed * dt;
     }
     player_t->translate(player_transl);
 
