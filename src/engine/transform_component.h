@@ -18,7 +18,8 @@ namespace LE
 // TODO - Figure out how I'm going to handle transformation heirarchies and then decide on
 //          final transform/transform_component design.
 //      - Trying inheiritance based approch for now. I should evaluate if this is desirable
-//          when implementing parenting.
+//          when implementing parenting. EVALUATED: When implementing parenting, do away with
+//          inheiritance approach.
 class transform_component : public engine_component_base, public transform
 {
 public:

@@ -16,10 +16,6 @@ namespace LE
 class transform
 {
 public:
-  // TODO - Remove when parenting is added if I move away from inheiritance for
-  //          transform_component.
-  virtual ~transform() {}
-
   /**********************************************/
   /* Position */
   /**********************************************/

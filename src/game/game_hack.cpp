@@ -47,7 +47,7 @@ void game_hack_component::initialize()
     new_ent->get_component<transform_component>()->set_scale(1.0f);
 
     new_ent->create_component<sprite_component>(
-      resource_manager::get_resource_dir() + "textures/player.png");
+      resource_manager::load<texture2D>("textures/player.png"));
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
@@ -55,7 +55,7 @@ void game_hack_component::initialize()
     new_ent->get_component<transform_component>()->set_scale(2.0f);
 
     new_ent->create_component<sprite_component>(
-      resource_manager::get_resource_dir() + "textures/enemy.png");
+      resource_manager::load<texture2D>("textures/enemy.png"));
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
@@ -63,7 +63,7 @@ void game_hack_component::initialize()
     new_ent->get_component<transform_component>()->set_scale(2.0f);
 
     new_ent->create_component<sprite_component>(
-      resource_manager::get_resource_dir() + "textures/enemy.png");
+      resource_manager::load<texture2D>("textures/enemy.png"));
   }
 }
 
@@ -167,7 +167,7 @@ void game_hack_component::p_input(float dt)
       new_bullet_t->set_scale(1.0f);
 
       new_bullet->create_component<sprite_component>(
-      resource_manager::get_resource_dir() + "textures/bullet.png");
+        resource_manager::load<texture2D>("textures/bullet.png"));
     }
 
     // Movement
