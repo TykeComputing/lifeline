@@ -120,12 +120,12 @@ std::string const& space::get_name() const
   return p_name;
 }
 
-engine * space::get_owner()
+engine * space::get_owning_engine()
 {
   return p_owner;
 }
 
-engine const* space::get_owner() const
+engine const* space::get_owning_engine() const
 {
   return p_owner;
 }

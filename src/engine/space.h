@@ -70,8 +70,8 @@ public:
   /**********************************************/
   std::string const& get_name() const;
 
-  engine * get_owner();
-  engine const* get_owner() const;
+  engine * get_owning_engine();
+  engine const* get_owning_engine() const;
 
 private:
   void set_owner(engine * new_owner);

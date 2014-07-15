@@ -90,17 +90,12 @@ void engine::run()
 
 space * engine::create_space(std::string const& name)
 {
-  for(auto const& curr_space : p_spaces)
+  if(find_space(name) != nullptr)
   {
-    if(curr_space->get_name() == name)
-    {
-      log_error(log_scope::ENGINE,
-        "Attempting to create space named \"{0}\", but a space with the name \"{0}\" already exists.",
-        name);
-
-      return nullptr;
-    }
-  }
+    log_error(log_scope::ENGINE,
+      "Attempting to create space named \"{0}\", but a space with the name \"{0}\" already exists.",
+      name);
+   }
 
   p_spaces.emplace_back(new space(name));
   log_status(log_scope::ENGINE,
@@ -114,23 +109,17 @@ space * engine::create_space(std::string const& name)
   return new_space;
 }
 
-void engine::remove_space(std::string const& name)
+space * engine::find_space(std::string const& name)
 {
-  for(auto space_it = p_spaces.begin(); space_it != p_spaces.end(); ++space_it)
+  for(auto const& curr_space : p_spaces)
   {
-    if((*space_it)->get_name() == name)
+    if(curr_space->get_name() == name)
     {
-      p_spaces.erase(space_it);
-
-      log_status(log_scope::ENGINE,
-        "Removing space named \"{}\", {} spaces now in this engine.",
-        name);
+      return curr_space.get();
     }
   }
 
-  log_error(log_scope::ENGINE,
-    "Attempting to remove space named \"{}\", no such space exists.",
-    name);
+  return nullptr;
 }
 
 window const& engine::get_window() const

@@ -31,8 +31,8 @@ void perf_vis::update(float dt)
 {
   LE_UNUSED_VAR(dt);
 
-  auto * owning_space = get_owner()->get_owner();
-  auto const& owning_engine = owning_space->get_owner();
+  auto * owning_space = get_owning_entity()->get_owning_space();
+  auto const& owning_engine = owning_space->get_owning_engine();
   draw(owning_space->m_hud_ddraw, owning_engine->get_profiling_records());
 }
 

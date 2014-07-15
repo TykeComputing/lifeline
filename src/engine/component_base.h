@@ -21,8 +21,8 @@ public:
   explicit component_base(entity & owner);
   virtual ~component_base() {}
 
-  entity const* get_owner() const;
-  entity * get_owner();
+  entity const* get_owning_entity() const;
+  entity * get_owning_entity();
 
 private:
   void set_owner(entity * new_owner);

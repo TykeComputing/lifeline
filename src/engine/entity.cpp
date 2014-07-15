@@ -30,12 +30,12 @@ void entity::kill()
 /* Utility*/
 /**********************************************/
 
-space const* entity::get_owner() const
+space const* entity::get_owning_space() const
 {
   return p_owner;
 }
 
-space * entity::get_owner()
+space * entity::get_owning_space()
 {
   return p_owner;
 }

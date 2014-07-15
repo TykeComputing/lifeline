@@ -38,7 +38,7 @@ public:
    *   will be created and nullptr will be returned.
    */
   space * create_space(std::string const& name);
-  void remove_space(std::string const& name);
+  space * find_space(std::string const& name);
 
   window const& get_window() const;
 

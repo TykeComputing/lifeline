@@ -38,9 +38,9 @@ unique_id<logic_component_base> const game_hack_component::type_id;
 game_hack_component::game_hack_component(entity & owner) :
   logic_component_base(owner)
 {
-  LE_FATAL_ERROR_IF(get_owner() == nullptr, "Owner is null!");
-  LE_FATAL_ERROR_IF(get_owner()->get_owner() == nullptr, "Space is null!");
-  space * game_space = get_owner()->get_owner();
+  LE_FATAL_ERROR_IF(get_owning_entity() == nullptr, "Owner is null!");
+  LE_FATAL_ERROR_IF(get_owning_entity()->get_owning_space() == nullptr, "Space is null!");
+  space * game_space = get_owning_entity()->get_owning_space();
 
   {
     auto * new_ent = game_space->create_entity("player");
@@ -70,30 +70,22 @@ game_hack_component::game_hack_component(entity & owner) :
 
 void game_hack_component::update(float dt)
 {
-  LE_FATAL_ERROR_IF(get_owner() == nullptr, "Owner is null!");
-  LE_FATAL_ERROR_IF(get_owner()->get_owner() == nullptr, "Space is null!");
-  space * game_space = get_owner()->get_owner();
+  LE_FATAL_ERROR_IF(get_owning_entity() == nullptr, "Owner is null!");
+  LE_FATAL_ERROR_IF(get_owning_entity()->get_owning_space() == nullptr, "Space is null!");
+  space * game_space = get_owning_entity()->get_owning_space();
 
-  if(p_input(get_owner()->get_owner(), dt) == false)
-  {
-    // TODO - get_owner vs get_<owner_type>?
-    get_owner()->get_owner()->get_owner()->set_is_running(false);
-
-    return;
-  }
-
+  p_input(get_owning_entity()->get_owning_space(), dt);
   p_logic(game_space, dt);
   p_physics(game_space, dt);
 }
 
-// returns false if a quit message has been received
-bool game_hack_component::p_input(space * game_space, float dt)
+void game_hack_component::p_input(space * game_space, float dt)
 {
   float const player_movement_speed = 256.0f;
 
-  // TODO - Really consider changing get_owner to get_* where * is the name of the owner (space,
-  //          entity, etc.)
-  auto const& input_sys = get_owner()->get_owner()->get_owner()->get_input_system();
+  // TODO - get_owning_entity vs get_entity?
+  auto const* game_engine = get_owning_entity()->get_owning_space()->get_owning_engine();
+  auto const& input_sys = game_engine->get_input_system();
   auto * player = game_space->find_entity("player");
 
   if(input_sys.is_key_pressed(SDLK_o))
@@ -148,8 +140,6 @@ bool game_hack_component::p_input(space * game_space, float dt)
       }
     }
   }
-
-  return true;
 }
 
 void game_hack_component::p_logic(space * game_space, float dt)

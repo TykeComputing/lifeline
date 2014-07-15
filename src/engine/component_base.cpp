@@ -17,12 +17,12 @@ component_base::component_base(entity & owner) :
 
 }
 
-entity const* component_base::get_owner() const
+entity const* component_base::get_owning_entity() const
 {
   return p_owner;
 }
 
-entity * component_base::get_owner()
+entity * component_base::get_owning_entity()
 {
   return p_owner;
 }

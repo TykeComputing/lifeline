@@ -245,8 +245,8 @@ public:
   /* Utility*/
   /**********************************************/
 
-  space const* get_owner() const;
-  space * get_owner();
+  space const* get_owning_space() const;
+  space * get_owning_space();
 
   unique_id<entity> const& get_id() { return p_id; }
 

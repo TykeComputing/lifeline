@@ -36,7 +36,7 @@ public:
   static unique_id<logic_component_base> const type_id;
 
 private:
-  bool p_input(space * game_space, float dt);
+  void p_input(space * game_space, float dt);
   void p_logic(space * game_space, float dt);
   void p_physics(space * game_space, float dt);
 

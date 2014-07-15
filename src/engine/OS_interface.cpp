@@ -47,7 +47,7 @@ OS_interface::~OS_interface()
 }
 
 // TODO - Remove return value, have quit signaled via message once messaging system in place.
-void OS_interface::update(engine & e, input_system & input_sys)
+void OS_interface::update(engine & game_engine, input_system & input_sys)
 {
   SDL_Event curr_event;
   while(SDL_PollEvent(&curr_event))
@@ -56,7 +56,7 @@ void OS_interface::update(engine & e, input_system & input_sys)
     {
       case SDL_QUIT:
       {
-        e.set_is_running(false);
+        game_engine.set_is_running(false);
       }
       break;
     }

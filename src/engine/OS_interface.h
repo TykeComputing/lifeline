@@ -26,7 +26,7 @@ public:
   ~OS_interface();
 
   // TODO - Remove engine parameter if messaging is implemented
-  void update(engine & e, input_system & input_sys);
+  void update(engine & game_engine, input_system & input_sys);
 
   std::string get_base_dir() const;
   std::string get_preferred_dir() const; // UNIMPL - TODO
