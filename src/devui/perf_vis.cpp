@@ -38,29 +38,37 @@ void perf_vis::update(float dt)
 
 void perf_vis::draw(debug_draw_manager & hud_ddraw, profiling_records const& records) const
 {
-  size_t num_scaffold_lines = records.get_num_records() * 2;
-  size_t num_graph_lines = records.get_num_records() * records.get_num_record_entries();
+  // Reserve space for all lines upfront
+  size_t const num_scaffold_lines = records.get_num_records() * 2;
+  size_t const num_graph_lines = records.get_num_records() * records.get_num_record_entries();
 
-  size_t num_scaffold_dashed_lines = records.get_num_records() * 1;
+  size_t const num_scaffold_dashed_lines = records.get_num_records() * 1;
 
   hud_ddraw.lines.reserve_lines(num_scaffold_lines + num_graph_lines);
   hud_ddraw.dashed_lines.reserve_lines(num_scaffold_dashed_lines);
 
-  vec2 curr_bottom_left = m_bottom_left;
+  // Draw a graph for each label
+  vec2 const offset_amount = m_settings.dimensions * m_settings.offset_percent;
+  vec2 curr_bottom_left = m_settings.bottom_left;
 
   for(auto const& key_record_pair : records)
   {
-    draw_scaffold(hud_ddraw, m_bottom_left, m_dimensions, vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    draw_scaffold(
+      hud_ddraw,
+      curr_bottom_left,
+      m_settings.dimensions,
+      vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-    curr_bottom_left += m_dimensions + m_offset;
     draw_graph(
       hud_ddraw,
       key_record_pair.first,
       key_record_pair.second,
       records.get_max_num_record_entries(),
-      m_bottom_left,
-      m_dimensions,
+      curr_bottom_left,
+      m_settings.dimensions,
       get_label_color(key_record_pair.first));
+
+    curr_bottom_left += offset_amount;
   }
 }
 

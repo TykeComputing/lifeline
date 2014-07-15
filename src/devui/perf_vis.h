@@ -25,6 +25,36 @@ class debug_draw_manager;
 class perf_vis : public logic_component_base
 {
 public:
+  struct settings
+  {
+    /*
+     * The bottom left of the first drawn graph in hud space.
+     * Default is arbitrary.
+     */
+    vec2 bottom_left = vec2(-200.0f, -100.0f);
+
+    /*
+     * Dimensions of a single graph in hud space.
+     * Default is arbitrary.
+     */
+    vec2 dimensions = vec2(400.0f, 200.0f);
+
+    /*
+     * How far apart graphs are from eachother, in terms of percent of graph dimension.
+     *   For example: if {0.0, 1.0}, graphics will be displayed directly ontop of eachother -
+     *   as they are offset (1.0 * dimensions.y) from eachother
+     * Default is zero, all graphs drawn ontop of eachother.
+     */
+    vec2 offset_percent = vec2::zero;
+
+    /*
+     * Controls how the values of the graph are scaled (where a value == max_time would be
+     *   at the dotted line at the top of the graph).
+     * Default corresponds to frame time for 60 fps.
+     */
+    float max_time = 0.016f;
+  };
+
   perf_vis(entity & owner);
   virtual ~perf_vis() {}
 
@@ -50,22 +80,9 @@ public:
   void set_label_color(std::string const& label, vec4 const& color);
   vec4 get_label_color(std::string const& label) const;
 
+  settings m_settings;
+
   static unique_id<logic_component_base> const type_id;
-
-  /*
-   * The bottom left of the first drawn graph in hud space.
-   */
-  vec2 m_bottom_left = vec2(-200.0f, -100.0f);
-
-  /*
-   * How far apart graphs will be drawn from eachother, excluding graph dimensions.
-   */
-  vec2 m_offset = vec2::zero;
-
-  /*
-   * Dimensions of a single graph in hud space.
-   */
-  vec2 m_dimensions = vec2(400.0f, 200.0f);
 
 private:
   std::unordered_map<std::string, vec4> p_label_colors;

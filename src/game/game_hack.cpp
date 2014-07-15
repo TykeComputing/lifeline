@@ -100,14 +100,57 @@ void game_hack_component::p_input(float dt)
     p_ddraw_enabled = !p_ddraw_enabled;
   }
 
+  // Helper lambdas for perf_vis controls. Here to reduce code dulpication, since we only want
+  //   to search for perf_vis when one of the related buttons is pressed.
+  auto get_perf_vis_space = [game_engine]()->space *
+  {
+    return game_engine->find_space("perf_vis");
+  };
+
+  auto get_perf_vis_component = [get_perf_vis_space, game_engine]()->perf_vis *
+  {
+    auto * perf_vis_space = get_perf_vis_space();
+    if(perf_vis_space)
+    {
+      auto * perf_vis_ent = perf_vis_space->find_entity("perf_vis");
+      if(perf_vis_ent)
+      {
+        return perf_vis_ent->get_component<perf_vis>();
+      }
+    }
+
+    return nullptr;
+  };
 
   // Toggle perf vis on/off
   if(input_sys.is_key_triggered(SDLK_p))
   {
-    auto * perf_vis_space = game_engine->find_space("perf_vis");
+    auto * perf_vis_space = get_perf_vis_space();
     if(perf_vis_space)
     {
       perf_vis_space->set_is_active(!perf_vis_space->get_is_active());
+    }
+  }
+
+  // Perf vis mode - default fullscreen
+  if(input_sys.is_key_triggered(SDLK_LEFTBRACKET))
+  {
+    auto * perf_vis_comp = get_perf_vis_component();
+    if(perf_vis_comp)
+    {
+      perf_vis_comp->m_settings = perf_vis::settings{};
+    }
+  }
+
+  // Perf vis mode - default fullscreen
+  if(input_sys.is_key_triggered(SDLK_RIGHTBRACKET))
+  {
+    auto * perf_vis_comp = get_perf_vis_component();
+    if(perf_vis_comp)
+    {
+      perf_vis_comp->m_settings.bottom_left.set(-64.0f, -100.0f);
+      perf_vis_comp->m_settings.offset_percent.set(0.0f, 1.25f);
+      perf_vis_comp->m_settings.dimensions.set(128.0f, 32.0f);
     }
   }
 
