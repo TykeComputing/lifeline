@@ -3,7 +3,7 @@ Lifeline (WORKING TITLE)
 
 Synopsis
 -------------
-Lifeline will be a 2D game/engine. What exactly the game will be is undecided at this point.
+Lifeline will be a 2D game.
 
 Setup Build Environment
 -------------

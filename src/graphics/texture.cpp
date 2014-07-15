@@ -49,7 +49,14 @@ void texture::set_data_2D(
   glTexImage2D(target, level, internal_format, width, height, 0, format, type, data);
   LE_FATAL_ERROR_IF_GL_ERROR();
 
+  p_is_valid = (data != nullptr);
+
   unbind(target);
+}
+
+bool texture::is_valid() const
+{
+  return p_is_valid;
 }
 
 ivec3 const& texture::get_dimensions() const
@@ -138,6 +145,11 @@ void texture2D::set_data(
     format,
     type,
     data);
+}
+
+bool texture2D::is_valid() const
+{
+  return p_texture.is_valid();
 }
 
 ivec2 texture2D::get_dimensions() const

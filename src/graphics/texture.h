@@ -36,6 +36,8 @@ public:
     GLenum type,
     GLvoid const* data);
 
+  bool is_valid() const;
+
   ivec3 const& get_dimensions() const;
 
   static void set_active_unit(GLuint unit_index);
@@ -48,6 +50,8 @@ public:
 private:
   GLuint p_raw_name = 0;
   ivec3 p_dimensions = ivec3::zero;
+
+  bool p_is_valid = false;
 };
 
 class texture2D
@@ -66,6 +70,8 @@ public:
     GLenum type,
     GLvoid const* data);
 
+  bool is_valid() const;
+
   ivec2 get_dimensions() const;
 
   static void bind(texture2D const& tex2D);
@@ -77,6 +83,8 @@ private:
   // Composition to disallow conversion from texture2D to texture (which would allow binding to
   //   other targets). TODO - Evalute this decision after using for a bit.
   texture p_texture;
+
+
 };
 
 } // namespace LE
