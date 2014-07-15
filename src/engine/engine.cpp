@@ -15,8 +15,6 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <common/timer.h>
 
 // TODO - Remove once all game logic is moved from hack to logic components
-#include <game/game_hack.h>
-#include <devui/perf_vis.h>
 #include <common/resource_exception.h>
 
 namespace LE
@@ -25,8 +23,7 @@ namespace LE
 engine::engine() :
   p_os_interface(),
   p_window(),
-  p_graphics_context(p_window),
-  p_space(*this)
+  p_graphics_context(p_window)
 {
   log_status(log_scope::ENGINE, "Base Directory: {}", p_os_interface.get_base_dir());
   //log_status(log_scope::ENGINE, "Preferred Directory: {}") << p_os_interface.get_preferred_dir();
@@ -38,15 +35,6 @@ void engine::run()
 {
   try
   {
-    /////////////////////////////////////////////////////
-    // HACK
-    // TODO - Remove
-    auto * game_hack_ent = p_space.create_entity("game_hack");
-    game_hack_ent->create_component<game_hack_component>();
-    auto * perf_vis_ent = p_space.create_entity("perf_vis");
-    perf_vis_ent->create_component<perf_vis>();
-    /////////////////////////////////////////////////////
-
     // Credit for method of fixed time stepping:
     // http://ludobloom.com/tutorials/timestep.html
     // TODO - Test and improve.
@@ -88,9 +76,61 @@ void engine::run()
   }
   catch(resource_exception const& e)
   {
-    log_error(log_scope::ENGINE, "{}", e.what());
-    LE_FATAL_ERROR("ERROR");
+    log_error(log_scope::ENGINE, "{} - Uncaught resource exception, exiting!", e.what());
+    LE_FATAL_ERROR("Uncaught resource exception!");
+    return;
   }
+  catch(message_exception const& e)
+  {
+    log_error(log_scope::ENGINE, "{} - Uncaught message exception, exiting!", e.what());
+    LE_FATAL_ERROR("Uncaught message exception");
+    return;
+  }
+}
+
+space * engine::create_space(std::string const& name)
+{
+  for(auto const& curr_space : p_spaces)
+  {
+    if(curr_space->get_name() == name)
+    {
+      log_error(log_scope::ENGINE,
+        "Attempting to create space named \"{0}\", but a space with the name \"{0}\" already exists.",
+        name);
+
+      return nullptr;
+    }
+  }
+
+  p_spaces.emplace_back(new space(name));
+  log_status(log_scope::ENGINE,
+    "Creating space named named \"{}\", {} spaces now in this engine.",
+    name,
+    p_spaces.size());
+
+  auto * new_space = p_spaces.back().get();
+  new_space->set_owner(this);
+
+  return new_space;
+}
+
+void engine::remove_space(std::string const& name)
+{
+  for(auto space_it = p_spaces.begin(); space_it != p_spaces.end(); ++space_it)
+  {
+    if((*space_it)->get_name() == name)
+    {
+      p_spaces.erase(space_it);
+
+      log_status(log_scope::ENGINE,
+        "Removing space named \"{}\", {} spaces now in this engine.",
+        name);
+    }
+  }
+
+  log_error(log_scope::ENGINE,
+    "Attempting to remove space named \"{}\", no such space exists.",
+    name);
 }
 
 window const& engine::get_window() const
@@ -117,36 +157,27 @@ void engine::step(float dt)
 {
   high_resolution_profiling_point pp(p_profiling_records, "update");
 
-  try
+  for(auto const& curr_space : p_spaces)
   {
-    // TODO - Iterate over all spaces
+    curr_space->clear_ddraw();
 
-    // We only want to render debug drawing from most recent update.
-    p_space.clear_ddraw();
+    p_logic_sys.update(*curr_space, dt);
 
-    p_logic_sys.update(p_space, dt);
+    curr_space->remove_dead();
   }
-  catch(resource_exception const& e)
-  {
-    log_error(log_scope::ENGINE, "{}", e.what());
-    LE_FATAL_ERROR("Uncaught resource exception!");
-    return;
-  }
-  catch(message_exception const& e)
-  {
-    log_error(log_scope::ENGINE, "{}", e.what());
-    LE_FATAL_ERROR("Uncaught message exception!");
-    return;
-  }
-
-  p_space.remove_dead();
 }
 
 void engine::render_frame()
 {
   {
     high_resolution_profiling_point pp(p_profiling_records, "graphics_system");
-    p_graphics_sys.render(p_space);
+
+    p_graphics_sys.clear_render_target();
+
+    for(auto const& curr_space : p_spaces)
+    {
+      p_graphics_sys.render(*curr_space);
+    }
   }
 
   {

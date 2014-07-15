@@ -85,7 +85,7 @@ void game_hack_component::update(float dt)
   if(p_input(get_owner()->get_owner(), dt) == false)
   {
     // TODO - get_owner vs get_<owner_type>?
-    get_owner()->get_owner()->get_owner().set_is_running(false);
+    get_owner()->get_owner()->get_owner()->set_is_running(false);
 
     return;
   }

@@ -17,6 +17,10 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <engine/engine.h>
 
+#include <devui/perf_vis.h>
+
+#include <game/game_hack.h>
+
 typedef void(*handle_arg_func)(LE::engine & game_engine, std::string const& val);
 
 void handle_set_resource_dir(LE::engine & game_engine, std::string const& val)
@@ -68,8 +72,17 @@ int main(int arg_count, char *args[])
   try
   {
     LE::engine game_engine;
-
     handle_args(game_engine,  arg_count, args);
+
+    auto * dev_ui_space = game_engine.create_space("dev_ui");
+    auto * perf_vis_ent = dev_ui_space->create_entity("perf_vis");
+    perf_vis_ent->create_component<LE::perf_vis>();
+
+    auto * game_space = game_engine.create_space("game");
+    auto * game_hack_ent = game_space->create_entity("game_hack");
+    game_hack_ent->create_component<LE::game_hack_component>();
+
+
 
     game_engine.run();
   }

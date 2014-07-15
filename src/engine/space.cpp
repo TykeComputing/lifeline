@@ -14,8 +14,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-space::space(engine & owner) :
-  p_owner(owner)
+space::space(std::string const& name) :
+  p_name(name)
 {
 
 }
@@ -115,14 +115,24 @@ void space::clear_ddraw()
 /**********************************************/
 /* Utility */
 /**********************************************/
-engine & space::get_owner()
+std::string const& space::get_name() const
+{
+  return p_name;
+}
+
+engine * space::get_owner()
 {
   return p_owner;
 }
 
-engine const& space::get_owner() const
+engine const* space::get_owner() const
 {
   return p_owner;
+}
+
+void space::set_owner(engine * new_owner)
+{
+  p_owner = new_owner;
 }
 
 } // namespace LE

@@ -25,6 +25,8 @@ class engine;
 class space
 {
 public:
+  space(std::string const& name);
+
   /**********************************************/
   /* Entity Management */
   /**********************************************/
@@ -34,13 +36,13 @@ public:
 
   typedef std::vector<component_base *> component_type_container;
 
-  space(engine & owner);
-
   entity * create_entity(std::string const& name);
 
   entity * find_entity(std::string const& name);
   entity * find_entity(unique_id<entity> const& id);
 
+  // TODO - Remove, replace with ability to get containers of components of a given type
+  //          for engine components and all logic components.
   entity_container::iterator entity_begin() { return p_entities.begin(); }
   entity_container::const_iterator entity_cbegin() const { return p_entities.cbegin(); }
   entity_container::iterator entity_end() { return p_entities.end(); }
@@ -66,13 +68,20 @@ public:
   /**********************************************/
   /* Utility */
   /**********************************************/
-  engine & get_owner();
-  engine const& get_owner() const;
+  std::string const& get_name() const;
+
+  engine * get_owner();
+  engine const* get_owner() const;
 
 private:
+  void set_owner(engine * new_owner);
+
+  std::string p_name;
   entity_container p_entities;
 
-  engine & p_owner;
+  engine * p_owner = nullptr;
+
+  friend engine;
 };
 
 } // namespace LE

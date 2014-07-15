@@ -33,7 +33,7 @@ void perf_vis::update(float dt)
 
   auto * owning_space = get_owner()->get_owner();
   auto const& owning_engine = owning_space->get_owner();
-  draw(owning_space->m_hud_ddraw, owning_engine.get_profiling_records());
+  draw(owning_space->m_hud_ddraw, owning_engine->get_profiling_records());
 }
 
 void perf_vis::draw(debug_draw_manager & hud_ddraw, profiling_records const& records) const

@@ -21,6 +21,7 @@ class graphics_system
 public:
   graphics_system();
 
+  void clear_render_target();
   void render(space & target);
 
   /*

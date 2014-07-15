@@ -83,6 +83,11 @@ graphics_system::graphics_system()
     "shaders/2D/debug_draw.frag");
 }
 
+void graphics_system::clear_render_target()
+{
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void graphics_system::render(space & target)
 {
   // HACK /////////////////////////////////////////
@@ -106,8 +111,6 @@ void graphics_system::render(space & target)
   /////////////////////////////////////////////////
 
   LE::shader_program::use(*p_textured_shader_prog);
-
-  glClear(GL_COLOR_BUFFER_BIT);
 
   GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
   GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
