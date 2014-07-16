@@ -97,7 +97,8 @@ space * engine::create_space(std::string const& name)
       name);
    }
 
-  p_spaces.emplace_back(new space(name));
+  // Insert new spaces at the front to ensure oldest spaces are drawn last.
+  p_spaces.emplace(p_spaces.begin(), new space(name));
   log_status(log_scope::ENGINE,
     "Creating space named named \"{}\", {} spaces now in this engine.",
     name,

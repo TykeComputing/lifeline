@@ -30,6 +30,9 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
 
+// TODO - REMOVE
+#include <SDL2/SDL_ttf.h>
+
 namespace LE
 {
 
@@ -42,12 +45,35 @@ void game_hack_component::initialize()
   space * game_space = get_owning_entity()->get_owning_space();
 
   {
+    // TEXT /////////////////////////
+    TTF_Font * font = TTF_OpenFont(
+      (resource_manager::get_resource_dir() + "fonts/rambla/Rambla-Regular.ttf").c_str(),
+      16);
+    SDL_Surface * text_surface = TTF_RenderText_Blended(
+      font,
+      "Test text 101!!",
+      SDL_Color{255, 255, 255, 255});
+
+    texture2D * text_texture = new texture2D;
+
+    text_texture->set_data(
+      GL_RGBA8,
+      text_surface->w,
+      text_surface->h,
+      GL_RGBA,
+      GL_UNSIGNED_BYTE,
+      text_surface->pixels);
+    SDL_FreeSurface(text_surface);
+    TTF_CloseFont(font);
+
     auto * new_ent = game_space->create_entity("player");
     new_ent->get_component<transform_component>()->set_pos(0.0f, 100.0f);
     new_ent->get_component<transform_component>()->set_scale(1.0f);
-
+//resource_manager::load<texture2D>("textures/player.png")
     new_ent->create_component<sprite_component>(
-      resource_manager::load<texture2D>("textures/player.png"));
+      text_texture);
+
+    // TEXT TEST END ////////////////
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
