@@ -30,48 +30,23 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <graphics/vertex_array.h>
 #include <graphics/vertex_buffer.h>
 
-// TODO - REMOVE
-#include <SDL2/SDL_ttf.h>
-
 namespace LE
 {
 
-unique_id<logic_component_base> const game_hack_component::type_id;
+unique_id<logic_component_base> const game_hack::type_id;
 
-void game_hack_component::initialize()
+void game_hack::initialize()
 {
   LE_FATAL_ERROR_IF(get_owning_entity() == nullptr, "Owner is null!");
   LE_FATAL_ERROR_IF(get_owning_entity()->get_owning_space() == nullptr, "Space is null!");
   space * game_space = get_owning_entity()->get_owning_space();
 
   {
-    // TEXT /////////////////////////
-    TTF_Font * font = TTF_OpenFont(
-      (resource_manager::get_resource_dir() + "fonts/rambla/Rambla-Regular.ttf").c_str(),
-      16);
-    SDL_Surface * text_surface = TTF_RenderText_Blended(
-      font,
-      "Test text 101!!",
-      SDL_Color{255, 255, 255, 255});
-
-    texture2D * text_texture = new texture2D;
-
-    text_texture->set_data(
-      GL_RGBA8,
-      text_surface->w,
-      text_surface->h,
-      GL_RGBA,
-      GL_UNSIGNED_BYTE,
-      text_surface->pixels);
-    SDL_FreeSurface(text_surface);
-    TTF_CloseFont(font);
-
     auto * new_ent = game_space->create_entity("player");
     new_ent->get_component<transform_component>()->set_pos(0.0f, 100.0f);
     new_ent->get_component<transform_component>()->set_scale(1.0f);
-//resource_manager::load<texture2D>("textures/player.png")
     new_ent->create_component<sprite_component>(
-      text_texture);
+      resource_manager::load<texture2D>("textures/player.png"));
 
     // TEXT TEST END ////////////////
   }
@@ -93,7 +68,7 @@ void game_hack_component::initialize()
   }
 }
 
-void game_hack_component::update(float dt)
+void game_hack::update(float dt)
 {
   LE_FATAL_ERROR_IF(get_owning_entity() == nullptr, "Owner is null!");
   LE_FATAL_ERROR_IF(get_owning_entity()->get_owning_space() == nullptr, "Space is null!");
@@ -103,7 +78,7 @@ void game_hack_component::update(float dt)
   p_physics(dt);
 }
 
-void game_hack_component::p_input(float dt)
+void game_hack::p_input(float dt)
 {
   float const player_movement_speed = 256.0f;
 
@@ -132,7 +107,7 @@ void game_hack_component::p_input(float dt)
     return game_engine->find_space("perf_vis");
   };
 
-  auto get_perf_vis_component = [get_perf_vis_space, game_engine]()->perf_vis_component *
+  auto get_perf_vis_component = [get_perf_vis_space, game_engine]()->perf_vis *
   {
     auto * perf_vis_space = get_perf_vis_space();
     if(perf_vis_space)
@@ -140,7 +115,7 @@ void game_hack_component::p_input(float dt)
       auto * perf_vis_ent = perf_vis_space->find_entity("perf_vis");
       if(perf_vis_ent)
       {
-        return perf_vis_ent->get_component<perf_vis_component>();
+        return perf_vis_ent->get_component<perf_vis>();
       }
     }
 
@@ -163,7 +138,7 @@ void game_hack_component::p_input(float dt)
     auto * perf_vis_comp = get_perf_vis_component();
     if(perf_vis_comp)
     {
-      perf_vis_comp->m_settings = perf_vis_component::settings{};
+      perf_vis_comp->m_settings = perf_vis::settings{};
     }
   }
 
@@ -232,7 +207,7 @@ void game_hack_component::p_input(float dt)
 }
 
 // Super hacky/simple game logic
-void game_hack_component::p_logic(float dt)
+void game_hack::p_logic(float dt)
 {
   float const bullet_movement_speed = 512.0f;
 
@@ -288,7 +263,7 @@ void game_hack_component::p_logic(float dt)
   }
 }
 
-void game_hack_component::p_physics(float dt)
+void game_hack::p_physics(float dt)
 {
   LE_UNUSED_VAR(dt);
 
