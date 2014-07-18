@@ -75,7 +75,7 @@ int main(int arg_count, char *args[])
     LE::engine game_engine;
 
     auto * perf_vis_space = game_engine.create_space("perf_vis");
-    auto * perf_vis_ent = dev_ui_space->create_entity("perf_vis");
+    auto * perf_vis_ent = perf_vis_space->create_entity("perf_vis");
     perf_vis_ent->create_component<LE::perf_vis>();
 
     auto * game_space = game_engine.create_space("game");
