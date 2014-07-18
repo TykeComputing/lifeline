@@ -110,8 +110,6 @@ private:
     std::string const& text,
     bool update_text_if_exists);
 
-  void p_update_max_time_entity_text();
-
   std::unordered_map<std::string, vec4> p_label_colors;
 
   // Settings

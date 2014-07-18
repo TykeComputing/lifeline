@@ -106,7 +106,11 @@ vec4 perf_vis::get_label_color(std::string const& label) const
 void perf_vis::set_max_time(float value)
 {
   p_max_time = value;
-  p_update_max_time_entity_text();
+
+  p_get_text_entity(
+    "pv_max_time_indicator",
+    fmt::format("Max Time: {}", p_max_time),
+    true);
 }
 
 void perf_vis::set_text_point_size(unsigned value)
@@ -181,7 +185,7 @@ void perf_vis::p_draw_graph(
 entity * perf_vis::p_get_text_entity(
     std::string const& name,
     std::string const& text,
-    bool update_text_if_exists)
+    bool update_text_if_preexisting)
 {
   std::string const ent_name = "pv_" + name;
 
@@ -196,7 +200,7 @@ entity * perf_vis::p_get_text_entity(
   }
   else
   {
-    if(update_text_if_exists)
+    if(update_text_if_preexisting)
     {
       auto * text_s = result->get_component<sprite_component>();
       LE_FATAL_ERROR_IF(text_s == nullptr, "Missing sprite component!");
@@ -206,15 +210,6 @@ entity * perf_vis::p_get_text_entity(
   }
 
   return result;
-}
-
-void perf_vis::p_update_max_time_entity_text()
-{
-  // Draw max time indicator
-  p_get_text_entity(
-    "pv_max_time_indicator",
-    fmt::format("Max Time: {}", p_max_time),
-    true);
 }
 
 } // namespace LE
