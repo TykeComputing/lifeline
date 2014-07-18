@@ -4,19 +4,25 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
-#ifndef LE_ENGINE_SPRITE_TEXT_SYSTEM_H
-#define LE_ENGINE_SPRITE_TEXT_SYSTEM_H
+#ifndef LE_ENGINE_TTF_SYSTEM_H
+#define LE_ENGINE_TTF_SYSTEM_H
 
 #include <SDL2/SDL_ttf.h>
+
+#include <graphics/texture.h>
 
 namespace LE
 {
 
-class sprite_text_system
+// Temporary hack for font creation
+class TTF_system
 {
 public:
-  sprite_text_system();
-  ~sprite_text_system();
+  TTF_system();
+  ~TTF_system();
+
+  // NOTE: TTF system must created before calling.
+  static texture2D * render_text_to_texture(std::string const& text, unsigned size);
 
 private:
 };

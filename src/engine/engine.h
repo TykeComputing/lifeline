@@ -18,7 +18,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <engine/logic_system.h>
 #include <engine/OS_interface.h>
 #include <engine/space.h>
-#include <engine/sprite_text_system.h>
+#include <engine/TTF_system.h>
 #include <engine/window.h>
 
 namespace LE
@@ -65,7 +65,7 @@ private:
   input_system p_input_sys;
   logic_system p_logic_sys;
   graphics_system p_graphics_sys;
-  sprite_text_system p_sprite_text_sys; // TODO - merge or move into graphics system?
+  TTF_system p_sprite_text_sys; // TODO - merge or move into graphics system?
 
   std::vector<std::unique_ptr<space>> p_spaces;
 

@@ -133,24 +133,54 @@ void game_hack::p_input(float dt)
   }
 
   // Perf vis mode - default fullscreen
-  if(input_sys.is_key_triggered(SDLK_LEFTBRACKET))
+  if(input_sys.is_key_pressed(SDLK_LSHIFT))
   {
-    auto * perf_vis_comp = get_perf_vis_component();
-    if(perf_vis_comp)
+    if(input_sys.is_key_triggered(SDLK_LEFTBRACKET))
     {
-      perf_vis_comp->m_settings = perf_vis::settings{};
+      auto * perf_vis_comp = get_perf_vis_component();
+      if(perf_vis_comp)
+      {
+        perf_vis_comp->set_max_time(0.016f);
+      }
+    }
+
+    // Perf vis mode - default fullscreen
+    if(input_sys.is_key_triggered(SDLK_RIGHTBRACKET))
+    {
+      auto * perf_vis_comp = get_perf_vis_component();
+      if(perf_vis_comp)
+      {
+        perf_vis_comp->set_max_time(0.004f);
+      }
     }
   }
-
-  // Perf vis mode - default fullscreen
-  if(input_sys.is_key_triggered(SDLK_RIGHTBRACKET))
+  else
   {
-    auto * perf_vis_comp = get_perf_vis_component();
-    if(perf_vis_comp)
+    if(input_sys.is_key_triggered(SDLK_LEFTBRACKET))
     {
-      perf_vis_comp->m_settings.bottom_left.set(-64.0f, -100.0f);
-      perf_vis_comp->m_settings.offset_percent.set(0.0f, 1.25f);
-      perf_vis_comp->m_settings.dimensions.set(128.0f, 32.0f);
+      auto * perf_vis_comp = get_perf_vis_component();
+      if(perf_vis_comp)
+      {
+        perf_vis_comp->set_bottom_left(vec2(-200.f, -100.f));
+        perf_vis_comp->set_dimensions(vec2(400.f, 200.f));
+        perf_vis_comp->set_offset_percent(vec2::zero);
+        perf_vis_comp->set_text_point_size(16);
+        perf_vis_comp->set_label_text_offset(2);
+      }
+    }
+
+    // Perf vis mode - default fullscreen
+    if(input_sys.is_key_triggered(SDLK_RIGHTBRACKET))
+    {
+      auto * perf_vis_comp = get_perf_vis_component();
+      if(perf_vis_comp)
+      {
+        perf_vis_comp->set_bottom_left(vec2(-64.f, -100.f));
+        perf_vis_comp->set_dimensions(vec2(128.f, 32.f));
+        perf_vis_comp->set_offset_percent(vec2(0.f, 1.25f));
+        perf_vis_comp->set_text_point_size(12);
+        perf_vis_comp->set_label_text_offset(2);
+      }
     }
   }
 

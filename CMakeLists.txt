@@ -131,10 +131,10 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/space.h
   src/engine/sprite_component.cpp
   src/engine/sprite_component.h
-  src/engine/sprite_text_system.cpp
-  src/engine/sprite_text_system.h
   src/engine/transform_component.cpp
   src/engine/transform_component.h
+  src/engine/TTF_system.cpp
+  src/engine/TTF_system.h
   src/engine/window.cpp
   src/engine/window.h
 

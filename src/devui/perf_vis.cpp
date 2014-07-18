@@ -6,18 +6,16 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "perf_vis.h"
 
-#include <graphics/debug_draw_manager.h>
+#include <common/cppformat.h>
 
 #include <engine/engine.h>
 #include <engine/entity.h>
 #include <engine/space.h>
 #include <engine/sprite_component.h>
 #include <engine/transform_component.h>
+#include <engine/TTF_system.h>
 
-// TODO - REMOVE
-#include <SDL2/SDL_ttf.h>
-#include <common/resource_manager.h>
-#include <common/fatal_error.h>
+#include <graphics/debug_draw_manager.h>
 
 namespace LE
 {
@@ -51,15 +49,15 @@ void perf_vis::update(float dt)
   hud_ddraw.dashed_lines.reserve_lines(num_scaffold_dashed_lines);
 
   // Draw a graph for each label
-  vec2 const offset_amount = m_settings.dimensions * m_settings.offset_percent;
-  vec2 curr_bottom_left = m_settings.bottom_left;
+  vec2 const offset_amount = p_dimensions * p_offset_percent;
+  vec2 curr_bottom_left = p_bottom_left;
 
   for(auto const& key_record_pair : records)
   {
     p_draw_scaffold(
       hud_ddraw,
       curr_bottom_left,
-      m_settings.dimensions,
+      p_dimensions,
       vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     p_draw_graph(
@@ -68,11 +66,23 @@ void perf_vis::update(float dt)
       key_record_pair.second,
       records.get_max_num_record_entries(),
       curr_bottom_left,
-      m_settings.dimensions,
+      p_dimensions,
       get_label_color(key_record_pair.first));
 
     curr_bottom_left += offset_amount;
   }
+
+  auto * max_time_text_ent = p_get_text_entity(
+    "pv_max_time_indicator",
+    fmt::format("Max Time: {}", p_max_time),
+    p_text_size_is_dirty);
+  auto * max_time_text_t = max_time_text_ent->get_component<transform_component>();
+  auto * max_time_text_s = max_time_text_ent->get_component<sprite_component>();
+  max_time_text_t->set_pos(
+    p_bottom_left.x() + (max_time_text_s->get_dimensions().x() / 2.0f),
+    p_bottom_left.y() - (max_time_text_s->get_dimensions().y() / 2.0f));
+
+  p_text_size_is_dirty = false;
 }
 
 void perf_vis::set_label_color(std::string const& label, vec4 const& color)
@@ -93,11 +103,23 @@ vec4 perf_vis::get_label_color(std::string const& label) const
   }
 }
 
+void perf_vis::set_max_time(float value)
+{
+  p_max_time = value;
+  p_update_max_time_entity_text();
+}
+
+void perf_vis::set_text_point_size(unsigned value)
+{
+  p_text_point_size = value;
+  p_text_size_is_dirty = true;
+}
+
 void perf_vis::p_draw_scaffold(
-  debug_draw_manager & hud_ddraw,
-  vec2 const& bottom_left,
-  vec2 const& dimensions,
-  vec4 const& color) const
+    debug_draw_manager & hud_ddraw,
+    vec2 const& bottom_left,
+    vec2 const& dimensions,
+    vec4 const& color) const
 {
   vec2 const bottom_right(bottom_left.x() + dimensions.x(), bottom_left.y());
   vec2 const top_left(bottom_left.x(), bottom_left.y() + dimensions.y());
@@ -125,10 +147,9 @@ void perf_vis::p_draw_graph(
   // We will always ignore the most recent entry since that will be the frame currently in
   //   progress. Thus our graph will have max_num_records_entries - 1 plotted points.
   float const delta_x = dimensions.x() / (max_num_records_entries - 1);
-  float const target_val = 0.016f;
 
   vec2 prev_point = bottom_left;
-  prev_point.y() += (record.front() / target_val) * dimensions.y();
+  prev_point.y() += (record.front() / p_max_time) * dimensions.y();
 
   float curr_x = bottom_left.x() + delta_x;
 
@@ -138,7 +159,7 @@ void perf_vis::p_draw_graph(
       ++record_entry_it)
   {
     vec2 curr_point(curr_x, bottom_left.y());
-    curr_point.y() += (*record_entry_it / target_val) * dimensions.y();
+    curr_point.y() += (*record_entry_it / p_max_time) * dimensions.y();
 
     hud_ddraw.lines.add_line(prev_point, curr_point, color);
 
@@ -148,60 +169,52 @@ void perf_vis::p_draw_graph(
   }
 
   // Draw label for graph
-  auto * label_text_ent = p_get_label_text_entity(name);
+  auto * label_text_ent = p_get_text_entity(name, name, p_text_size_is_dirty);
   auto * label_text_t = label_text_ent->get_component<transform_component>();
   auto * label_text_s = label_text_ent->get_component<sprite_component>();
   label_text_t->set_pos(
-    bottom_left.x() - (label_text_s->get_dimensions().x() / 2.0f) - m_settings.label_text_offset,
-    bottom_left.y() + ((record.front() /target_val) * dimensions.y()) );
+    bottom_left.x() - (label_text_s->get_dimensions().x() / 2.0f) - p_label_text_offset,
+    bottom_left.y() + ((record.front() /p_max_time) * dimensions.y()) );
   label_text_s->m_color = color;
 }
 
-entity * perf_vis::p_get_label_text_entity(std::string const& name)
+entity * perf_vis::p_get_text_entity(
+    std::string const& name,
+    std::string const& text,
+    bool update_text_if_exists)
 {
   std::string const ent_name = "pv_" + name;
+
   auto * result = get_owning_entity()->get_owning_space()->find_entity(ent_name);
   if(result == nullptr)
   {
     // An entity for this label's text does not yet exist, create it.
     result = get_owning_entity()->get_owning_space()->create_entity(ent_name);
 
-    // TODO: Move text hack
-    // TEXT HACK /////////////////////////
-    TTF_Font * font = TTF_OpenFont(
-      (resource_manager::get_resource_dir() + "fonts/rambla/Rambla-Regular.ttf").c_str(),
-      m_settings.label_text_size);
-    if(font == nullptr)
+    result->create_component<sprite_component>(
+      TTF_system::render_text_to_texture(text, p_text_point_size));
+  }
+  else
+  {
+    if(update_text_if_exists)
     {
-      LE_FATAL_ERROR(TTF_GetError());
-      SDL_ClearError();
+      auto * text_s = result->get_component<sprite_component>();
+      LE_FATAL_ERROR_IF(text_s == nullptr, "Missing sprite component!");
+      text_s->set_texture(
+        TTF_system::render_text_to_texture(text, p_text_point_size));
     }
-
-    SDL_Surface * text_surface = TTF_RenderText_Blended(
-      font,
-      name.c_str(),
-      SDL_Color{255, 255, 255, 255});
-    if(font == nullptr)
-    {
-      LE_FATAL_ERROR(TTF_GetError());
-      SDL_ClearError();
-    }
-
-    texture2D * text_texture = new texture2D;
-    text_texture->set_data(
-      GL_RGBA8,
-      text_surface->w,
-      text_surface->h,
-      GL_RGBA,
-      GL_UNSIGNED_BYTE,
-      text_surface->pixels);
-    SDL_FreeSurface(text_surface);
-    TTF_CloseFont(font);
-
-    result->create_component<sprite_component>(text_texture);
   }
 
   return result;
+}
+
+void perf_vis::p_update_max_time_entity_text()
+{
+  // Draw max time indicator
+  p_get_text_entity(
+    "pv_max_time_indicator",
+    fmt::format("Max Time: {}", p_max_time),
+    true);
 }
 
 } // namespace LE
