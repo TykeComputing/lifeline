@@ -12,10 +12,13 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-/*
- * Used to execute any non-engine logic.
+/*!
+ * \brief Used to execute any non-engine logic.
  *
- * WARNING: Funtionality that requires access to any portion of the engine, such as access to
+ * \note All components derived from this class must have a static public member `type_id` of
+ *   type `unique_id<logic_component_base> const`.
+ *
+ * \warning Funtionality that requires access to any portion of the engine, such as access to
  *   owning entity, should **never** be used in the constructor (and should be avoided in
  *   destructor). Instead initialize/teardown should be used.
  */
@@ -24,18 +27,18 @@ class logic_component_base : public component_base
 public:
   virtual ~logic_component_base() {}
 
-  /*
-   * Will be called after creation, once component is fully linked into the engine.
+  /*!
+   * \brief Called after creation, once component is fully linked into the engine.
    */
   virtual void initialize() {}
 
-  /*
-   * Called once per engine time step.
+  /*!
+   * \brief Called once per engine step.
    */
   virtual void update(float dt) { LE_UNUSED_VAR(dt); }
 
-  /*
-   * Called just before destruction.
+  /*!
+   * \brief Called just before destruction.
    */
   virtual void teardown() {}
 

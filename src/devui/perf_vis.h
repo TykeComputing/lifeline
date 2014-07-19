@@ -106,6 +106,9 @@ public:
   void set_label_text_offset(int value) { p_label_text_offset = value; }
   int get_label_text_offset() const { return p_label_text_offset; }
 
+  /*!
+   * \brief \see component_base
+   */
   static unique_id<logic_component_base> const type_id;
 
 private:
