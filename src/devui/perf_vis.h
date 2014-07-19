@@ -27,7 +27,8 @@ class debug_draw_manager;
  *
  * Uses results stored in the owning engine's profiling_records to draw performance
  *   visualization graphs (using the owning space's HUD debug_draw_manager). Will create new
- *   child entites (\ref entity) to display text labels for each graph.
+ *   child \ref entity "entities" to display text labels for each graph.
+ *
  */
 class perf_vis : public logic_component_base
 {
@@ -55,7 +56,7 @@ public:
   /*!
    * \brief The bottom left of the first drawn graph in HUD space.
    *
-   * Default is arbitrary.
+   * \note Default is arbitrary.
    */
   void set_bottom_left(vec2 const& value) { p_bottom_left = value; }
   vec2 const& get_bottom_left() const { return p_bottom_left; }
@@ -63,7 +64,7 @@ public:
   /*!
    * \brief Dimensions of a single graph in HUD space.
    *
-   * Default is arbitrary.
+   * \note Default is arbitrary.
    */
   void set_dimensions(vec2 const& value) { p_dimensions = value; }
   vec2 const& get_dimensions() const { return p_dimensions; }
@@ -73,7 +74,8 @@ public:
    *
    * For example: if {0.0, 1.0}, graphics will be displayed directly ontop of eachother - as
    *   they are offset (1.0 * dimensions.y) from eachother.
-   * Default is zero, all graphs drawn ontop of eachother.
+   *
+   * \note Default is zero, all graphs drawn ontop of eachother.
    */
   void set_offset_percent(vec2 const& value) { p_offset_percent = value; }
   vec2 const& get_offset_percent() const { return p_offset_percent; }
@@ -83,7 +85,8 @@ public:
    *
    * If a value on the graph is equal to max_time it will appear at the dotted line at the top
    *   of the graph).
-   * Default is approximate frame time for 60 fps (0.016).
+   *
+   * \note Default is approximate frame time for 60 fps (0.016).
    */
   void set_max_time(float value);
   float get_max_time() const { return p_max_time; }
@@ -94,7 +97,7 @@ public:
   void set_text_point_size(unsigned value);
 
   /*!
-   * \brief \ref set_text_point_size()
+   * \brief \see set_text_point_size(unsigned value)
    */
   unsigned get_text_point_size() const { return p_text_point_size; }
 

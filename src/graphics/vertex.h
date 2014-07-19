@@ -14,10 +14,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-LE_ENUM_3(vertex_attrib_type,
-  position,
-  texcoord,
-  color)
+LE_ENUM_3(vertex_attrib_type, position, texcoord, color)
 
 struct vertex
 {
