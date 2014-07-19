@@ -19,7 +19,6 @@ LE_ENUM_3(vertex_attrib_type,
   texcoord,
   color)
 
-
 struct vertex
 {
   vertex(vec2 const& position, vec2 const& texcoord);

@@ -37,6 +37,7 @@ find_package(SDL2_ttf REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(CPPFormat REQUIRED)
+find_package(Doxygen)
 
 # Header files are added so they will show up in all IDEs
 #
@@ -221,6 +222,19 @@ target_include_directories(${PROJECT_NAME}
 )
 
 message(STATUS "${LE_MESSAGE_LINE_BREAK}")
+
+################################
+# POST-BUILD STEPS
+################################
+
+if(DOXYGEN_FOUND)
+  add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Building doxygen documentation")
+endif()
 
 ################################
 # RUNTIME SETUP
