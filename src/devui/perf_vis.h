@@ -33,7 +33,6 @@ class perf_vis : public logic_component_base
 {
 public:
   perf_vis();
-  virtual ~perf_vis() {}
 
   /*
    * Runs perf_vis logic:

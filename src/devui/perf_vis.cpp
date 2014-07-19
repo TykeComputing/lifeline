@@ -72,6 +72,7 @@ void perf_vis::update(float dt)
     curr_bottom_left += offset_amount;
   }
 
+  // Draw an indicator for the current max time
   auto * max_time_text_ent = p_get_text_entity(
     "pv_max_time_indicator",
     fmt::format("Max Time: {}", p_max_time),
@@ -189,7 +190,7 @@ entity * perf_vis::p_get_text_entity(
 {
   std::string const ent_name = "pv_" + name;
 
-  auto * result = get_owning_entity()->get_owning_space()->find_entity(ent_name);
+  auto * result = get_owning_entity()->find_child(ent_name);
   if(result == nullptr)
   {
     // An entity for this label's text does not yet exist, create it.
@@ -197,6 +198,8 @@ entity * perf_vis::p_get_text_entity(
 
     result->create_component<sprite_component>(
       TTF_system::render_text_to_texture(text, p_text_point_size));
+
+    get_owning_entity()->add_child(result);
   }
   else
   {

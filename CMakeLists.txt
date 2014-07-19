@@ -115,6 +115,7 @@ set(LE_EXECUTABLE_SRC_LIST
   src/engine/engine_component_base.h
   src/engine/entity.cpp
   src/engine/entity.h
+  src/engine/entity.hpp
   src/engine/graphics_context.cpp
   src/engine/graphics_context.h
   src/engine/graphics_system.cpp
