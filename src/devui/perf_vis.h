@@ -54,8 +54,8 @@ public:
   void set_max_time(float value);
   float get_max_time() const { return p_max_time; }
 
-  void set_text_point_size(unsigned value);
-  unsigned get_text_point_size() const { return p_text_point_size; }
+  void set_text_height(unsigned value);
+  unsigned get_text_height() const { return p_text_size; }
 
   void set_graph_name_offset(float value);
   float get_graph_name_offset() const { return p_graph_name_offset; }
@@ -95,7 +95,7 @@ private:
   vec2 p_dimensions = vec2(400.f, 200.f);
   vec2 p_offset_percent = vec2::zero;
   float p_max_time = 0.016f;
-  unsigned p_text_point_size = 12;
+  unsigned p_text_size = 12;
   float p_graph_name_offset = 0.f;
 
   // Signals that text will need to be re-rendered

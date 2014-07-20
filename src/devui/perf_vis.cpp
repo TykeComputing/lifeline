@@ -26,7 +26,7 @@ namespace LE
 unique_id<logic_component_base> const perf_vis::type_id;
 
 /*!
- * \brief Sets some hard coded graph names/colors (temporary)?
+ * \brief Sets some hard coded graph names/colors (temporary?)
  *
  * \todo - Move to devui setup component?
  */
@@ -114,7 +114,7 @@ void perf_vis::update(float dt)
  * If a profiling_point named \p name is recorded by this engine's profiling_records, the
  *   graph drawn for it will have color \p color.
  *
- * \note If no color is provided for a graph the color white is used.
+ * \note If no color is provided for a given graph name the color white is used.
  */
 void perf_vis::set_graph_color(std::string const& name, vec4 const& color)
 {
@@ -161,10 +161,11 @@ void perf_vis::set_dimensions(vec2 const& value)
 }
 
 /*!
- * \brief How far apart graphs are from eachother, in terms of percent of graph dimension.
+ * \brief How far apart graphs are from eachother, in terms of percent of graph \ref
+ *  set_dimensions "dimension".
  *
- * For example: if equal to {0.0, 1.0}, graphics will be displayed directly ontop of eachother
- *   - as they are offset (1.0 * dimensions.y) from eachother.
+ * For example: if equal to `{0.0, 1.0}`, graphics will be displayed directly ontop of
+ *   eachother, as they are offset `(1.0 * dimensions.y)` from eachother.
  *
  * \note Default is zero, all graphs drawn ontop of eachother.
  *
@@ -183,7 +184,7 @@ void perf_vis::set_offset_percent(vec2 const& value)
  *   "dimensions".
  *
  * If a value on the graph is equal to max_time it will appear at the dotted line at the top
- *   of the graph).
+ *   of the graph.
  *
  * \note Default is approximate frame time for 60 fps (0.016).
  */
@@ -198,13 +199,13 @@ void perf_vis::set_max_time(float value)
 }
 
 /*!
- * \brief Size of all text used by perf_vis in HUD space.
+ * \brief Font size (height) of all text used by perf_vis in HUD space.
  *
  * \note Default is arbitrary.
  */
-void perf_vis::set_text_point_size(unsigned value)
+void perf_vis::set_text_height(unsigned value)
 {
-  p_text_point_size = value;
+  p_text_size = value;
   p_text_size_is_dirty = true;
 }
 
@@ -345,7 +346,7 @@ entity * perf_vis::p_get_text_entity(
     result = get_owning_entity()->get_owning_space()->create_entity(ent_name);
 
     result->create_component<sprite_component>(
-      TTF_system::render_text_to_texture(text, p_text_point_size));
+      TTF_system::render_text_to_texture(text, p_text_size));
 
     get_owning_entity()->add_child(result);
   }
@@ -357,7 +358,7 @@ entity * perf_vis::p_get_text_entity(
       auto * text_s = result->get_component<sprite_component>();
       LE_FATAL_ERROR_IF(text_s == nullptr, "Missing sprite component!");
       text_s->set_texture(
-        TTF_system::render_text_to_texture(text, p_text_point_size));
+        TTF_system::render_text_to_texture(text, p_text_size));
     }
   }
 
