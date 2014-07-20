@@ -25,10 +25,9 @@ class debug_draw_manager;
 /*!
  * \brief Draws performance visualization graphs to the HUD.
  *
- * Uses results stored in the owning engine's profiling_records to draw performance
+ * Uses results stored in owning \ref engine "engine's" profiling_records to draw performance
  *   visualization graphs (using the owning space's HUD debug_draw_manager). Will create new
  *   child \ref entity "entities" to display text labels for each graph.
- *
  */
 class perf_vis : public logic_component_base
 {
@@ -36,11 +35,9 @@ public:
   perf_vis();
 
   /*!
-   * \brief Runs performance visualization logic.
+   * \brief Runs performance visualization logic. \see perf_vis for details.
    *
-   *  - Draws lines for graphs to the owning space's HUD debug drawer.
-   *  - Uses profiling records from owning engine, ignoring the current frame's records.
-   *  - Adds sprites to
+   * \param dt - Unused
    */
   virtual void update(float dt);
 
@@ -49,9 +46,12 @@ public:
    *
    * If a profiling_point records named \p label is recorded in the processed profiling_records,
    *   the graph drawn for it will have color \p color.
+   *
+   * \param label - Name of profiling point to set color for.
+   * \param color - Color to use if graph is drawn for label \p label.
    */
   void set_label_color(std::string const& label, vec4 const& color);
-  vec4 get_label_color(std::string const& label) const;
+  vec4 const& get_label_color(std::string const& label) const;
 
   /*!
    * \brief The bottom left of the first drawn graph in HUD space.
@@ -81,7 +81,8 @@ public:
   vec2 const& get_offset_percent() const { return p_offset_percent; }
 
   /*!
-   * \brief Controls how the values on the graph are scaled to fit the dimensions.
+   * \brief Controls how the values on the graph are scaled to fit the dimensions (\see
+   *   set_dimensions).
    *
    * If a value on the graph is equal to max_time it will appear at the dotted line at the top
    *   of the graph).
@@ -95,26 +96,25 @@ public:
    * \brief Size of text used to label each graph in HUD space.
    */
   void set_text_point_size(unsigned value);
-
-  /*!
-   * \brief \see set_text_point_size(unsigned value)
-   */
   unsigned get_text_point_size() const { return p_text_point_size; }
 
   // by default aligned with right edge of text on left edge of graph, this provides offset from that
   // + will move further to left
+  /*!
+   * \param value -
+   */
   void set_label_text_offset(int value) { p_label_text_offset = value; }
   int get_label_text_offset() const { return p_label_text_offset; }
 
   /*!
-   * \brief \see component_base
+   * \brief \see logic_component_base
    */
   static unique_id<logic_component_base> const type_id;
 
 private:
   void p_draw_scaffold(
-      debug_draw_manager & hud_ddraw,
-      vec2 const& p_bottom_left,
+    debug_draw_manager & hud_ddraw,
+    vec2 const& p_bottom_left,
     vec2 const& p_dimensions,
     vec4 const& color) const;
 

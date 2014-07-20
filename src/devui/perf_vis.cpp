@@ -72,7 +72,7 @@ void perf_vis::update(float dt)
     curr_bottom_left += offset_amount;
   }
 
-  // Draw an indicator for the current max time
+  // Draw an indicator for the current max time below the lower left corner of the first graph
   auto * max_time_text_ent = p_get_text_entity(
     "pv_max_time_indicator",
     fmt::format("Max Time: {}", p_max_time),
@@ -91,7 +91,7 @@ void perf_vis::set_label_color(std::string const& label, vec4 const& color)
   p_label_colors[label] = color;
 }
 
-vec4 perf_vis::get_label_color(std::string const& label) const
+vec4 const& perf_vis::get_label_color(std::string const& label) const
 {
   auto find_it = p_label_colors.find(label);
   if(find_it != p_label_colors.end())
@@ -100,7 +100,8 @@ vec4 perf_vis::get_label_color(std::string const& label) const
   }
   else
   {
-    return vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    static vec4 const default_color(1.0f, 1.0f, 1.0f, 1.0f);
+    return default_color;
   }
 }
 
