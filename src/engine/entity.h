@@ -43,9 +43,6 @@ public:
   void remove_child(entity * child);
   void clear_children();
 
-  // Detaches this entity from its parent (if it has one).
-  void orphan();
-
   entity * find_child(std::string const& name);
   entity const* find_child(std::string const& name) const;
 

@@ -27,7 +27,7 @@ entity::~entity()
 
   for(auto * child : p_children)
   {
-    child->orphan();
+    child->p_parent = nullptr;
   }
 
   for(auto const& curr_logic_comp : p_logic_components)
@@ -72,7 +72,7 @@ void entity::remove_child(entity * child)
   if(find_it != p_children.end())
   {
     p_children.erase(find_it);
-    child->orphan();
+    child->p_parent = nullptr;
 
     log_status(log_scope::ENGINE, "Removing child named \"{}\" from parent named \"{}\".",
       child->get_name(), get_name());
@@ -87,15 +87,10 @@ void entity::clear_children()
 {
   for(auto * child : p_children)
   {
-    child->orphan();
+    child->p_parent = nullptr;
   }
 
   p_children.clear();
-}
-
-void entity::orphan()
-{
-  p_parent = nullptr;
 }
 
 entity * entity::find_child(std::string const& name)
