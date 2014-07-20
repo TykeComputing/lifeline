@@ -37,14 +37,14 @@ void profiling_records::start_new_record_entry()
   }
 }
 
-void profiling_records::add_to_record_entry(std::string const & label, float time)
+void profiling_records::add_to_record_entry(std::string const & name, float time)
 {
   if(p_num_record_entries == 0)
   {
     return;
   }
 
-  auto & record = p_records[label];
+  auto & record = p_records[name];
   if(record.size() < p_num_record_entries)
   {
     record.resize(p_num_record_entries, 0.0f);
@@ -74,9 +74,9 @@ size_t profiling_records::get_num_record_entries() const
 }
 
 profiling_records::time_record const*
-profiling_records::get_record(std::string const& label) const
+profiling_records::get_record(std::string const& name) const
 {
-  auto record_find_it = p_records.find(label);
+  auto record_find_it = p_records.find(name);
   if(record_find_it != p_records.end())
   {
     return &(record_find_it->second);

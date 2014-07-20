@@ -27,7 +27,8 @@ class debug_draw_manager;
  *
  * Uses results stored in owning \ref engine "engine's" profiling_records to draw performance
  *   visualization graphs (using the owning space's HUD debug_draw_manager). Will create new
- *   child \ref entity "entities" to display text labels for each graph.
+ *   child \ref entity "entities" to display text.
+ *
  */
 class perf_vis : public logic_component_base
 {
@@ -37,21 +38,21 @@ public:
   /*!
    * \brief Runs performance visualization logic. \see perf_vis for details.
    *
-   * \param dt - Unused
+   * \param dt - Unused.
    */
   virtual void update(float dt);
 
   /*!
-   * \brief The color of the graph drawn for a record named \p label.
+   * \brief The color of the graph drawn for a \ref profiling_records "profiling_record" entry
+   *   named \p name.
    *
-   * If a profiling_point records named \p label is recorded in the processed profiling_records,
-   *   the graph drawn for it will have color \p color.
+   * If a profiling_point named \p name is recorded by this engine's profiling_records, the
+   *   graph drawn for it will have color \p color.
    *
-   * \param label - Name of profiling point to set color for.
-   * \param color - Color to use if graph is drawn for label \p label.
+   * \note If no color is provided for a name the color white is used.
    */
-  void set_label_color(std::string const& label, vec4 const& color);
-  vec4 const& get_label_color(std::string const& label) const;
+  void set_graph_color(std::string const& name, vec4 const& color);
+  vec4 const& get_graph_color(std::string const& name) const;
 
   /*!
    * \brief The bottom left of the first drawn graph in HUD space.
@@ -76,6 +77,11 @@ public:
    *   they are offset (1.0 * dimensions.y) from eachother.
    *
    * \note Default is zero, all graphs drawn ontop of eachother.
+   *
+   * \remarks
+   * While a negative y offset is possible, a positive offset is preferred as the text
+   *   indicator for \ref set_max_time "the maximum time" will be drawn below the first
+   *   graph.
    */
   void set_offset_percent(vec2 const& value) { p_offset_percent = value; }
   vec2 const& get_offset_percent() const { return p_offset_percent; }
@@ -93,18 +99,21 @@ public:
   float get_max_time() const { return p_max_time; }
 
   /*!
-   * \brief Size of text used to label each graph in HUD space.
+   * \brief Size of all text used by this.
+   *
+   * \note Default is arbitrary.
    */
   void set_text_point_size(unsigned value);
   unsigned get_text_point_size() const { return p_text_point_size; }
 
-  // by default aligned with right edge of text on left edge of graph, this provides offset from that
-  // + will move further to left
   /*!
-   * \param value -
+   * The horizontal offset at which the name of a graph will appear from the left edge of the
+   *   graph.
+   *
+   * \note Default is 0.0, name drawn right aligned to left side of graph.
    */
-  void set_label_text_offset(int value) { p_label_text_offset = value; }
-  int get_label_text_offset() const { return p_label_text_offset; }
+  void set_graph_name_offset(float value) { p_graph_name_offset = value; }
+  float get_graph_name_offset() const { return p_graph_name_offset; }
 
   /*!
    * \brief \see logic_component_base
@@ -132,7 +141,7 @@ private:
     std::string const& text,
     bool update_text_if_exists);
 
-  std::unordered_map<std::string, vec4> p_label_colors;
+  std::unordered_map<std::string, vec4> p_graph_colors;
 
   // Settings
   vec2 p_bottom_left = vec2(-200.f, -100.f);
@@ -140,7 +149,7 @@ private:
   vec2 p_offset_percent = vec2::zero;
   float p_max_time = 0.016f;
   unsigned p_text_point_size = 12;
-  int p_label_text_offset = 4;
+  float p_graph_name_offset = 0.f;
 
   // Signals that text will need to be re-rendered
   bool p_text_size_is_dirty = false;

@@ -26,14 +26,14 @@ public:
 
   void start_new_record_entry();
 
-  void add_to_record_entry(std::string const& label, float time);
+  void add_to_record_entry(std::string const& name, float time);
 
   time_record_container::const_iterator begin() const;
   time_record_container::const_iterator end() const;
   size_t get_num_records() const;
   size_t get_num_record_entries() const;
 
-  time_record const* get_record(std::string const& label) const;
+  time_record const* get_record(std::string const& name) const;
 
   size_t get_max_num_record_entries() const;
   void set_max_num_record_entries(size_t const& value);

@@ -165,7 +165,7 @@ void game_hack::p_input(float dt)
         perf_vis_comp->set_dimensions(vec2(400.f, 200.f));
         perf_vis_comp->set_offset_percent(vec2::zero);
         perf_vis_comp->set_text_point_size(16);
-        perf_vis_comp->set_label_text_offset(2);
+        perf_vis_comp->set_graph_name_offset(2);
       }
     }
 
@@ -179,7 +179,7 @@ void game_hack::p_input(float dt)
         perf_vis_comp->set_dimensions(vec2(128.f, 32.f));
         perf_vis_comp->set_offset_percent(vec2(0.f, 1.25f));
         perf_vis_comp->set_text_point_size(12);
-        perf_vis_comp->set_label_text_offset(2);
+        perf_vis_comp->set_graph_name_offset(2);
       }
     }
   }

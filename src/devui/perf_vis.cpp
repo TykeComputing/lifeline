@@ -25,10 +25,10 @@ unique_id<logic_component_base> const perf_vis::type_id;
 perf_vis::perf_vis()
 {
   // TODO - Move to devui setup component?
-  set_label_color("update", vec4(0.0f, 0.0f, 1.0f, 1.0f));
-  set_label_color("graphics_system", vec4(1.0f, 0.0f, 0.0f, 1.0f));
-  set_label_color("buffer_swap", vec4(1.0f, 1.0f, 0.0f, 1.0f));
-  set_label_color("total_frame", vec4(0.0f, 1.0f, 0.0f, 1.0f));
+  set_graph_color("update", vec4(0.0f, 0.0f, 1.0f, 1.0f));
+  set_graph_color("graphics_system", vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  set_graph_color("buffer_swap", vec4(1.0f, 1.0f, 0.0f, 1.0f));
+  set_graph_color("total_frame", vec4(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
 void perf_vis::update(float dt)
@@ -48,7 +48,7 @@ void perf_vis::update(float dt)
   hud_ddraw.lines.reserve_lines(num_scaffold_lines + num_graph_lines);
   hud_ddraw.dashed_lines.reserve_lines(num_scaffold_dashed_lines);
 
-  // Draw a graph for each label
+  // Draw all graphs
   vec2 const offset_amount = p_dimensions * p_offset_percent;
   vec2 curr_bottom_left = p_bottom_left;
 
@@ -67,7 +67,7 @@ void perf_vis::update(float dt)
       records.get_max_num_record_entries(),
       curr_bottom_left,
       p_dimensions,
-      get_label_color(key_record_pair.first));
+      get_graph_color(key_record_pair.first));
 
     curr_bottom_left += offset_amount;
   }
@@ -86,15 +86,15 @@ void perf_vis::update(float dt)
   p_text_size_is_dirty = false;
 }
 
-void perf_vis::set_label_color(std::string const& label, vec4 const& color)
+void perf_vis::set_graph_color(std::string const& name, vec4 const& color)
 {
-  p_label_colors[label] = color;
+  p_graph_colors[name] = color;
 }
 
-vec4 const& perf_vis::get_label_color(std::string const& label) const
+vec4 const& perf_vis::get_graph_color(std::string const& name) const
 {
-  auto find_it = p_label_colors.find(label);
-  if(find_it != p_label_colors.end())
+  auto find_it = p_graph_colors.find(name);
+  if(find_it != p_graph_colors.end())
   {
     return find_it->second;
   }
@@ -174,14 +174,14 @@ void perf_vis::p_draw_graph(
     prev_point = curr_point;
   }
 
-  // Draw label for graph
-  auto * label_text_ent = p_get_text_entity(name, name, p_text_size_is_dirty);
-  auto * label_text_t = label_text_ent->get_component<transform_component>();
-  auto * label_text_s = label_text_ent->get_component<sprite_component>();
-  label_text_t->set_pos(
-    bottom_left.x() - (label_text_s->get_dimensions().x() / 2.0f) - p_label_text_offset,
+  // Draw graph's name
+  auto * name_text_ent = p_get_text_entity(name, name, p_text_size_is_dirty);
+  auto * name_text_t = name_text_ent->get_component<transform_component>();
+  auto * name_text_s = name_text_ent->get_component<sprite_component>();
+  name_text_t->set_pos(
+    bottom_left.x() - (name_text_s->get_dimensions().x() / 2.0f) - p_graph_name_offset,
     bottom_left.y() + ((record.front() /p_max_time) * dimensions.y()) );
-  label_text_s->m_color = color;
+  name_text_s->m_color = color;
 }
 
 entity * perf_vis::p_get_text_entity(
@@ -194,7 +194,7 @@ entity * perf_vis::p_get_text_entity(
   auto * result = get_owning_entity()->find_child(ent_name);
   if(result == nullptr)
   {
-    // An entity for this label's text does not yet exist, create it.
+    // An entity for this graph's text does not yet exist, create it.
     result = get_owning_entity()->get_owning_space()->create_entity(ent_name);
 
     result->create_component<sprite_component>(
