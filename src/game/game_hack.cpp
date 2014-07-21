@@ -70,6 +70,15 @@ void game_hack::initialize()
     new_ent->create_component<sprite_component>(
       TTF_system::render_text_to_texture("Press c to toggle display of controls", 12));
   }
+
+  auto * perf_vis = p_get_perf_vis_component();
+  if(perf_vis)
+  {
+    perf_vis->set_graph_color("update", vec4(0.0f, 0.0f, 1.0f, 1.0f));
+    perf_vis->set_graph_color("graphics_system", vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    perf_vis->set_graph_color("buffer_swap", vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    perf_vis->set_graph_color("total_frame", vec4(0.0f, 1.0f, 0.0f, 1.0f));
+  }
 }
 
 void game_hack::update(float dt)
@@ -142,32 +151,10 @@ void game_hack::p_input(float dt)
     p_ddraw_enabled = !p_ddraw_enabled;
   }
 
-  // Helper lambdas for perf_vis controls. Here to reduce code dulpication, since we only want
-  //   to search for perf_vis when one of the related buttons is pressed.
-  auto get_perf_vis_space = [game_engine]()->space *
-  {
-    return game_engine->find_space("perf_vis");
-  };
-
-  auto get_perf_vis_component = [get_perf_vis_space, game_engine]()->perf_vis *
-  {
-    auto * perf_vis_space = get_perf_vis_space();
-    if(perf_vis_space)
-    {
-      auto * perf_vis_ent = perf_vis_space->find_entity("perf_vis");
-      if(perf_vis_ent)
-      {
-        return perf_vis_ent->get_component<perf_vis>();
-      }
-    }
-
-    return nullptr;
-  };
-
   // Toggle perf vis on/off
   if(input_sys.is_key_triggered(SDLK_p))
   {
-    auto * perf_vis_space = get_perf_vis_space();
+    auto * perf_vis_space = p_get_perf_vis_space();
     if(perf_vis_space)
     {
       perf_vis_space->set_is_active(!perf_vis_space->get_is_active());
@@ -179,7 +166,7 @@ void game_hack::p_input(float dt)
   {
     if(input_sys.is_key_triggered(SDLK_LEFTBRACKET))
     {
-      auto * perf_vis_comp = get_perf_vis_component();
+      auto * perf_vis_comp = p_get_perf_vis_component();
       if(perf_vis_comp)
       {
         perf_vis_comp->set_max_time(0.016f);
@@ -189,7 +176,7 @@ void game_hack::p_input(float dt)
     // Perf vis mode - default fullscreen
     if(input_sys.is_key_triggered(SDLK_RIGHTBRACKET))
     {
-      auto * perf_vis_comp = get_perf_vis_component();
+      auto * perf_vis_comp = p_get_perf_vis_component();
       if(perf_vis_comp)
       {
         perf_vis_comp->set_max_time(0.004f);
@@ -200,7 +187,7 @@ void game_hack::p_input(float dt)
   {
     if(input_sys.is_key_triggered(SDLK_LEFTBRACKET))
     {
-      auto * perf_vis_comp = get_perf_vis_component();
+      auto * perf_vis_comp = p_get_perf_vis_component();
       if(perf_vis_comp)
       {
         perf_vis_comp->set_bottom_left(vec2(-200.f, -100.f));
@@ -214,7 +201,7 @@ void game_hack::p_input(float dt)
     // Perf vis mode - default fullscreen
     if(input_sys.is_key_triggered(SDLK_RIGHTBRACKET))
     {
-      auto * perf_vis_comp = get_perf_vis_component();
+      auto * perf_vis_comp = p_get_perf_vis_component();
       if(perf_vis_comp)
       {
         perf_vis_comp->set_bottom_left(vec2(-64.f, -100.f));
@@ -321,7 +308,10 @@ void game_hack::p_logic(float dt)
           if(p_ddraw_enabled)
           {
             game_space->m_world_ddraw.lines.add_arrow(
-              enemy_t->get_pos(), dir_to_player, enemy_seek_radius, vec4(1.0f, 0.0f, 1.0f, 1.0f));
+              enemy_t->get_pos(),
+              dir_to_player,
+              enemy_seek_radius,
+              vec4(1.0f, 0.0f, 1.0f, 1.0f));
           }
         }
       }
@@ -329,7 +319,9 @@ void game_hack::p_logic(float dt)
       else if(curr_entity->get_name() == "bullet")
       {
         // TODO velocity
-        curr_entity->get_component<transform_component>()->translate(0.0f, -bullet_movement_speed * dt);
+        curr_entity->get_component<transform_component>()->translate(
+          0.0f,
+          -bullet_movement_speed * dt);
       }
     }
   }
@@ -396,7 +388,9 @@ void game_hack::p_physics(float dt)
   for(auto ent_outer_it = curr_ents.begin(); ent_outer_it != curr_ents.end(); ++ent_outer_it)
   {
     // Don't consider this object or ones before it for testing (they've already been tested).
-    for(auto ent_inner_it = curr_ents.begin() + 1; ent_inner_it != curr_ents.end(); ++ent_inner_it)
+    for(auto ent_inner_it = curr_ents.begin() + 1;
+        ent_inner_it != curr_ents.end();
+        ++ent_inner_it)
     {
       auto ent_outer = (*ent_outer_it);
       auto ent_inner = (*ent_inner_it);
@@ -421,18 +415,6 @@ void game_hack::p_physics(float dt)
       float const dist_sq =
         length_sq(ent_inner_t->get_pos() - ent_outer_t->get_pos());
       float const r_sum = ent_outer_radius + ent_inner_radius;
-
-      if(p_ddraw_enabled)
-      {
-        game_space->m_world_ddraw.lines.add_circle(
-          ent_inner_t->get_pos(),
-          ent_inner_radius,
-          vec4(1.0f, 1.0f, 1.0f, 1.0f));
-        game_space->m_world_ddraw.lines.add_circle(
-          ent_outer_t->get_pos(),
-          ent_outer_radius,
-          vec4(1.0f, 1.0f, 1.0f, 1.0f));
-      }
 
       float r_sum_sq = r_sum * r_sum;
       if(dist_sq <= r_sum_sq)
@@ -482,6 +464,26 @@ void game_hack::p_physics(float dt)
       }
     }
   }
+}
+
+space * game_hack::p_get_perf_vis_space()
+{
+  return get_owning_entity()->get_owning_space()->get_owning_engine()->find_space("perf_vis");
+}
+
+perf_vis * game_hack::p_get_perf_vis_component()
+{
+  auto * perf_vis_space = p_get_perf_vis_space();
+  if(perf_vis_space)
+  {
+    auto * perf_vis_ent = perf_vis_space->find_entity("perf_vis");
+    if(perf_vis_ent)
+    {
+      return perf_vis_ent->get_component<perf_vis>();
+    }
+  }
+
+  return nullptr;
 }
 
 } // namespace LE

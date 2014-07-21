@@ -26,19 +26,6 @@ namespace LE
 unique_id<logic_component_base> const perf_vis::type_id;
 
 /*!
- * \brief Sets some hard coded graph names/colors (temporary?)
- *
- * \todo - Move to devui setup component?
- */
-perf_vis::perf_vis()
-{
-  set_graph_color("update", vec4(0.0f, 0.0f, 1.0f, 1.0f));
-  set_graph_color("graphics_system", vec4(1.0f, 0.0f, 0.0f, 1.0f));
-  set_graph_color("buffer_swap", vec4(1.0f, 1.0f, 0.0f, 1.0f));
-  set_graph_color("total_frame", vec4(0.0f, 1.0f, 0.0f, 1.0f));
-}
-
-/*!
  * \brief Runs performance visualization logic. \see perf_vis for details.
  *
  * \param dt - Unused.
@@ -337,7 +324,7 @@ entity * perf_vis::p_get_text_entity(
   // Prepend arbitrary prefix to the perf_vis owned entities.
   std::string const ent_name = "pv_" + name;
 
-  // Check if we've already created an entity for
+  // Check if we've already created an entity for this text.
   auto * result = get_owning_entity()->find_child(ent_name);
   if(result == nullptr)
   {

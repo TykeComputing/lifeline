@@ -35,8 +35,6 @@ class debug_draw_manager;
 class perf_vis : public logic_component_base
 {
 public:
-  perf_vis();
-
   virtual void update(float dt);
 
   void set_graph_color(std::string const& name, vec4 const& color);
