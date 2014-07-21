@@ -91,6 +91,8 @@ void perf_vis::update(float dt)
     p_bottom_left.x() + (max_time_text_s->get_dimensions().x() / 2.0f),
     p_bottom_left.y() - (max_time_text_s->get_dimensions().y() / 2.0f));
 
+  // Now that we have drawn all graphs and text (and as a result updated all text), clear dirty
+  //   flag.
   p_text_size_is_dirty = false;
 }
 
@@ -208,7 +210,7 @@ void perf_vis::set_graph_name_offset(float value)
  * \brief Draws scaffolding for a graph which consists of lines along the left and bottom
  *   of the graph, and a dashed line along the top of the graph.
  *
- * \param[in,out] hud_ddraw - The debug_draw_manager to draw lines with.
+ * \param hud_ddraw - The debug_draw_manager to draw lines with.
  * \param bottom_left - The bottom left position of the graph.
  * \param dimensions - The dimensions of the graph.
  * \param color - The color to use when drawing all lines.
