@@ -7,6 +7,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include "TTF_system.h"
 
 #include <algorithm>
+#include <vector>
 
 #include <LE/common/fatal_construction_exception.h>
 #include <LE/common/fatal_error.h>
