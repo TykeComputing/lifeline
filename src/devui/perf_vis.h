@@ -12,9 +12,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <common/profiling_records.h>
 #include <common/unique_id.h>
-
 #include <engine/logic_component_base.h>
-
 #include <math/vec.h>
 
 namespace LE
@@ -89,7 +87,11 @@ private:
   float p_get_graph_entry_height_offset(float entry_value, float graph_height) const;
 
   std::unordered_map<std::string, vec4> p_graph_colors;
-  vec2 p_bottom_left = vec2(-200.f, -100.f);
+
+  //! The bottom left from which the graphs will be drawn.
+  vec2 p_bottom_left;
+
+  //!
   vec2 p_dimensions = vec2(400.f, 200.f);
   vec2 p_offset_percent = vec2::zero;
   float p_max_time = 0.016f;

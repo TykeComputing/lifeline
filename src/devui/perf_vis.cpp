@@ -7,14 +7,12 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include "perf_vis.h"
 
 #include <common/cppformat.h>
-
 #include <engine/engine.h>
 #include <engine/entity.h>
 #include <engine/space.h>
 #include <engine/sprite_component.h>
 #include <engine/transform_component.h>
 #include <engine/TTF_system.h>
-
 #include <graphics/debug_draw_manager.h>
 
 namespace LE
@@ -100,8 +98,6 @@ void perf_vis::update(float dt)
  *
  * If a profiling_point named \p name is recorded by this engine's profiling_records, the
  *   graph drawn for it will have color \p color.
- *
- * \note If no color is provided for a given graph name the color white is used.
  */
 void perf_vis::set_graph_color(std::string const& name, vec4 const& color)
 {
@@ -211,7 +207,7 @@ void perf_vis::set_graph_name_offset(float value)
  * \brief Draws scaffolding for a graph which consists of lines along the left and bottom
  *   of the graph, and a dashed line along the top of the graph.
  *
- * \param[out] hud_ddraw - The debug_draw_manager to draw lines with.
+ * \param[in,out] hud_ddraw - The debug_draw_manager to draw lines with.
  * \param bottom_left - The bottom left position of the graph.
  * \param dimensions - The dimensions of the graph.
  * \param color - The color to use when drawing all lines.

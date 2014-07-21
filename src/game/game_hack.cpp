@@ -71,13 +71,15 @@ void game_hack::initialize()
       TTF_system::render_text_to_texture("Press c to toggle display of controls", 12));
   }
 
-  auto * perf_vis = p_get_perf_vis_component();
+  auto * pv = p_get_perf_vis_component();
   if(perf_vis)
   {
-    perf_vis->set_graph_color("update", vec4(0.0f, 0.0f, 1.0f, 1.0f));
-    perf_vis->set_graph_color("graphics_system", vec4(1.0f, 0.0f, 0.0f, 1.0f));
-    perf_vis->set_graph_color("buffer_swap", vec4(1.0f, 1.0f, 0.0f, 1.0f));
-    perf_vis->set_graph_color("total_frame", vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    p_set_perf_vis_overlapped(pv);
+
+    pv->set_graph_color("update", vec4(0.0f, 0.0f, 1.0f, 1.0f));
+    pv->set_graph_color("graphics_system", vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    pv->set_graph_color("buffer_swap", vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    pv->set_graph_color("total_frame", vec4(0.0f, 1.0f, 0.0f, 1.0f));
   }
 }
 
@@ -190,11 +192,7 @@ void game_hack::p_input(float dt)
       auto * perf_vis_comp = p_get_perf_vis_component();
       if(perf_vis_comp)
       {
-        perf_vis_comp->set_bottom_left(vec2(-200.f, -100.f));
-        perf_vis_comp->set_dimensions(vec2(400.f, 200.f));
-        perf_vis_comp->set_offset_percent(vec2::zero);
-        perf_vis_comp->set_text_height(16);
-        perf_vis_comp->set_graph_name_offset(2);
+        p_set_perf_vis_overlapped(perf_vis_comp);
       }
     }
 
@@ -204,11 +202,7 @@ void game_hack::p_input(float dt)
       auto * perf_vis_comp = p_get_perf_vis_component();
       if(perf_vis_comp)
       {
-        perf_vis_comp->set_bottom_left(vec2(-64.f, -100.f));
-        perf_vis_comp->set_dimensions(vec2(128.f, 32.f));
-        perf_vis_comp->set_offset_percent(vec2(0.f, 1.25f));
-        perf_vis_comp->set_text_height(12);
-        perf_vis_comp->set_graph_name_offset(2);
+        p_set_perf_vis_vertical(perf_vis_comp);
       }
     }
   }
@@ -484,6 +478,24 @@ perf_vis * game_hack::p_get_perf_vis_component()
   }
 
   return nullptr;
+}
+
+void game_hack::p_set_perf_vis_overlapped(perf_vis * pv) const
+{
+  pv->set_bottom_left(vec2(-200.f, -100.f));
+  pv->set_dimensions(vec2(400.f, 200.f));
+  pv->set_offset_percent(vec2::zero);
+  pv->set_text_height(16);
+  pv->set_graph_name_offset(2);
+}
+
+void game_hack::p_set_perf_vis_vertical(perf_vis * pv) const
+{
+  pv->set_bottom_left(vec2(-64.f, -100.f));
+  pv->set_dimensions(vec2(128.f, 32.f));
+  pv->set_offset_percent(vec2(0.f, 1.25f));
+  pv->set_text_height(12);
+  pv->set_graph_name_offset(2);
 }
 
 } // namespace LE

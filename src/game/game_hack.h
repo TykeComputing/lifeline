@@ -44,6 +44,9 @@ private:
   space * p_get_perf_vis_space();
   perf_vis * p_get_perf_vis_component();
 
+  void p_set_perf_vis_overlapped(perf_vis * pv) const;
+  void p_set_perf_vis_vertical(perf_vis * pv) const;
+
   // TODO - Move to its own space/scene when game_hack_scene is removed
   bool p_ddraw_enabled = false;
 };
