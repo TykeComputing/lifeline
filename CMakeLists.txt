@@ -39,118 +39,120 @@ find_package(OpenGL REQUIRED)
 find_package(CPPFormat REQUIRED)
 find_package(Doxygen)
 
+set(LE_SRC_DIR "${CMAKE_SOURCE_DIR}/src/LE")
+
 # Header files are added so they will show up in all IDEs
 #
 # Files are currently ordered by modules from lowest to highest level to make a change to
 # a multi-project setup easier.graphics
 set(LE_EXECUTABLE_SRC_LIST
-  src/main.cpp
+  ${LE_SRC_DIR}/main.cpp
 
-  src/common/cppformat.h
-  src/common/fatal_error.cpp
-  src/common/fatal_error.h
-  src/common/fatal_construction_exception.cpp
-  src/common/fatal_construction_exception.h
-  src/common/file_string.cpp
-  src/common/file_string.h
-  src/common/logging.cpp
-  src/common/logging.h
-  src/common/macros.h
-  src/common/message_exception.cpp
-  src/common/message_exception.h
-  src/common/profiling.hpp
-  src/common/profiling.h
-  src/common/profiling_records.cpp
-  src/common/profiling_records.h
-  #src/common/resource.cpp
-  #src/common/resource.h
-  #src/common/resource_manager.cpp
-  #src/common/resource_manager.h
-  src/common/resource_exception.cpp
-  src/common/resource_exception.h
-  src/common/resource_manager.cpp
-  src/common/resource_manager.h
-  src/common/timer.h
-  src/common/timer.cpp
-  src/common/unique_id.hpp
-  src/common/unique_id.h
+  ${LE_SRC_DIR}/common/cppformat.h
+  ${LE_SRC_DIR}/common/fatal_error.cpp
+  ${LE_SRC_DIR}/common/fatal_error.h
+  ${LE_SRC_DIR}/common/fatal_construction_exception.cpp
+  ${LE_SRC_DIR}/common/fatal_construction_exception.h
+  ${LE_SRC_DIR}/common/file_string.cpp
+  ${LE_SRC_DIR}/common/file_string.h
+  ${LE_SRC_DIR}/common/logging.cpp
+  ${LE_SRC_DIR}/common/logging.h
+  ${LE_SRC_DIR}/common/macros.h
+  ${LE_SRC_DIR}/common/message_exception.cpp
+  ${LE_SRC_DIR}/common/message_exception.h
+  ${LE_SRC_DIR}/common/profiling.hpp
+  ${LE_SRC_DIR}/common/profiling.h
+  ${LE_SRC_DIR}/common/profiling_records.cpp
+  ${LE_SRC_DIR}/common/profiling_records.h
+  #${LE_SRC_DIR}/common/resource.cpp
+  #${LE_SRC_DIR}/common/resource.h
+  ${LE_SRC_DIR}/common/resource_manager.cpp
+  ${LE_SRC_DIR}/common/resource_manager.h
+  ${LE_SRC_DIR}/common/resource_exception.cpp
+  ${LE_SRC_DIR}/common/resource_exception.h
+  ${LE_SRC_DIR}/common/resource_manager.cpp
+  ${LE_SRC_DIR}/common/resource_manager.h
+  ${LE_SRC_DIR}/common/timer.h
+  ${LE_SRC_DIR}/common/timer.cpp
+  ${LE_SRC_DIR}/common/unique_id.hpp
+  ${LE_SRC_DIR}/common/unique_id.h
 
-  src/math/float.cpp
-  src/math/float.hpp
-  src/math/float.h
-  src/math/mat.cpp
-  src/math/mat.hpp
-  src/math/mat.h
-  src/math/transform.cpp
-  src/math/transform.h
-  src/math/vec.hpp
-  src/math/vec.h
+  ${LE_SRC_DIR}/math/float.cpp
+  ${LE_SRC_DIR}/math/float.hpp
+  ${LE_SRC_DIR}/math/float.h
+  ${LE_SRC_DIR}/math/mat.cpp
+  ${LE_SRC_DIR}/math/mat.hpp
+  ${LE_SRC_DIR}/math/mat.h
+  ${LE_SRC_DIR}/math/transform.cpp
+  ${LE_SRC_DIR}/math/transform.h
+  ${LE_SRC_DIR}/math/vec.hpp
+  ${LE_SRC_DIR}/math/vec.h
 
-  src/graphics/debug_drawer.cpp
-  src/graphics/debug_drawer.h
-  src/graphics/debug_draw_manager.cpp
-  src/graphics/debug_draw_manager.h
-  src/graphics/error_checking.cpp
-  src/graphics/error_checking.h
-  src/graphics/shader.cpp
-  src/graphics/shader.h
-  src/graphics/shader_program.cpp
-  src/graphics/shader_program.h
-  src/graphics/stb_image.cpp
-  #src/graphics/shader_program_definition.cpp
-  #src/graphics/shader_program_definition.h
-  src/graphics/texture.cpp
-  src/graphics/texture.h
-  src/graphics/vertex.cpp
-  src/graphics/vertex.h
-  src/graphics/vertex_array.cpp
-  src/graphics/vertex_array.h
-  src/graphics/vertex_buffer.cpp
-  src/graphics/vertex_buffer.h
+  ${LE_SRC_DIR}/graphics/debug_drawer.cpp
+  ${LE_SRC_DIR}/graphics/debug_drawer.h
+  ${LE_SRC_DIR}/graphics/debug_draw_manager.cpp
+  ${LE_SRC_DIR}/graphics/debug_draw_manager.h
+  ${LE_SRC_DIR}/graphics/error_checking.cpp
+  ${LE_SRC_DIR}/graphics/error_checking.h
+  ${LE_SRC_DIR}/graphics/shader.cpp
+  ${LE_SRC_DIR}/graphics/shader.h
+  ${LE_SRC_DIR}/graphics/shader_program.cpp
+  ${LE_SRC_DIR}/graphics/shader_program.h
+  ${LE_SRC_DIR}/graphics/stb_image.cpp
+  #${LE_SRC_DIR}/graphics/shader_program_definition.cpp
+  #${LE_SRC_DIR}/graphics/shader_program_definition.h
+  ${LE_SRC_DIR}/graphics/texture.cpp
+  ${LE_SRC_DIR}/graphics/texture.h
+  ${LE_SRC_DIR}/graphics/vertex.cpp
+  ${LE_SRC_DIR}/graphics/vertex.h
+  ${LE_SRC_DIR}/graphics/vertex_array.cpp
+  ${LE_SRC_DIR}/graphics/vertex_array.h
+  ${LE_SRC_DIR}/graphics/vertex_buffer.cpp
+  ${LE_SRC_DIR}/graphics/vertex_buffer.h
 
-  src/engine/component_base.cpp
-  src/engine/component_base.h
-  src/engine/engine.cpp
-  src/engine/engine.h
-  src/engine/engine_component_base.cpp
-  src/engine/engine_component_base.h
-  src/engine/entity.cpp
-  src/engine/entity.h
-  src/engine/entity.hpp
-  src/engine/graphics_context.cpp
-  src/engine/graphics_context.h
-  src/engine/graphics_system.cpp
-  src/engine/graphics_system.h
-  src/engine/input_system.cpp
-  src/engine/input_system.h
-  src/engine/logic_component_base.cpp
-  src/engine/logic_component_base.h
-  src/engine/logic_system.cpp
-  src/engine/logic_system.h
-  src/engine/OS_interface.cpp
-  src/engine/OS_interface.h
-  src/engine/space.cpp
-  src/engine/space.h
-  src/engine/sprite_component.cpp
-  src/engine/sprite_component.h
-  src/engine/transform_component.cpp
-  src/engine/transform_component.h
-  src/engine/TTF_system.cpp
-  src/engine/TTF_system.h
-  src/engine/window.cpp
-  src/engine/window.h
+  ${LE_SRC_DIR}/engine/component_base.cpp
+  ${LE_SRC_DIR}/engine/component_base.h
+  ${LE_SRC_DIR}/engine/engine.cpp
+  ${LE_SRC_DIR}/engine/engine.h
+  ${LE_SRC_DIR}/engine/engine_component_base.cpp
+  ${LE_SRC_DIR}/engine/engine_component_base.h
+  ${LE_SRC_DIR}/engine/entity.cpp
+  ${LE_SRC_DIR}/engine/entity.h
+  ${LE_SRC_DIR}/engine/entity.hpp
+  ${LE_SRC_DIR}/engine/graphics_context.cpp
+  ${LE_SRC_DIR}/engine/graphics_context.h
+  ${LE_SRC_DIR}/engine/graphics_system.cpp
+  ${LE_SRC_DIR}/engine/graphics_system.h
+  ${LE_SRC_DIR}/engine/input_system.cpp
+  ${LE_SRC_DIR}/engine/input_system.h
+  ${LE_SRC_DIR}/engine/logic_component_base.cpp
+  ${LE_SRC_DIR}/engine/logic_component_base.h
+  ${LE_SRC_DIR}/engine/logic_system.cpp
+  ${LE_SRC_DIR}/engine/logic_system.h
+  ${LE_SRC_DIR}/engine/OS_interface.cpp
+  ${LE_SRC_DIR}/engine/OS_interface.h
+  ${LE_SRC_DIR}/engine/space.cpp
+  ${LE_SRC_DIR}/engine/space.h
+  ${LE_SRC_DIR}/engine/sprite_component.cpp
+  ${LE_SRC_DIR}/engine/sprite_component.h
+  ${LE_SRC_DIR}/engine/transform_component.cpp
+  ${LE_SRC_DIR}/engine/transform_component.h
+  ${LE_SRC_DIR}/engine/TTF_system.cpp
+  ${LE_SRC_DIR}/engine/TTF_system.h
+  ${LE_SRC_DIR}/engine/window.cpp
+  ${LE_SRC_DIR}/engine/window.h
 
-  src/devui/perf_vis.cpp
-  src/devui/perf_vis.h
+  ${LE_SRC_DIR}/devui/perf_vis.cpp
+  ${LE_SRC_DIR}/devui/perf_vis.h
 
-  src/game/game_hack.cpp
-  src/game/game_hack.h
+  ${LE_SRC_DIR}/game/game_hack.cpp
+  ${LE_SRC_DIR}/game/game_hack.h
 )
 
 # File specific compile options
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set_source_files_properties(
-    ${CMAKE_SOURCE_DIR}/src/graphics/stb_image.cpp
+    ${LE_SRC_DIR}/graphics/stb_image.cpp
       PROPERTIES
         COMPILE_FLAGS "-Wno-unused-but-set-variable -Wno-missing-field-initializers"
   )
