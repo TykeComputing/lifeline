@@ -72,9 +72,6 @@ public:
   void add_arrow(vec2 const& p0, vec2 const& norm_dir, float length, vec4 const& color);
   void add_arrow(vec2 const& p0, vec2 const& v, vec4 const& color);
 
-  /*
-   * Draws an AABB specified in world space.
-   */
   void add_aabb(vec2 const& min, vec2 const& max, vec4 const& color);
 
   void add_transform(mat3 const& transform, float scale);

@@ -41,6 +41,8 @@ public:
   entity * find_entity(std::string const& name);
   entity * find_entity(unique_id<entity> const& id);
 
+  void kill_all();
+
   // TODO - Remove, replace with ability to get containers of components of a given type
   //          for engine components and all logic components.
   entity_container::iterator entity_begin() { return p_entities.begin(); }

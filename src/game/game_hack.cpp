@@ -23,6 +23,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <engine/logic_component_base.h>
 #include <engine/sprite_component.h>
 #include <engine/transform_component.h>
+#include <engine/TTF_system.h>
 
 #include <graphics/error_checking.h>
 #include <graphics/shader_program.h>
@@ -47,8 +48,6 @@ void game_hack::initialize()
     new_ent->get_component<transform_component>()->set_scale(1.0f);
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/player.png"));
-
-    // TEXT TEST END ////////////////
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
@@ -65,6 +64,17 @@ void game_hack::initialize()
 
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
+  }
+  {
+    auto * new_ent = game_space->create_entity("press_c");
+    auto * new_ent_s = new_ent->create_component<sprite_component>(
+        TTF_system::render_text_to_texture("c - Display controls", 12));
+
+
+
+    new_ent->get_component<transform_component>()->set_pos(
+      new_ent_s->get_dimensions().x() / 2.0f,
+      new_ent_s->get_dimensions().y() / 2.0f);
   }
 }
 
@@ -92,6 +102,15 @@ void game_hack::p_input(float dt)
   if(input_sys.is_key_triggered(SDLK_ESCAPE))
   {
     game_engine->set_is_running(false);
+  }
+
+  // Reset
+  if(input_sys.is_key_triggered(SDLK_RETURN))
+  {
+    auto * game_space = get_owning_entity()->get_owning_space();
+    game_space->kill_all();
+    auto * new_game_hack_ent = game_space->create_entity("game_hack");
+    new_game_hack_ent->create_component<game_hack>();
   }
 
   // Toggle debug drawing on/off
@@ -190,7 +209,7 @@ void game_hack::p_input(float dt)
     auto * const player_t = player->get_component<transform_component>();
 
     // Shooting
-    if(input_sys.is_key_triggered(SDLK_SPACE))
+    if(input_sys.is_key_triggered(SDLK_SPACE) || input_sys.is_key_pressed(SDLK_m))
     {
       auto * new_bullet = game_space->create_entity("bullet");
       auto * new_bullet_t = new_bullet->get_component<transform_component>();
