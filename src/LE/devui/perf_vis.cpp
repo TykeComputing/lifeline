@@ -127,7 +127,7 @@ vec4 const& perf_vis::get_graph_color(std::string const& name) const
 /*!
  * \brief The bottom left of the first drawn graph in HUD space.
  *
- * \note Default is arbitrary.
+ * \note Default is arbitrary, should be set manually before use.
  */
 void perf_vis::set_bottom_left(vec2 const& value)
 {
@@ -137,7 +137,7 @@ void perf_vis::set_bottom_left(vec2 const& value)
 /*!
  * \brief Dimensions of a single graph in HUD space.
  *
- * \note Default is arbitrary.
+ * \note Default is arbitrary, should be set manually before use.
  */
 void perf_vis::set_dimensions(vec2 const& value)
 {
@@ -185,11 +185,11 @@ void perf_vis::set_max_time(float value)
 /*!
  * \brief Font size (height) of all text used by perf_vis in HUD space.
  *
- * \note Default is arbitrary.
+ * \note Default is arbitrary, should be set manually before use.
  */
 void perf_vis::set_text_height(unsigned value)
 {
-  p_text_size = value;
+  p_text_height = value;
   p_text_size_is_dirty = true;
 }
 
@@ -330,7 +330,7 @@ entity * perf_vis::p_get_text_entity(
     result = get_owning_entity()->get_owning_space()->create_entity(ent_name);
 
     result->create_component<sprite_component>(
-      TTF_system::render_text_to_texture(text, p_text_size));
+      TTF_system::render_text_to_texture(text, p_text_height));
 
     get_owning_entity()->add_child(result);
   }
@@ -342,11 +342,9 @@ entity * perf_vis::p_get_text_entity(
       auto * text_s = result->get_component<sprite_component>();
       LE_FATAL_ERROR_IF(text_s == nullptr, "Missing sprite component!");
       text_s->set_texture(
-        TTF_system::render_text_to_texture(text, p_text_size));
+        TTF_system::render_text_to_texture(text, p_text_height));
     }
   }
-
-
 
   return result;
 }

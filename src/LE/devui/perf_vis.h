@@ -51,7 +51,7 @@ public:
   float get_max_time() const { return p_max_time; }
 
   void set_text_height(unsigned value);
-  unsigned get_text_height() const { return p_text_size; }
+  unsigned get_text_height() const { return p_text_height; }
 
   void set_graph_name_offset(float value);
   float get_graph_name_offset() const { return p_graph_name_offset; }
@@ -86,20 +86,15 @@ private:
 
   float p_get_graph_entry_height_offset(float entry_value, float graph_height) const;
 
-  std::unordered_map<std::string, vec4> p_graph_colors;
+  std::unordered_map<std::string, vec4> p_graph_colors; //! see \ref set_graph_color
 
-  //! The bottom left from which the graphs will be drawn.
-  vec2 p_bottom_left;
-
-  //!
-  vec2 p_dimensions = vec2(400.f, 200.f);
-  vec2 p_offset_percent = vec2::zero;
-  float p_max_time = 0.016f;
-  unsigned p_text_size = 12;
-  float p_graph_name_offset = 0.f;
-
-  // Signals that text will need to be re-rendered
-  bool p_text_size_is_dirty = false;
+  vec2 p_bottom_left = vec2::zero;    //!< see \ref set_bottom_left
+  vec2 p_dimensions = vec2::zero;     //!< see \ref set_dimensions
+  vec2 p_offset_percent = vec2::zero; //!< see \ref set_offset_percent
+  float p_max_time = 0.016f;          //!< see \ref set_max_time
+  unsigned p_text_height = 0;         //!< see \ref set_text_height
+  float p_graph_name_offset = 0.f;    //!< see \ref set_graph_name_offset
+  bool p_text_size_is_dirty = false;  //!< Signals that text will need to be re-rendered
 };
 
 } // namespace LE
