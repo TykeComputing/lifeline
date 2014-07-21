@@ -87,6 +87,14 @@ entity * space::find_entity(unique_id<entity> const& id)
   }
 }
 
+void space::kill_all()
+{
+  for(auto & it : p_entities)
+  {
+    it.second->kill();
+  }
+}
+
 void space::remove_dead()
 {
   for(auto it = p_entities.begin(); it != p_entities.end();)

@@ -47,6 +47,7 @@ public:
   window const& get_window() const;
 
   input_system const& get_input_system() const;
+  graphics_system const& get_graphics_system() const;
 
   profiling_records & get_profiling_records();
   profiling_records const& get_profiling_records() const;

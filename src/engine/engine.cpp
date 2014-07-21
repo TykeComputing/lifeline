@@ -133,6 +133,11 @@ input_system const& engine::get_input_system() const
   return p_input_sys;
 }
 
+graphics_system const& engine::get_graphics_system() const
+{
+  return p_graphics_sys;
+}
+
 profiling_records &engine::get_profiling_records()
 {
   return p_profiling_records;

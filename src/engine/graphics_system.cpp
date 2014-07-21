@@ -191,6 +191,11 @@ void graphics_system::update_render_target_size(uvec2 const& window_size)
   log_status(log_scope::ENGINE, "Render target size: {}", p_render_target_size);
 }
 
+uvec2 const& graphics_system::get_render_target_size() const
+{
+  return p_render_target_size;
+}
+
 void graphics_system::p_load_shader(
   std::unique_ptr<shader_program> & out_sp,
   char const* vert,

@@ -29,6 +29,7 @@ public:
    *   render target scalable to one pixel in the window.
    */
   void update_render_target_size(uvec2 const& window_size);
+  uvec2 const& get_render_target_size() const;
 
 private:
   void p_load_shader(

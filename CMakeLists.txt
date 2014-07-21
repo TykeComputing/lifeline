@@ -228,12 +228,16 @@ message(STATUS "${LE_MESSAGE_LINE_BREAK}")
 ################################
 
 if(DOXYGEN_FOUND)
-  add_custom_command(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Building doxygen documentation")
+  set(LE_BUILD_DOXYGEN FALSE CACHE BOOL "Whether to use doxygen to build documentation.")
+
+  if(LE_BUILD_DOXYGEN)
+    add_custom_command(
+      TARGET ${PROJECT_NAME}
+      POST_BUILD
+      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Doxyfile
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      COMMENT "Building doxygen documentation")
+  endif()
 endif()
 
 ################################

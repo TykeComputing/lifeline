@@ -96,7 +96,7 @@ void perf_vis::update(float dt)
   // Draw an indicator for the current max time below the lower left corner of the first graph
   auto * max_time_text_ent = p_get_text_entity(
     "pv_max_time_indicator",
-    fmt::format("Max Time: {}", p_max_time),
+    fmt::format("Max Time: {} seconds", p_max_time),
     p_text_size_is_dirty);
   auto * max_time_text_t = max_time_text_ent->get_component<transform_component>();
   auto * max_time_text_s = max_time_text_ent->get_component<sprite_component>();
@@ -194,7 +194,7 @@ void perf_vis::set_max_time(float value)
 
   p_get_text_entity(
     "pv_max_time_indicator",
-    fmt::format("Max Time: {}", p_max_time),
+    fmt::format("Max Time: {} seconds", p_max_time),
     true);
 }
 
