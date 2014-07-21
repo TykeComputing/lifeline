@@ -6,6 +6,7 @@ Synopsis
 Lifeline will be a 2D game.
 
 **UNDER CONSTRUCTION**
+
 **The below is curently intended for internal only**
 
 Setup Build Environment
