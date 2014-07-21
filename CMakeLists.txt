@@ -88,6 +88,8 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/math/vec.hpp
   ${LE_SRC_DIR}/math/vec.h
 
+  ${LE_SRC_DIR}/graphics/colors.cpp
+  ${LE_SRC_DIR}/graphics/colors.h
   ${LE_SRC_DIR}/graphics/debug_drawer.cpp
   ${LE_SRC_DIR}/graphics/debug_drawer.h
   ${LE_SRC_DIR}/graphics/debug_draw_manager.cpp

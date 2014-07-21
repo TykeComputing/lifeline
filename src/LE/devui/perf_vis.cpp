@@ -13,6 +13,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/engine/sprite_component.h>
 #include <LE/engine/transform_component.h>
 #include <LE/engine/TTF_system.h>
+#include <LE/graphics/colors.h>
 #include <LE/graphics/debug_draw_manager.h>
 
 namespace LE
@@ -119,8 +120,7 @@ vec4 const& perf_vis::get_graph_color(std::string const& name) const
   }
   else
   {
-    static vec4 const default_color(1.0f, 1.0f, 1.0f, 1.0f);
-    return default_color;
+    return colors::white;
   }
 }
 
