@@ -269,6 +269,21 @@ vecn<4, COMP_T>::operator[](size_t index) const
 }
 
 /**********************************************************************************************/
+/* Conversion */
+/**********************************************************************************************/
+
+template<typename OUT_COMP_T, typename IN_COMP_T, size_t N>
+vecn<N, OUT_COMP_T> convert(vecn<N, IN_COMP_T> const& v)
+{
+  vecn<N, OUT_COMP_T> result;
+  for(size_t i = 0; i < N; ++i)
+  {
+    result[i] = static_cast<OUT_COMP_T>(v[i]);
+  }
+  return result;
+}
+
+/**********************************************************************************************/
 /* Vector Arithmetic Operators */
 /**********************************************************************************************/
 

@@ -66,15 +66,9 @@ void game_hack::initialize()
       resource_manager::load<texture2D>("textures/enemy.png"));
   }
   {
-    auto * new_ent = game_space->create_entity("press_c");
-    auto * new_ent_s = new_ent->create_component<sprite_component>(
-        TTF_system::render_text_to_texture("c - Display controls", 12));
-
-
-
-    new_ent->get_component<transform_component>()->set_pos(
-      new_ent_s->get_dimensions().x() / 2.0f,
-      new_ent_s->get_dimensions().y() / 2.0f);
+    auto * new_ent = game_space->create_entity("controls_press_c");
+    new_ent->create_component<sprite_component>(
+      TTF_system::render_text_to_texture("Press c to toggle display of controls", 12));
   }
 }
 
@@ -107,10 +101,26 @@ void game_hack::p_input(float dt)
   // Reset
   if(input_sys.is_key_triggered(SDLK_RETURN))
   {
-    auto * game_space = get_owning_entity()->get_owning_space();
     game_space->kill_all();
     auto * new_game_hack_ent = game_space->create_entity("game_hack");
     new_game_hack_ent->create_component<game_hack>();
+  }
+
+  // Toggle display of controls
+  if(input_sys.is_key_triggered(SDLK_c))
+  {
+    auto * controls_all_ent = game_space->find_entity("controls_all");
+    if(controls_all_ent)
+    {
+      controls_all_ent->kill();
+    }
+    else
+    {
+      auto * new_ent = game_space->create_entity("controls_all");
+      new_ent->create_component<sprite_component>(
+        TTF_system::render_text_to_texture(
+          "W,A,S,D - Move\nSpace - Fire\nEnter - Reset\n", 12));
+    }
   }
 
   // Toggle debug drawing on/off
@@ -309,6 +319,44 @@ void game_hack::p_logic(float dt)
         curr_entity->get_component<transform_component>()->translate(0.0f, -bullet_movement_speed * dt);
       }
     }
+  }
+
+  p_display_controls_logic();
+}
+
+void game_hack::p_display_controls_logic()
+{
+  auto * game_space = get_owning_entity()->get_owning_space();
+  auto * controls_press_c_ent = game_space->find_entity("controls_press_c");
+  if(controls_press_c_ent == nullptr)
+    return;
+
+  auto * controls_press_c_s = controls_press_c_ent->get_component<sprite_component>();
+
+  vec2 top_left_offset = convert<float>(
+      game_space->get_owning_engine()->get_graphics_system().get_render_target_size() / 2u);
+  top_left_offset.x() = -top_left_offset.x();
+
+  vec2 controls_press_c_s_dim_offset = convert<float>(controls_press_c_s->get_dimensions());
+  controls_press_c_s_dim_offset.y() = -controls_press_c_s_dim_offset.y();
+
+  controls_press_c_ent->get_component<transform_component>()->set_pos(
+    (controls_press_c_s_dim_offset / 2.0f) + top_left_offset);
+
+  auto * controls_all_ent = game_space->find_entity("controls_all");
+  if(controls_all_ent)
+  {
+    auto * controls_all_s = controls_all_ent->get_component<sprite_component>();
+
+    vec2 controls_all_s_dim_offset = convert<float>(controls_all_s->get_dimensions());
+    controls_all_s_dim_offset.y() = -controls_all_s_dim_offset.y();
+
+    controls_all_ent->get_component<transform_component>()->set_pos(
+      (controls_all_s_dim_offset / 2.0f) + top_left_offset );
+
+    controls_all_ent->get_component<transform_component>()->translate(
+      0.0f,
+      controls_press_c_s_dim_offset.y());
   }
 }
 

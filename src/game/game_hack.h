@@ -38,6 +38,7 @@ public:
 private:
   void p_input(float dt);
   void p_logic(float dt);
+  void p_display_controls_logic();
   void p_physics(float dt);
 
   // TODO - Move to its own space/scene when game_hack_scene is removed

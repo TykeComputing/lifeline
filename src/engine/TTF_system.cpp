@@ -6,6 +6,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "TTF_system.h"
 
+#include <algorithm>
+
 #include <common/fatal_construction_exception.h>
 #include <common/fatal_error.h>
 #include <common/logging.h>
@@ -76,8 +78,48 @@ texture2D * TTF_system::render_text_to_texture(std::string const& text, unsigned
   // TODO: Store font instead of creating each time
   true_type_font rambla_ttf(font_file_path, size);
 
-  SDL_Surface * text_surface =
-    TTF_RenderText_Blended(rambla_ttf.get_raw(), text.c_str(), SDL_Color{255, 255, 255, 255});
+  // Quick hack to allow rendering of multiple lines using newlines.
+  Uint32 wrap_length = 0;
+  if(text.empty() == false)
+  {
+    // Finds what the rendered text width will be, since the only way to get SDL_ttf to handle
+    //   newlines is by using TTF_RenderText_Blended_Wrapped, which requires a wrap_length.
+    //   STL_ttf will pad the texture to this size, so I need to find the actual size (vs
+    //   using very large value).
+    // Slow and dirty, just needs to get job done for now.
+    std::vector<std::string> lines;
+    size_t line_start = 0;
+    size_t newline_pos = text.find('\n');
+    while(newline_pos != std::string::npos)
+    {
+      lines.push_back(text.substr(line_start, newline_pos - line_start));
+
+      line_start = newline_pos + 1;
+      newline_pos = text.find('\n', line_start);
+    }
+
+    // Get last line if it did not end with a newline
+    if(text.back() != '\n')
+    {
+      lines.push_back(text.substr(line_start, text.length() - line_start));
+    }
+
+    auto longest_line_it = std::max_element(lines.begin(), lines.end(),
+      [](std::string const& lhs, std::string const& rhs)->bool
+      {
+        return lhs.length() < rhs.length();
+      });
+
+    int w, h;
+    TTF_SizeText(rambla_ttf.get_raw(), longest_line_it->c_str(), &w, &h);
+
+    wrap_length = w;
+  }
+
+  SDL_Surface * text_surface = TTF_RenderText_Blended_Wrapped(
+    rambla_ttf.get_raw(),
+    text.c_str(),
+    SDL_Color{255, 255, 255, 255}, wrap_length);
   if(text_surface == nullptr)
   {
     LE_FATAL_ERROR(TTF_GetError());
