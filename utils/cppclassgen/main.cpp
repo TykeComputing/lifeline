@@ -40,7 +40,7 @@ int process_options(generator & gen, int arg_count, char *args[])
   {
     std::string curr_arg(args[arg_it]);
 
-    // All options begin with "--"
+    // All options begin with `--`
     if(curr_arg.find("--") != 0)
     {
       // Return index of first non-flag
