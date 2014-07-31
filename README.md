@@ -5,13 +5,11 @@ Synopsis
 -------------
 Lifeline will be a 2D game.
 
+**UNDER CONSTRUCTION: The below is currently intended for internal only**
+
 Setup Build Environment
 -------------
 If this project gets significantly far such that it is justified I should document build setup for each platform in detail here.
-
-If working on Windows you can checkout [lifeline-external-dependencies](https://github.com/peter-clark/lifeline-external-dependencies), it has all required 3rd party libraries and headers. CMake will look for this in `${LE_EXTERNAL_DEPEND_DIR}` which by default is `<REPO_ROOT>/external`.
-
-Otherwise you can manually configure in the CMake cache where each library is located. 
 
 Setup Run Environment
 -------------
