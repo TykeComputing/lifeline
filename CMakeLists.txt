@@ -137,6 +137,8 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/engine/space.h
   ${LE_SRC_DIR}/engine/sprite_component.cpp
   ${LE_SRC_DIR}/engine/sprite_component.h
+  ${LE_SRC_DIR}/engine/tilemap_component.cpp
+  ${LE_SRC_DIR}/engine/tilemap_component.h
   ${LE_SRC_DIR}/engine/transform_component.cpp
   ${LE_SRC_DIR}/engine/transform_component.h
   ${LE_SRC_DIR}/engine/TTF_system.cpp
