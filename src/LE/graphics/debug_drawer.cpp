@@ -17,7 +17,7 @@ debug_drawer_base::debug_drawer_base()
   vertex_array::bind(p_VAO);
   vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
 
-  debug_shape_vertex::specify_vertex_attributes();
+  vertex::pos2_col4::specify_vertex_attributes();
 
   vertex_array::unbind();
   vertex_buffer::unbind(GL_ARRAY_BUFFER);
@@ -54,7 +54,7 @@ void debug_drawer_base::draw(GLenum mode) const
   vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
   vertex_buffer::set_data(
     GL_ARRAY_BUFFER,
-    p_vertices.size() * sizeof(debug_shape_vertex),
+    p_vertices.size() * sizeof(vertex::pos2_col4),
     p_vertices.data(),
     GL_STREAM_DRAW);
   vertex_buffer::unbind(GL_ARRAY_BUFFER);

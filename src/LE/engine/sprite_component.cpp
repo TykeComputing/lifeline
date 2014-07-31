@@ -73,8 +73,8 @@ void sprite_component::p_set_buffer_data()
   vertex_array::bind(p_VAO);
   vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
 
-  vertex::specify_vertex_attributes();
-  vertex verts[] =
+  vertex::pos2_tex2::specify_vertex_attributes();
+  vertex::pos2_tex2 verts[] =
   {
     { vec2(-texture_half_x, -texture_half_y), vec2(0.0f, 1.0f) },
     { vec2( texture_half_x, -texture_half_y), vec2(1.0f, 1.0f) },
@@ -84,7 +84,7 @@ void sprite_component::p_set_buffer_data()
     { vec2( texture_half_x, -texture_half_y), vec2(1.0f, 1.0f) },
     { vec2( texture_half_x,  texture_half_y), vec2(1.0f, 0.0f) }
   };
-  num_verts = sizeof(verts) / sizeof(vertex);
+  num_verts = sizeof(verts) / sizeof(vertex::pos2_tex2);
 
   vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
 
