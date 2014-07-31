@@ -262,7 +262,7 @@ void perf_vis::p_draw_graph(
 
   float curr_x = bottom_left.x() + delta_x;
 
-  // Draw records, ignoring most recent record (since this frame is not finished)
+  // Draw records, ignoring most recent record
   for(auto record_entry_it = record.cbegin();
       record_entry_it != (record.cend() - 1);
       ++record_entry_it)
@@ -281,7 +281,8 @@ void perf_vis::p_draw_graph(
 
 /*!
  * \brief Updates the position of a graph label so that it is aligned to right side of the graph
- *   horizontally and to the drawn height of the oldest drawn graph vertically.
+ *   horizontally and to the height of the oldest graph entry vertically (the left-most data
+ *   point in the plotted graph).
  *
  * \param name - The name of graph, also the text that will be displayed.
  * \param height_offset - Offset from bottom_left.y() that the text will be vertically centered
