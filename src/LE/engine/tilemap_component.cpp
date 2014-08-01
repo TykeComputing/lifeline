@@ -6,8 +6,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "tilemap_component.h"
 
-#include <rapidjson/document.h>
-#include <rapidjson/filestream.h>
+//#include <rapidjson/document.h>
+//#include <rapidjson/filestream.h>
 
 #include <LE/common/file_string.h>
 #include <LE/common/fatal_error.h>
@@ -20,11 +20,12 @@ namespace LE
 
 tileset::tileset(std::string const& tileset_definition_file_name)
 {
-  file_string tilest_definition_file_data(tileset_definition_file_name)
-  rapidjson::Document
+  (void)tileset_definition_file_name;
+//  file_string tilest_definition_file_data(tileset_definition_file_name)
+//  rapidjson::Document
 
-  std::string tileset_texture_file_name;
-  p_texture.swap(texture2D());
+//  std::string tileset_texture_file_name;
+//  p_texture.swap(texture2D());
 }
 
 ////////////////////
@@ -51,16 +52,16 @@ tilemap_component::tilemap_component(tileset * new_tileset) :
 
 void tilemap_component::bind() const
 {
-  LE_FATAL_ERROR_IF(p_tileset->is_valid() == false,
-    "Attempting to bind sprite without a valid texture");
+  //LE_FATAL_ERROR_IF(p_tileset->is_valid() == false,
+  //  "Attempting to bind sprite without a valid texture");
 
   p_unit_tile.bind();
-  texture2D::bind(*p_tileset);
+  //texture2D::bind(*p_tileset);
 }
 
 void tilemap_component::unbind() const
 {
-  texture2D::unbind();
+  //texture2D::unbind();
   p_unit_tile.unbind();
 }
 
