@@ -96,6 +96,9 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/graphics/debug_draw_manager.h
   ${LE_SRC_DIR}/graphics/error_checking.cpp
   ${LE_SRC_DIR}/graphics/error_checking.h
+  ${LE_SRC_DIR}/graphics/renderable_array.cpp
+  ${LE_SRC_DIR}/graphics/renderable_array.hpp
+  ${LE_SRC_DIR}/graphics/renderable_array.h
   ${LE_SRC_DIR}/graphics/shader.cpp
   ${LE_SRC_DIR}/graphics/shader.h
   ${LE_SRC_DIR}/graphics/shader_program.cpp
@@ -137,6 +140,8 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/engine/space.h
   ${LE_SRC_DIR}/engine/sprite_component.cpp
   ${LE_SRC_DIR}/engine/sprite_component.h
+  ${LE_SRC_DIR}/engine/tilemap_component.cpp
+  ${LE_SRC_DIR}/engine/tilemap_component.h
   ${LE_SRC_DIR}/engine/transform_component.cpp
   ${LE_SRC_DIR}/engine/transform_component.h
   ${LE_SRC_DIR}/engine/TTF_system.cpp

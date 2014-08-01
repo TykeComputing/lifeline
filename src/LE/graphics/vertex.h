@@ -16,9 +16,21 @@ namespace LE
 
 LE_ENUM_3(vertex_attrib_type, position, texcoord, color)
 
-struct vertex
+namespace vertex
 {
-  vertex(vec2 const& position, vec2 const& texcoord);
+
+struct pos2
+{
+  pos2(vec2 const& position);
+
+  static void specify_vertex_attributes();
+
+  vec2 position;
+};
+
+struct pos2_tex2
+{
+  pos2_tex2(vec2 const& position, vec2 const& texcoord);
 
   static void specify_vertex_attributes();
 
@@ -26,15 +38,17 @@ struct vertex
   vec2 texcoord;
 };
 
-struct debug_shape_vertex
+struct pos2_col4
 {
-  debug_shape_vertex(vec2 const& position, vec4 const& color);
+  pos2_col4(vec2 const& position, vec4 const& color);
 
   static void specify_vertex_attributes();
 
   vec2 position;
   vec4 color;
 };
+
+}
 
 } // namespace LE
 

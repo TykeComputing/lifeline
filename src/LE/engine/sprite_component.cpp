@@ -16,8 +16,8 @@ namespace LE
 
 unique_id<engine_component_base> const sprite_component::type_id;
 
-sprite_component::sprite_component(texture2D * texture) :
-  p_texture(texture)
+sprite_component::sprite_component(texture2D * new_texture) :
+  p_texture(new_texture)
 {
   p_set_buffer_data();
 }
@@ -39,19 +39,19 @@ void sprite_component::bind() const
   LE_FATAL_ERROR_IF(p_texture->is_valid() == false,
     "Attempting to bind sprite without a valid texture");
 
-  vertex_array::bind(p_VAO);
+  p_quad.bind();
   texture2D::bind(*p_texture);
 }
 
 void sprite_component::unbind() const
 {
   texture2D::unbind();
-  vertex_array::unbind();
+  p_quad.unbind();
 }
 
 GLsizei sprite_component::get_num_verts() const
 {
-  return num_verts;
+  return p_quad.get_num_verts();
 }
 
 ivec2 sprite_component::get_dimensions() const
@@ -70,11 +70,7 @@ void sprite_component::p_set_buffer_data()
   float const texture_half_x = texture_dim.x() * 0.5f;
   float const texture_half_y = texture_dim.y() * 0.5f;
 
-  vertex_array::bind(p_VAO);
-  vertex_buffer::bind(GL_ARRAY_BUFFER, p_VBO);
-
-  vertex::specify_vertex_attributes();
-  vertex verts[] =
+  vertex::pos2_tex2 verts[] =
   {
     { vec2(-texture_half_x, -texture_half_y), vec2(0.0f, 1.0f) },
     { vec2( texture_half_x, -texture_half_y), vec2(1.0f, 1.0f) },
@@ -84,11 +80,9 @@ void sprite_component::p_set_buffer_data()
     { vec2( texture_half_x, -texture_half_y), vec2(1.0f, 1.0f) },
     { vec2( texture_half_x,  texture_half_y), vec2(1.0f, 0.0f) }
   };
-  num_verts = sizeof(verts) / sizeof(vertex);
+  size_t num_verts = sizeof(verts) / sizeof(vertex::pos2_tex2);
 
-  vertex_buffer::set_data(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-
-  vertex_array::unbind();
+  p_quad.set_data(verts, num_verts, GL_STATIC_DRAW);
 }
 
 } // namespace LE

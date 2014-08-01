@@ -41,7 +41,7 @@ protected:
   debug_drawer_base();
   virtual ~debug_drawer_base();
 
-  std::vector<debug_shape_vertex> p_vertices;
+  std::vector<vertex::pos2_col4> p_vertices;
 
   void draw(GLenum prim_mode) const;
 

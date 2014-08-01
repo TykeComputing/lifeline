@@ -16,8 +16,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/engine/engine_component_base.h>
 
 #include <LE/graphics/texture.h>
-#include <LE/graphics/vertex_array.h>
-#include <LE/graphics/vertex_buffer.h>
+#include <LE/graphics/renderable_array.h>
 
 #include <LE/math/vec.h>
 
@@ -27,7 +26,7 @@ namespace LE
 class sprite_component : public engine_component_base
 {
 public:
-  sprite_component(texture2D * texture);
+  sprite_component(texture2D * new_texture);
 
   // NOTE: Sprite assumes ownership of texture
   // TODO - Remove note when resources are implemented
@@ -48,14 +47,10 @@ public:
 private:
   void p_set_buffer_data();
 
-  vertex_array p_VAO;
-  vertex_buffer p_VBO;
-
   // TODO - Make resource (unique ptr to emulate interface, but will involve extra destructions
   //          and construtions.
   std::unique_ptr<texture2D> p_texture;
-
-  GLsizei num_verts = 0;
+  renderable_array p_quad;
 };
 
 } // namespace LE
