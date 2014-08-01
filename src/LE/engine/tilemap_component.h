@@ -8,6 +8,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #define LE_ENGINE_TILEMAP_COMPONENT_H
 
 #include <memory>
+#include <string>
 
 #include <LE/common/unique_id.h>
 
@@ -19,10 +20,21 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
+class tileset
+{
+public:
+  tileset(std::string const& tileset_definition_file_name);
+
+private:
+
+  // TODO: Make resource
+  std::unique_ptr<texture2D> p_texture;
+};
+
 class tilemap_component : public engine_component_base
 {
 public:
-  tilemap_component(texture2D * tileset_texture);
+  tilemap_component(tileset * new_tileset);
 
   void bind() const;
   void unbind() const;
@@ -31,7 +43,8 @@ public:
 
 private:
   renderable_array p_unit_tile;
-  std::unique_ptr<texture2D> p_tileset;
+  // TODO: Make resource
+  std::unique_ptr<tileset> p_tileset;
 };
 
 } // namespace LE
