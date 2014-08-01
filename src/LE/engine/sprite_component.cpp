@@ -16,8 +16,8 @@ namespace LE
 
 unique_id<engine_component_base> const sprite_component::type_id;
 
-sprite_component::sprite_component(texture2D * texture) :
-  p_texture(texture)
+sprite_component::sprite_component(texture2D * new_texture) :
+  p_texture(new_texture)
 {
   p_set_buffer_data();
 }

@@ -26,7 +26,7 @@ namespace LE
 class sprite_component : public engine_component_base
 {
 public:
-  sprite_component(texture2D * texture);
+  sprite_component(texture2D * new_texture);
 
   // NOTE: Sprite assumes ownership of texture
   // TODO - Remove note when resources are implemented
