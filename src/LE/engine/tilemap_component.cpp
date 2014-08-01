@@ -18,14 +18,20 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-tileset::tileset(std::string const& tileset_definition_file_name)
+tileset::tileset(std::string const& tsd_file_name)
 {
-  (void)tileset_definition_file_name;
-//  file_string tilest_definition_file_data(tileset_definition_file_name)
-//  rapidjson::Document
+  file_string tsd_file_data(tsd_file_name);
+  if(tsd_file_data.is_valid() == false)
+  {
+    throw resource_exception(
+      "Unable to open tileset definition file \"" + tsd_file_name + "\".");
+  }
 
-//  std::string tileset_texture_file_name;
-//  p_texture.swap(texture2D());
+  //rapidjson::Document tsd_doc;
+
+
+  //std::string ts_texture_file_name;
+  //p_texture.swap(texture2D());
 }
 
 ////////////////////

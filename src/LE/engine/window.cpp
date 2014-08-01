@@ -18,7 +18,7 @@ window::window()
   p_raw_window = SDL_CreateWindow("Lifeline Engine", 64, 64, 1280, 768, sdl_window_flags);
   if(p_raw_window == nullptr)
   {
-    LE_FATAL_ERROR(SDL_GetError());
+    LE_FATAL_ERROR("{}", SDL_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error creating SDL window, exiting...");
   }

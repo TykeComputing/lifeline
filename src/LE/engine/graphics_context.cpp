@@ -25,7 +25,7 @@ graphics_context::graphics_context(window & target_window)
     int set_attrib_res = SDL_GL_SetAttribute(attrib, val);
     if(set_attrib_res != 0)
     {
-      LE_FATAL_ERROR(SDL_GetError());
+      LE_FATAL_ERROR("{}", SDL_GetError());
       SDL_ClearError();
     }
   };
@@ -47,7 +47,7 @@ graphics_context::graphics_context(window & target_window)
   p_raw_context = SDL_GL_CreateContext(target_window.get_raw());
   if(p_raw_context == nullptr)
   {
-    LE_FATAL_ERROR(SDL_GetError());
+    LE_FATAL_ERROR("{}", SDL_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error creating OpenGL context, exiting...");
   }

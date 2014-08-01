@@ -60,7 +60,7 @@ TTF_system::TTF_system()
 
   if(TTF_Init() != 0)
   {
-    LE_FATAL_ERROR(TTF_GetError());
+    LE_FATAL_ERROR("{}", TTF_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error initializing SDL, exiting...\n");
   }
@@ -123,7 +123,7 @@ texture2D * TTF_system::render_text_to_texture(std::string const& text, unsigned
     SDL_Color{255, 255, 255, 255}, wrap_length);
   if(text_surface == nullptr)
   {
-    LE_FATAL_ERROR(TTF_GetError());
+    LE_FATAL_ERROR("{}", TTF_GetError());
     resource_exception except(TTF_GetError());
     SDL_ClearError();
     throw except;

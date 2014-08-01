@@ -35,7 +35,7 @@ OS_interface::OS_interface()
 
   if(SDL_Init(SDL_INIT_VIDEO) != 0)
   {
-    LE_FATAL_ERROR(SDL_GetError());
+    LE_FATAL_ERROR("{}", SDL_GetError());
     SDL_ClearError();
     throw fatal_construction_exception("Error initializing SDL, exiting...\n");
   }
@@ -79,7 +79,7 @@ std::string OS_interface::get_base_dir() const
   }
   else
   {
-    LE_FATAL_ERROR(SDL_GetError());
+    LE_FATAL_ERROR("{}", SDL_GetError());
     SDL_ClearError();
     return std::string("Unable to get working directory.");
   }
@@ -96,7 +96,7 @@ std::string OS_interface::get_preferred_dir() const
 //  }
 //  else
 //  {
-//    LE_FATAL_ERROR(SDL_GetError());
+//    LE_FATAL_ERROR("{}", SDL_GetError());
 //    SDL_ClearError();
 //    return std::string("Unable to get working directory.");
 //  }

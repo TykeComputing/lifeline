@@ -21,19 +21,11 @@ namespace internal
 {
 
 void display_assert(
-  std::string const& file,
-  std::string const& function,
+  char const* file,
+  char const* function,
   int line,
-  char const* message)
-{
-  display_assert(file, function, line, std::string(message));
-}
-
-void display_assert(
-  std::string const& file,
-  std::string const& function,
-  int line,
-  std::string const& message)
+  char const* format,
+  fmt::ArgList const& args)
 {
   if(SDL_WasInit(0) == 0)
   {
@@ -42,10 +34,13 @@ void display_assert(
   }
 
   // Since this will only occur during errors, efficiency doesn't matter
-  std::string formatted_message =
-    fmt::format("{}:{}({})\n\n{}", file, function, line, message);
+  std::string format_with_file_info =
+    fmt::format("HALT {}:{}({}) - {}", file, function, line, format);
 
-  log(stderr, "HALT - {}", formatted_message);
+  std::string formatted_message =
+    fmt::format(format_with_file_info.c_str(), args);
+
+  ::LE::log_error(formatted_message.c_str());
 
   int res = SDL_ShowSimpleMessageBox(
     SDL_MESSAGEBOX_ERROR,

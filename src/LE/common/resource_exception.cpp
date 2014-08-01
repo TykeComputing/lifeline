@@ -19,13 +19,13 @@ resource_exception::resource_exception()
 resource_exception::resource_exception(char const* message) :
   message_exception(message)
 {
-  LE_FATAL_ERROR(message);
+  LE_FATAL_ERROR("{}", message);
 }
 
 resource_exception::resource_exception(std::string const& message) :
   message_exception(message)
 {
-  LE_FATAL_ERROR(message.c_str());
+  LE_FATAL_ERROR("{}", message.c_str());
 }
 
 } // namespace LE

@@ -34,7 +34,7 @@ graphics_system::graphics_system()
   GLenum glew_init_res = glewInit();
   if(glew_init_res != GLEW_OK)
   {
-    LE_FATAL_ERROR(
+    LE_FATAL_ERROR("{}",
       convert_unsigned_string_to_signed( glewGetErrorString(glew_init_res) ).c_str());
     throw fatal_construction_exception("Error intializing GLEW, exiting...");
   }

@@ -23,7 +23,10 @@ namespace LE
 class tileset
 {
 public:
-  tileset(std::string const& tileset_definition_file_name);
+  /*!
+   * \param tsd_file_name Tileset definition file name
+   */
+  tileset(std::string const& tsd_file_name);
 
 private:
 
