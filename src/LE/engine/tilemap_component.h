@@ -14,8 +14,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/engine/engine_component_base.h>
 
 #include <LE/graphics/texture.h>
-#include <LE/graphics/vertex_array.h>
-#include <LE/graphics/vertex_buffer.h>
+#include <LE/graphics/renderable_array.h>
 
 namespace LE
 {
@@ -23,16 +22,16 @@ namespace LE
 class tilemap_component : public engine_component_base
 {
 public:
-  tilemap_component();
-  virtual ~tilemap_component() {}
+  tilemap_component(texture2D * tileset_texture);
+
+  void bind() const;
+  void unbind() const;
 
   static unique_id<engine_component_base> const type_id;
 
 private:
-  vertex_array p_VAO;
-  vertex_buffer p_VBO;
-
-  std::unique_ptr<texture> p_tileset;
+  renderable_array p_unit_tile;
+  std::unique_ptr<texture2D> p_tileset;
 };
 
 } // namespace LE
