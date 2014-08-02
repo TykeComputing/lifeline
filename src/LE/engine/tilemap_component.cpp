@@ -6,9 +6,12 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "tilemap_component.h"
 
+#include <algorithm>
+
 #include <rapidjson/document.h>
 #include <rapidjson/filestream.h>
 
+#include <LE/common/char.h>
 #include <LE/common/file_string.h>
 #include <LE/common/fatal_error.h>
 #include <LE/common/logging.h>
@@ -34,10 +37,41 @@ tileset::tileset(std::string const& tsd_file_name)
   tsd_doc.Parse<0>(tsd_file_data.get_str().c_str());
   if(tsd_doc.HasParseError())
   {
+    // rapidjson does not provide line/column, only character offset
+    //   hacking it here until (if) rapidjson implements it
+    // TODO - Move to function elsewhere
+    std::string const& tsd_file_str = tsd_file_data.get_str();
+    size_t const error_char_offset = tsd_doc.GetErrorOffset();
+    std::string::const_iterator error_it =
+      tsd_file_str.cbegin() + error_char_offset;
+
+    // Compute line number, using 1 as base line
+    size_t const error_line_num = 1 + std::count_if(
+      tsd_file_str.cbegin(),
+      error_it,
+      is_newline);
+
+    // Compute column (char offset into line), using 1 as base column
+    std::string::const_reverse_iterator reverse_error_it{error_it};
+    auto error_line_begin_it = std::find(
+      reverse_error_it,
+      tsd_file_str.crend(),
+      '\n');
+
+      // If this is the first line we can
+    size_t const error_column_num =
+      error_line_begin_it != tsd_file_str.crend()
+        ? std::distance(reverse_error_it, error_line_begin_it) + 1
+        : error_char_offset + 1;
+
+    // Log error
     log_error(log_scope::ENGINE, "Error parsing tilemap definition file {}", tsd_file_name);
     log_error_no_prefix(log_line_seperator);
     log_error_no_prefix("== JSON ERRORS ==========");
-    log_error_no_prefix("{}", tsd_doc.GetParseError());
+    log_error_no_prefix("Line {}, Column {} - {}",
+      error_line_num,
+      error_column_num,
+      tsd_doc.GetParseError());
     log_error_no_prefix(log_line_seperator);
 
     throw resource_exception{};

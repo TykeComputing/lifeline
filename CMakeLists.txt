@@ -48,6 +48,7 @@ set(LE_SRC_DIR "${CMAKE_SOURCE_DIR}/src/LE")
 set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/main.cpp
 
+  ${LE_SRC_DIR}/common/char.h
   ${LE_SRC_DIR}/common/cppformat.h
   ${LE_SRC_DIR}/common/fatal_error.cpp
   ${LE_SRC_DIR}/common/fatal_error.h
