@@ -87,7 +87,6 @@ int main(int arg_count, char *args[])
   }
   catch(LE::fatal_construction_exception const& e)
   {
-    LE::log_error(LE::log_scope::GLOBAL, "{}", e.what());
     LE_FATAL_ERROR("Unable to create engine!"); // TODO - Remove
     res = -1;
   }

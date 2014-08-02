@@ -24,7 +24,9 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
 {
   if(shader_source_file_names.empty())
   {
-    throw resource_exception("No shader sources specified!.");
+    log_error(log_scope::GRAPHICS,
+      "Attempting to create shader with no shader sources specified!.");
+    throw resource_exception{};
   }
 
   // Since shader sources are copy pasted in order, it is safe to assume that the last
@@ -41,14 +43,16 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
     shader_source_strings.emplace_back(file_name_it);
     if(shader_source_strings.back().is_valid() == false)
     {
-      throw resource_exception("Unable to open shader file \"" + file_name_it + "\".");
+      log_error(log_scope::GRAPHICS, "Unable to open shader file \"{}\".", file_name_it);
+      throw resource_exception{};
     }
   }
 
   p_raw_name = glCreateShader(type);
   if(p_raw_name == 0)
   {
-    throw resource_exception("Unable to create shader, internal OpenGL error.");
+    log_error(log_scope::GRAPHICS, "Unable to create shader, internal OpenGL error.");
+    throw resource_exception();
   }
 
   // Get input in the form that OpenGL requires (an array of c strings)
@@ -108,7 +112,7 @@ shader::shader(GLenum type, std::vector<std::string> const& shader_source_file_n
 
     LE_FATAL_ERROR_IF_GL_ERROR();
 
-    throw resource_exception("Shader compilation failed.");
+    throw resource_exception{};
   }
 
   LE_FATAL_ERROR_IF_GL_ERROR();

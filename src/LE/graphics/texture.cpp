@@ -10,6 +10,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <LE/common/cppformat.h>
 #include <LE/common/macros.h>
+#include <LE/common/logging.h>
 #include <LE/common/resource_exception.h>
 
 #include <LE/graphics/error_checking.h>
@@ -119,8 +120,10 @@ void texture2D::load_texture_file(std::string const& texture_file_name)
   if(texture_data == nullptr)
   {
     // NOTE: stbi_failure_reason is NOT thread safe.
-    throw resource_exception( fmt::format("Texture: Unable to load texture \"{}\", {}.",
-     texture_file_name, stbi_failure_reason()) );
+    log_error(log_scope::GRAPHICS, "Unable to load texture \"{}\", {}.",
+      texture_file_name, stbi_failure_reason());
+
+    throw resource_exception{};
   }
 
   set_data(GL_SRGB8_ALPHA8, w, h, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);

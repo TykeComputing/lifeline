@@ -35,7 +35,7 @@ void display_assert(
 
   // Since this will only occur during errors, efficiency doesn't matter
   std::string format_with_file_info =
-    fmt::format("HALT {}:{}({}) - {}", file, function, line, format);
+    fmt::format("HALT {}:{}({})\n  {}", file, function, line, format);
 
   std::string formatted_message =
     fmt::format(format_with_file_info.c_str(), args);

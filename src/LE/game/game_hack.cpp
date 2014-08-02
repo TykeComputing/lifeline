@@ -13,18 +13,16 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <LE/common/fatal_error.h>
 #include <LE/common/logging.h>
-
 #include <LE/common/resource_exception.h>
 #include <LE/common/resource_manager.h>
+#include <LE/engine/tilemap_component.h>
 #include <LE/engine/transform_component.h>
-
 #include <LE/engine/engine.h>
 #include <LE/engine/space.h>
 #include <LE/engine/logic_component_base.h>
 #include <LE/engine/sprite_component.h>
 #include <LE/engine/transform_component.h>
 #include <LE/engine/TTF_system.h>
-
 #include <LE/graphics/error_checking.h>
 #include <LE/graphics/shader_program.h>
 #include <LE/graphics/vertex.h>
@@ -64,6 +62,14 @@ void game_hack::initialize()
 
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
+  }
+  {
+    auto * new_ent = game_space->create_entity("tilemap");
+    new_ent->get_component<transform_component>()->set_pos(0.0f, 0.0f);
+    new_ent->get_component<transform_component>()->set_scale(1.0f);
+
+    new_ent->create_component<tilemap_component>(
+      resource_manager::load<tileset>("tilesets/test/test.tsd"));
   }
 
   auto * pv = p_get_perf_vis_component();

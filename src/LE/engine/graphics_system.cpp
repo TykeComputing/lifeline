@@ -34,25 +34,26 @@ graphics_system::graphics_system()
   GLenum glew_init_res = glewInit();
   if(glew_init_res != GLEW_OK)
   {
-    LE_FATAL_ERROR("{}",
-      convert_unsigned_string_to_signed( glewGetErrorString(glew_init_res) ).c_str());
-    throw fatal_construction_exception("Error intializing GLEW, exiting...");
+    log_error(log_scope::ENGINE, "Error intializing GLEW: {}",
+      convert_unsigned_string_to_signed(glewGetErrorString(glew_init_res)));
+    throw fatal_construction_exception{};
   }
 
   std::string glew_init_GL_errors = get_GL_errors();
   if(glew_init_GL_errors.empty())
   {
-    log_status(log_scope::ENGINE, "OpenGL Function Loading: No errors on glewInit...");
+    log_status(log_scope::ENGINE, "OpenGL Function Loading: No errors on glewInit");
   }
   else
   {
-    log_status(log_scope::ENGINE, "OpenGL Function Loading: Errors on glewInit: {} ...",
+    log_status(log_scope::ENGINE, "OpenGL Function Loading: Errors on glewInit: {}",
        glew_init_GL_errors.c_str());
   }
 
   if(!GLEW_VERSION_3_2)
   {
-    throw fatal_construction_exception("Error, unable to obtain OpenGL 3.2 context, exiting...");
+    log_error(log_scope::ENGINE, "Unable to obtain OpenGL 3.2 context");
+    throw fatal_construction_exception{};
   }
 
   log_status(log_scope::ENGINE, log_line_seperator);
@@ -81,7 +82,6 @@ graphics_system::graphics_system()
     p_debug_shader_prog,
     "shaders/2D/debug_draw.vert",
     "shaders/2D/debug_draw.frag");
-
 
   // Set some initial OpenGL state
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -218,7 +218,6 @@ void graphics_system::p_load_shader(
   }
   catch(LE::resource_exception const& e)
   {
-    log_error(log_scope::GAME, "{}", e.what());
     LE_FATAL_ERROR("Error loading shader!");
     return;
   }

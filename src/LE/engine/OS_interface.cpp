@@ -27,17 +27,17 @@ OS_interface::OS_interface()
   SDL_GetVersion(&linked);
 
   log_status(log_scope::ENGINE, log_line_seperator);
-  log_status(log_scope::ENGINE, "Compiled against SDL version {}.{}.{}...",
+  log_status(log_scope::ENGINE, "Compiled against SDL version {}.{}.{}",
     (unsigned)compiled.major, (unsigned)compiled.minor, (unsigned)compiled.patch);
-  log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{}...",
+  log_status(log_scope::ENGINE, "Linked against SDL version {}.{}.{}",
     (unsigned)linked.major, (unsigned)linked.minor, (unsigned)linked.patch);
   log_status(log_scope::ENGINE, log_line_seperator);
 
   if(SDL_Init(SDL_INIT_VIDEO) != 0)
   {
-    LE_FATAL_ERROR("{}", SDL_GetError());
+    log_error(log_scope::ENGINE, "Error initializing SDL: {}", SDL_GetError());
     SDL_ClearError();
-    throw fatal_construction_exception("Error initializing SDL, exiting...\n");
+    throw fatal_construction_exception{};
   }
 }
 

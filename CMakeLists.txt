@@ -58,8 +58,6 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/common/logging.cpp
   ${LE_SRC_DIR}/common/logging.h
   ${LE_SRC_DIR}/common/macros.h
-  ${LE_SRC_DIR}/common/message_exception.cpp
-  ${LE_SRC_DIR}/common/message_exception.h
   ${LE_SRC_DIR}/common/profiling.hpp
   ${LE_SRC_DIR}/common/profiling.h
   ${LE_SRC_DIR}/common/profiling_records.cpp

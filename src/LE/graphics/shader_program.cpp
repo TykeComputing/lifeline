@@ -76,7 +76,7 @@ shader_program::shader_program(std::vector<shader*> const& shaders)
 
     LE_FATAL_ERROR_IF_GL_ERROR();
 
-    throw resource_exception("Shader linking failed.");
+    throw resource_exception{};
   }
   else
   {

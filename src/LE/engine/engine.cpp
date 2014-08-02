@@ -74,18 +74,13 @@ void engine::run()
       frame_timer.reset();
     }
   }
-  catch(resource_exception const& e)
+  catch(resource_exception const&)
   {
-    log_error(log_scope::ENGINE, "{} - Uncaught resource exception, exiting!", e.what());
+    log_error(log_scope::ENGINE, "Uncaught resource exception!");
     LE_FATAL_ERROR("Uncaught resource exception!");
-    return;
   }
-  catch(message_exception const& e)
-  {
-    log_error(log_scope::ENGINE, "{} - Uncaught message exception, exiting!", e.what());
-    LE_FATAL_ERROR("Uncaught message exception");
-    return;
-  }
+
+  log_status(log_scope::ENGINE, "Engine shutting down.");
 }
 
 space * engine::create_space(std::string const& name)

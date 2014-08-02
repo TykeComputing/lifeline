@@ -24,8 +24,10 @@ tileset::tileset(std::string const& tsd_file_name)
   file_string tsd_file_data(tsd_file_name);
   if(tsd_file_data.is_valid() == false)
   {
-    throw resource_exception(
-      "Unable to open tileset definition file \"" + tsd_file_name + "\".");
+    log_error(log_scope::ENGINE,
+      "Unable to open tileset definition file \"{}\".", tsd_file_name);
+
+    throw resource_exception{};
   }
 
   rapidjson::Document tsd_doc;
@@ -37,12 +39,13 @@ tileset::tileset(std::string const& tsd_file_name)
     log_error_no_prefix("== JSON ERRORS ==========");
     log_error_no_prefix("{}", tsd_doc.GetParseError());
     log_error_no_prefix(log_line_seperator);
-    return;
+
+    throw resource_exception{};
   }
 
   std::string ts_texture_file_name = tsd_doc["texture_name"].GetString();
 
-  p_texture.reset(new texture2D(ts_texture_file_name));
+  p_texture.reset(resource_manager::load<texture2D>(ts_texture_file_name));
 }
 
 void tileset::bind() const
