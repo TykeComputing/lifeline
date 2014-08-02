@@ -189,6 +189,8 @@ target_compile_options(${PROJECT_NAME}
     $<$<CXX_COMPILER_ID:GNU>:
       # Enable
       -Wall -Wextra -Werror -Wfatal-errors -Wpedantic
+      # Disable
+      -Wno-unused-local-typedefs #rapidjson
     >
 )
 

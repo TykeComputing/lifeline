@@ -28,6 +28,9 @@ public:
    */
   tileset(std::string const& tsd_file_name);
 
+  void bind() const;
+  void unbind() const;
+
 private:
 
   // TODO: Make resource

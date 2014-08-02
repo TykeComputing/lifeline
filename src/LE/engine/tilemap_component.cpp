@@ -6,11 +6,12 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "tilemap_component.h"
 
-//#include <rapidjson/document.h>
-//#include <rapidjson/filestream.h>
+#include <rapidjson/document.h>
+#include <rapidjson/filestream.h>
 
 #include <LE/common/file_string.h>
 #include <LE/common/fatal_error.h>
+#include <LE/common/logging.h>
 #include <LE/common/resource_manager.h>
 #include <LE/common/resource_exception.h>
 #include <LE/graphics/vertex.h>
@@ -27,11 +28,34 @@ tileset::tileset(std::string const& tsd_file_name)
       "Unable to open tileset definition file \"" + tsd_file_name + "\".");
   }
 
-  //rapidjson::Document tsd_doc;
+  rapidjson::Document tsd_doc;
+  tsd_doc.Parse<0>(tsd_file_data.get_str().c_str());
+  if(tsd_doc.HasParseError())
+  {
+    log_error(log_scope::ENGINE, "Error parsing tilemap definition file {}", tsd_file_name);
+    log_error_no_prefix(log_line_seperator);
+    log_error_no_prefix("== JSON ERRORS ==========");
+    log_error_no_prefix("{}", tsd_doc.GetParseError());
+    log_error_no_prefix(log_line_seperator);
+    return;
+  }
 
+  std::string ts_texture_file_name = tsd_doc["texture_name"].GetString();
 
-  //std::string ts_texture_file_name;
-  //p_texture.swap(texture2D());
+  p_texture.reset(new texture2D(ts_texture_file_name));
+}
+
+void tileset::bind() const
+{
+  LE_FATAL_ERROR_IF(p_texture->is_valid() == false,
+    "Attempting to bind sprite without a valid texture");
+
+  texture2D::bind(*p_texture);
+}
+
+void tileset::unbind() const
+{
+  texture2D::unbind();
 }
 
 ////////////////////
@@ -58,16 +82,13 @@ tilemap_component::tilemap_component(tileset * new_tileset) :
 
 void tilemap_component::bind() const
 {
-  //LE_FATAL_ERROR_IF(p_tileset->is_valid() == false,
-  //  "Attempting to bind sprite without a valid texture");
-
   p_unit_tile.bind();
-  //texture2D::bind(*p_tileset);
+  p_tileset->bind();
 }
 
 void tilemap_component::unbind() const
 {
-  //texture2D::unbind();
+  p_tileset->unbind();
   p_unit_tile.unbind();
 }
 
