@@ -47,7 +47,7 @@ private:
 class tilemap_component : public engine_component_base
 {
 public:
-  tilemap_component(tileset * new_tileset);
+  tilemap_component(std::string const& tm_file_name;
 
   void bind() const;
   void unbind() const;
@@ -56,9 +56,13 @@ public:
 
   tileset const* get_tile_set() const { return p_tileset.get(); }
 
+  uvec2 const& get_num_tiles() const { return p_num_tiles; }
+
 private:
   // TODO: Make resource
   std::unique_ptr<tileset> p_tileset;
+
+  uvec2 p_num_tiles = uvec2::zero;
 };
 
 } // namespace LE

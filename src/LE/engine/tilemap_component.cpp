@@ -158,10 +158,12 @@ void tileset::p_read(const std::string & tsd_file_name)
 
 unique_id<engine_component_base> const tilemap_component::type_id;
 
-tilemap_component::tilemap_component(tileset * new_tileset) :
-  p_tileset(new_tileset)
+tilemap_component::tilemap_component(std::string const& tm_file_name) :
 {
+  // Read json
 
+  p_tileset.reset(
+    resource_manager::load<tileset>(/*...*/));
 }
 
 void tilemap_component::bind() const

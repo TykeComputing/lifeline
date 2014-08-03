@@ -251,10 +251,10 @@ void graphics_system::p_render_tilemaps(
     unsigned const w = 4;
     unsigned const h = 4;
     int tilemap[w * h] = {
-      0, 0, 0, 0,
       1, 1, 0, 0,
-      -1, -1, 1, 0,
-      0, -1, 0, 0
+      1, 1, 1, 1,
+      2, 2, 3, 2,
+      0, 2, 0, 0
     };
 
     mat3 tile_to_model = identity_mat3;
