@@ -16,7 +16,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/engine/engine_component_base.h>
 
 #include <LE/graphics/texture.h>
-#include <LE/graphics/renderable_array.h>
+#include <LE/graphics/renderable_buffer.h>
 
 #include <LE/math/vec.h>
 
@@ -37,7 +37,7 @@ public:
 
   GLsizei get_num_verts() const;
 
-  ivec2 get_dimensions() const;
+  uvec2 get_dimensions() const;
 
   // TODO: Move and change method of representing colors (RGBA8?)
   vec4 m_color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -50,7 +50,7 @@ private:
   // TODO - Make resource (unique ptr to emulate interface, but will involve extra destructions
   //          and construtions.
   std::unique_ptr<texture2D> p_texture;
-  renderable_array p_quad;
+  renderable_array_buffer p_quad;
 };
 
 } // namespace LE

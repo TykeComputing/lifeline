@@ -60,7 +60,7 @@ bool texture::is_valid() const
   return p_is_valid;
 }
 
-ivec3 const& texture::get_dimensions() const
+uvec3 const& texture::get_dimensions() const
 {
   return p_dimensions;
 }
@@ -155,9 +155,9 @@ bool texture2D::is_valid() const
   return p_texture.is_valid();
 }
 
-ivec2 texture2D::get_dimensions() const
+uvec2 texture2D::get_dimensions() const
 {
-  return ivec2(p_texture.get_dimensions());
+  return p_texture.get_dimensions();
 }
 
 void texture2D::bind(texture2D const& tex2D)

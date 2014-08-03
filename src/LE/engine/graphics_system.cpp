@@ -120,55 +120,8 @@ void graphics_system::render(space & target)
   mat3 world_to_NDC = camera_to_NDC * world_to_camera;
   /////////////////////////////////////////////////
 
-  LE::shader_program::use(*p_textured_shader_prog);
-
-  GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
-  GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
-  GLint to_NDC_ul = p_textured_shader_prog->get_unform_location("to_NDC");
-
-  texture::set_active_unit(0);
-  glUniform1i(texture_ul, 0);
-
-  // Very primitive draw loop
-  // TODO - Improve
-  for(auto entity_it = target.entity_begin();
-    entity_it != target.entity_end();
-    ++entity_it)
-  {
-    auto & curr_ent = (*entity_it).second;
-    auto const* curr_ent_t = curr_ent->get_component<transform_component>();
-    auto const& model_to_world = curr_ent_t->get_matrix();
-
-    auto const* curr_sprite_comp = curr_ent->get_component<sprite_component>();
-    if(curr_sprite_comp)
-    {
-      glUniform4fv(color_multiplier_ul, 1, curr_sprite_comp->m_color.data);
-
-      mat3 model_to_NDC = world_to_NDC * model_to_world;
-      glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
-
-      curr_sprite_comp->bind();
-      LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_sprite_comp->get_num_verts());
-      curr_sprite_comp->unbind();
-    }
-  }
-  LE_FATAL_ERROR_IF_GL_ERROR();
-
-  LE::shader_program::use(*p_debug_shader_prog);
-
-  to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");
-  glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, world_to_NDC.data);
-
-  // TODO: Use camera mat
-  target.m_world_ddraw.draw();
-  target.m_world_ddraw.draw();
-
-  // TODO: Use hud mat
-  target.m_hud_ddraw.draw();
-
-  LE::shader_program::use_default();
-
-  LE_FATAL_ERROR_IF_GL_ERROR();
+  p_render_sprites(target, world_to_NDC);
+  p_render_tilemaps(target, world_to_NDC);
 }
 
 void graphics_system::update_render_target_size(uvec2 const& window_size)
@@ -221,6 +174,68 @@ void graphics_system::p_load_shader(
     LE_FATAL_ERROR("Error loading shader!");
     return;
   }
+}
+
+void graphics_system::p_render_sprites(
+  space & target,
+  mat3 const& world_to_NDC)
+{
+  LE::shader_program::use(*p_textured_shader_prog);
+
+  GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
+  GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
+  GLint to_NDC_ul = p_textured_shader_prog->get_unform_location("to_NDC");
+
+  texture::set_active_unit(0);
+  glUniform1i(texture_ul, 0);
+
+  // Very primitive draw loop
+  // TODO - Improve
+  for(auto entity_it = target.entity_begin();
+    entity_it != target.entity_end();
+    ++entity_it)
+  {
+    auto & curr_ent = (*entity_it).second;
+    auto const* curr_ent_t = curr_ent->get_component<transform_component>();
+    auto const& model_to_world = curr_ent_t->get_matrix();
+
+    auto const* curr_sprite_comp = curr_ent->get_component<sprite_component>();
+    if(curr_sprite_comp)
+    {
+      glUniform4fv(color_multiplier_ul, 1, curr_sprite_comp->m_color.data);
+
+      mat3 model_to_NDC = world_to_NDC * model_to_world;
+      glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
+
+      curr_sprite_comp->bind();
+      LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_sprite_comp->get_num_verts());
+      curr_sprite_comp->unbind();
+    }
+  }
+  LE_FATAL_ERROR_IF_GL_ERROR();
+
+  LE::shader_program::use(*p_debug_shader_prog);
+
+  to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");
+  glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, world_to_NDC.data);
+
+  // TODO: Use camera mat
+  target.m_world_ddraw.draw();
+  target.m_world_ddraw.draw();
+
+  // TODO: Use hud mat
+  target.m_hud_ddraw.draw();
+
+  LE::shader_program::use_default();
+
+  LE_FATAL_ERROR_IF_GL_ERROR();
+}
+
+void graphics_system::p_render_tilemaps(
+  space & target,
+  mat3 const& world_to_NDC)
+{
+  (void)world_to_NDC;(void)target;
 }
 
 } // namespace LE

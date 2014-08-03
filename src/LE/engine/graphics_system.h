@@ -37,6 +37,13 @@ private:
     char const* vert,
     char const* frag);
 
+  void p_render_sprites(
+    space & target,
+    mat3 const& world_to_NDC);
+  void p_render_tilemaps(
+    space & target,
+    mat3 const& world_to_NDC);
+
   std::unique_ptr<shader_program> p_textured_shader_prog;
   std::unique_ptr<shader_program> p_debug_shader_prog;
 

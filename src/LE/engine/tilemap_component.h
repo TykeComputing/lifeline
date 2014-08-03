@@ -15,7 +15,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/engine/engine_component_base.h>
 
 #include <LE/graphics/texture.h>
-#include <LE/graphics/renderable_array.h>
+#include <LE/graphics/renderable_buffer.h>
 
 namespace LE
 {
@@ -32,9 +32,11 @@ public:
   void unbind() const;
 
 private:
+  void p_read(std::string const& tsd_file_name);
 
-  // TODO: Make resource
+  renderable_element_buffer p_tile_vertices;
   std::unique_ptr<texture2D> p_texture;
+  size_t p_tile_size;
 };
 
 class tilemap_component : public engine_component_base
@@ -48,7 +50,6 @@ public:
   static unique_id<engine_component_base> const type_id;
 
 private:
-  renderable_array p_unit_tile;
   // TODO: Make resource
   std::unique_ptr<tileset> p_tileset;
 };

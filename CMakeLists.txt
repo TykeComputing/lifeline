@@ -95,9 +95,9 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/graphics/debug_draw_manager.h
   ${LE_SRC_DIR}/graphics/error_checking.cpp
   ${LE_SRC_DIR}/graphics/error_checking.h
-  ${LE_SRC_DIR}/graphics/renderable_array.cpp
-  ${LE_SRC_DIR}/graphics/renderable_array.hpp
-  ${LE_SRC_DIR}/graphics/renderable_array.h
+  ${LE_SRC_DIR}/graphics/renderable_buffer.cpp
+  ${LE_SRC_DIR}/graphics/renderable_buffer.hpp
+  ${LE_SRC_DIR}/graphics/renderable_buffer.h
   ${LE_SRC_DIR}/graphics/shader.cpp
   ${LE_SRC_DIR}/graphics/shader.h
   ${LE_SRC_DIR}/graphics/shader_program.cpp

@@ -37,7 +37,7 @@ void sprite_component::set_texture(texture2D * texture)
 void sprite_component::bind() const
 {
   LE_FATAL_ERROR_IF(p_texture->is_valid() == false,
-    "Attempting to bind sprite without a valid texture");
+    "Attempting to bind a sprite without a valid texture");
 
   p_quad.bind();
   texture2D::bind(*p_texture);
@@ -54,7 +54,7 @@ GLsizei sprite_component::get_num_verts() const
   return p_quad.get_num_verts();
 }
 
-ivec2 sprite_component::get_dimensions() const
+uvec2 sprite_component::get_dimensions() const
 {
   return p_texture->get_dimensions();
 }
