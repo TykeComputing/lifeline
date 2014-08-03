@@ -42,6 +42,7 @@ public:
    */
   virtual void teardown() {}
 
+  static unique_id<logic_component_base> const type_id;
 private:
 };
 

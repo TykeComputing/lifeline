@@ -150,6 +150,23 @@ public:
 private:
   void set_owner(space * new_owner);
 
+  // Helpers to hack around the fact that we cant use p_owner (space) in template methods.
+  // TODO - Not sure if sign that things need to be restructured, reassess further down the
+  //   road.
+  void p_register_engine_component(
+    unique_id<engine_component_base>::value_type type_id,
+    engine_component_base * comp);
+  void p_unregister_engine_component(
+    unique_id<engine_component_base>::value_type type_id,
+    engine_component_base * comp);
+
+  void p_register_logic_component(
+    unique_id<logic_component_base>::value_type type_id,
+    logic_component_base * comp);
+  void p_unregister_logic_component(
+    unique_id<logic_component_base>::value_type type_id,
+    logic_component_base * comp);
+
   space * p_owner = nullptr;
 
   entity * p_parent = nullptr;

@@ -32,6 +32,17 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
+// TEMP HACK
+class physics_component
+{
+
+};
+// TEMP HACK
+class AI_seek_component
+{
+
+};
+
 unique_id<logic_component_base> const game_hack::type_id;
 
 void game_hack::initialize()

@@ -136,6 +136,7 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/engine/OS_interface.cpp
   ${LE_SRC_DIR}/engine/OS_interface.h
   ${LE_SRC_DIR}/engine/space.cpp
+  ${LE_SRC_DIR}/engine/space.hpp
   ${LE_SRC_DIR}/engine/space.h
   ${LE_SRC_DIR}/engine/sprite_component.cpp
   ${LE_SRC_DIR}/engine/sprite_component.h

@@ -8,5 +8,5 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 namespace LE
 {
-
+  unique_id<logic_component_base> const logic_component_base::type_id;
 } // namespace LE

@@ -8,13 +8,14 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #define LE_ENGINE_SPACE_H
 
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 #include <LE/common/unique_id.h>
-
 #include <LE/engine/component_base.h>
+#include <LE/engine/engine_component_base.h>
 #include <LE/engine/entity.h>
-
+#include <LE/engine/logic_component_base.h>
 #include <LE/graphics/debug_draw_manager.h>
 
 namespace LE
@@ -25,6 +26,8 @@ class engine;
 class space
 {
 public:
+  class component_registrar
+
   space(std::string const& name);
 
   /**********************************************/
@@ -34,7 +37,14 @@ public:
     unique_id<entity>::value_type,
     std::unique_ptr<entity> > entity_container;
 
-  typedef std::vector<component_base *> component_type_container;
+  typedef std::vector<engine_component_base *> engine_component_container;
+  typedef std::unordered_map<
+    unique_id<engine_component_base>::value_type,
+    engine_component_container> engine_component_type_container;
+  typedef std::vector<logic_component_base *> logic_component_container;
+  typedef std::unordered_map<
+    unique_id<logic_component_container>::value_type,
+    logic_component_container> logic_component_type_container;
 
   entity * create_entity(std::string const& name);
 
@@ -43,16 +53,27 @@ public:
 
   void kill_all();
 
-  // TODO - Remove, replace with ability to get containers of components of a given type
-  //          for engine components and all logic components.
-  entity_container::iterator entity_begin() { return p_entities.begin(); }
-  entity_container::const_iterator entity_cbegin() const { return p_entities.cbegin(); }
-  entity_container::iterator entity_end() { return p_entities.end(); }
-  entity_container::const_iterator entity_cend() const { return p_entities.cend(); }
-
   size_t entity_num() const { return p_entities.size(); }
 
   void remove_dead();
+
+  /**********************************************/
+  /* Component Tracking */
+  /**********************************************/
+
+  template<typename COMP_T>
+  engine_component_container::iterator
+  engine_component_begin();
+  template<typename COMP_T>
+  engine_component_container::iterator
+  engine_component_end();
+
+  template<typename COMP_T>
+  logic_component_container::iterator
+  logic_component_begin();
+  template<typename COMP_T>
+  logic_component_container::iterator
+  logic_component_end();
 
   /**********************************************/
   /* Debug Drawing */
@@ -79,18 +100,36 @@ public:
   bool get_is_active() const;
 
 private:
-  void set_owner(engine * new_owner);
+  void p_set_owner(engine * new_owner);
+
+  void p_register_engine_component(
+    unique_id<engine_component_base>::value_type type_id,
+    engine_component_base * comp);
+  void p_unregister_engine_component(
+    unique_id<engine_component_base>::value_type type_id,
+    engine_component_base * comp);
+
+  void p_register_logic_component(
+    unique_id<logic_component_base>::value_type type_id,
+    logic_component_base * comp);
+  void p_unregister_logic_component(
+    unique_id<logic_component_base>::value_type type_id,
+    logic_component_base * comp);
 
   std::string p_name;
   entity_container p_entities;
+  engine_component_type_container p_engine_components;
+  logic_component_type_container p_logic_components;
 
   engine * p_owner = nullptr;
 
   bool p_is_active = true;
 
-  friend engine;
+  friend class engine;
 };
 
 } // namespace LE
+
+#include "space.hpp"
 
 #endif // LE_ENGINE_SPACE_H
