@@ -32,6 +32,7 @@ tileset::tileset(std::string const& tsd_file_name)
 
   uvec2 const& texture_dim = p_texture->get_dimensions();
   uvec2 const num_tiles = texture_dim / p_tile_size;
+  p_num_tiles = num_tiles.x() * num_tiles.y();
 
   // Dimensions of a single tile when entire tileset is considered using coordinates [0, 1]
   vec2 const tile_tex_coord_dim = vec2(p_tile_size) / vec2(texture_dim);
@@ -47,7 +48,7 @@ tileset::tileset(std::string const& tsd_file_name)
 
       // Calculate the texture coordinates for this tile
       vec2 tc_min = vec2(curr_tile) * tile_tex_coord_dim;
-      vec2 tc_max = tc_max + tile_tex_coord_dim;
+      vec2 tc_max = tc_min + tile_tex_coord_dim;
 
       vertices.emplace_back( vec2{-0.5f, -0.5f}, vec2{tc_min.x(), tc_max.y()} );
       vertices.emplace_back( vec2{ 0.5f, -0.5f}, vec2{tc_max.x(), tc_max.y()} );
@@ -56,16 +57,16 @@ tileset::tileset(std::string const& tsd_file_name)
 
       GLuint bottom_left_index  = curr_tile_base_vertex + 0;
       GLuint bottom_right_index = curr_tile_base_vertex + 1;
-      GLuint top_left_index     = curr_tile_base_vertex + 2;
-      GLuint top_right_index    = curr_tile_base_vertex + 3;
+      GLuint top_right_index    = curr_tile_base_vertex + 2;
+      GLuint top_left_index     = curr_tile_base_vertex + 3;
 
       indices.emplace_back(bottom_left_index);
       indices.emplace_back(bottom_right_index);
       indices.emplace_back(top_left_index);
 
-      indices.emplace_back(top_right_index);
-      indices.emplace_back(bottom_left_index);
+      indices.emplace_back(top_left_index);
       indices.emplace_back(bottom_right_index);
+      indices.emplace_back(top_right_index);
     }
   }
 
@@ -82,11 +83,13 @@ void tileset::bind() const
   LE_FATAL_ERROR_IF(p_texture->is_valid() == false,
     "Attempting to bind a tileset without a valid texture");
 
+  p_tile_vertices.bind();
   texture2D::bind(*p_texture);
 }
 
 void tileset::unbind() const
 {
+  p_tile_vertices.unbind();
   texture2D::unbind();
 }
 

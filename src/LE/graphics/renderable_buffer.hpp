@@ -54,8 +54,6 @@ void renderable_element_buffer::set_data(
     indices,
     usage);
 
-  vertex_buffer::unbind(GL_ELEMENT_ARRAY_BUFFER);
-  vertex_buffer::unbind(GL_ARRAY_BUFFER);
   vertex_array::unbind();
 }
 

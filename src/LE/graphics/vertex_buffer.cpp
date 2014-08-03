@@ -71,9 +71,9 @@ void vertex_buffer::copy_data(
 }
 
 void vertex_buffer::draw_arrays(
-  GLenum prim_mode, GLint vertex_offset, GLsizei vertex_count)
+  GLenum prim_mode, GLint starting_vertex, GLsizei vertex_count)
 {
-  glDrawArrays(prim_mode, vertex_offset, vertex_count);
+  glDrawArrays(prim_mode, starting_vertex, vertex_count);
 }
 
 void vertex_buffer::draw_elements(

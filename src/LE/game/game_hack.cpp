@@ -96,7 +96,9 @@ void game_hack::initialize()
   }
   {
     auto * new_ent = game_space->create_entity("tilemap");
-    new_ent->get_component<transform_component>()->set_pos(0.0f, 0.0f);
+    vec2 half_rt_size(
+      game_space->get_owning_engine()->get_graphics_system().get_render_target_size() / 2);
+    new_ent->get_component<transform_component>()->set_pos(-half_rt_size.x(), half_rt_size.y());
     new_ent->get_component<transform_component>()->set_scale(1.0f);
 
     new_ent->create_component<tilemap_component>(

@@ -15,9 +15,11 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/common/resource_exception.h>
 #include <LE/common/resource_manager.h>
 
+#include <LE/graphics/colors.h>
 #include <LE/graphics/error_checking.h>
 #include <LE/graphics/texture.h>
 
+#include <LE/engine/tilemap_component.h>
 #include <LE/engine/transform_component.h>
 #include <LE/engine/sprite_component.h>
 
@@ -120,8 +122,11 @@ void graphics_system::render(space & target)
   mat3 world_to_NDC = camera_to_NDC * world_to_camera;
   /////////////////////////////////////////////////
 
-  p_render_sprites(target, world_to_NDC);
   p_render_tilemaps(target, world_to_NDC);
+  p_render_sprites(target, world_to_NDC);
+  p_render_ddraw(target, world_to_NDC);
+
+  LE::shader_program::use_default();
 }
 
 void graphics_system::update_render_target_size(uvec2 const& window_size)
@@ -189,34 +194,107 @@ void graphics_system::p_render_sprites(
   texture::set_active_unit(0);
   glUniform1i(texture_ul, 0);
 
-  // Very primitive draw loop
-  // TODO - Improve
   for(auto sprite_comp_it = target.engine_component_begin<sprite_component>();
     sprite_comp_it != target.engine_component_end<sprite_component>();
     ++sprite_comp_it)
   {
-    sprite_component * curr_sprite_comp = static_cast<sprite_component *>(*sprite_comp_it);
-    auto * curr_ent = curr_sprite_comp->get_owning_entity();
+    sprite_component const* curr_sprite_comp =
+      static_cast<sprite_component const*>(*sprite_comp_it);
+    auto const* curr_ent = curr_sprite_comp->get_owning_entity();
     auto const* curr_ent_t = curr_ent->get_component<transform_component>();
+
     auto const& model_to_world = curr_ent_t->get_matrix();
 
-    if(curr_sprite_comp)
-    {
-      glUniform4fv(color_multiplier_ul, 1, curr_sprite_comp->m_color.data);
+    glUniform4fv(color_multiplier_ul, 1, curr_sprite_comp->m_color.data);
 
-      mat3 model_to_NDC = world_to_NDC * model_to_world;
-      glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
+    mat3 model_to_NDC = world_to_NDC * model_to_world;
+    glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
 
-      curr_sprite_comp->bind();
-      LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_sprite_comp->get_num_verts());
-      curr_sprite_comp->unbind();
-    }
+    curr_sprite_comp->bind();
+    renderable_array_buffer::draw(GL_TRIANGLES, 0, curr_sprite_comp->get_num_verts());
+    curr_sprite_comp->unbind();
   }
   LE_FATAL_ERROR_IF_GL_ERROR();
+}
 
+void graphics_system::p_render_tilemaps(
+  space & target,
+  mat3 const& world_to_NDC)
+{
+  LE::shader_program::use(*p_textured_shader_prog);
+
+  GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
+  GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
+  GLint to_NDC_ul = p_textured_shader_prog->get_unform_location("to_NDC");
+
+  texture::set_active_unit(0);
+  glUniform1i(texture_ul, 0);
+
+  glUniform4fv(color_multiplier_ul, 1, colors::white.data);
+
+  for(auto tilemap_comp_it = target.engine_component_begin<tilemap_component>();
+    tilemap_comp_it != target.engine_component_end<tilemap_component>();
+    ++tilemap_comp_it)
+  {
+    tilemap_component const* curr_tilemap_comp
+      = static_cast<tilemap_component const*>(*tilemap_comp_it);
+    entity const* curr_ent = curr_tilemap_comp->get_owning_entity();
+    auto const* curr_ent_t = curr_ent->get_component<transform_component>();
+
+    mat3 const& model_to_world = curr_ent_t->get_matrix();
+    mat3 const model_to_NDC = world_to_NDC * model_to_world;
+
+    tileset const* curr_tileset = curr_tilemap_comp->get_tile_set();
+    float tileset_tile_size = (float)curr_tileset->get_tile_size();
+    size_t tileset_num_tiles = curr_tileset->get_num_tiles();
+
+    unsigned const w = 4;
+    unsigned const h = 4;
+    int tilemap[w * h] = {
+      0, 0, 0, 0,
+      1, 1, 0, 0,
+      -1, -1, 1, 0,
+      0, -1, 0, 0
+    };
+
+    mat3 tile_to_model = identity_mat3;
+
+    curr_tilemap_comp->bind();
+    for(unsigned y = 0; y < h; ++y)
+    {
+      for(unsigned x = 0; x < w; ++x)
+      {
+        unsigned curr_index = y * w + x;
+
+        // If 0, wrap around will cause uint max (desired)
+        int curr_tile = tilemap[curr_index];
+        if(curr_tile < 0)
+        {
+          continue;
+        }
+        LE_FATAL_ERROR_IF((unsigned)curr_tile > tileset_num_tiles, "Invalid tile id!");
+
+        tile_to_model(0, 0) = tileset_tile_size;
+        tile_to_model(1, 1) = tileset_tile_size;
+        // Place tiles via top left
+        tile_to_model(0, 2) = (x * tileset_tile_size) + (tileset_tile_size * 0.5f);
+        tile_to_model(1, 2) = (y * -tileset_tile_size) - (tileset_tile_size * 0.5f);
+        mat3 tile_to_NDC = model_to_NDC * tile_to_model;
+        glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, tile_to_NDC.data);
+        renderable_element_buffer::draw(GL_TRIANGLES, curr_tile * 6, 6);
+      }
+    }
+    curr_tilemap_comp->unbind();
+
+  }
+  LE_FATAL_ERROR_IF_GL_ERROR();
+}
+
+void graphics_system::p_render_ddraw(space & target, const mat3 & world_to_NDC)
+{
   LE::shader_program::use(*p_debug_shader_prog);
 
-  to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");
+  GLint to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");
   glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, world_to_NDC.data);
 
   // TODO: Use camera mat
@@ -226,16 +304,7 @@ void graphics_system::p_render_sprites(
   // TODO: Use hud mat
   target.m_hud_ddraw.draw();
 
-  LE::shader_program::use_default();
-
   LE_FATAL_ERROR_IF_GL_ERROR();
-}
-
-void graphics_system::p_render_tilemaps(
-  space & target,
-  mat3 const& world_to_NDC)
-{
-  (void)world_to_NDC;(void)target;
 }
 
 } // namespace LE

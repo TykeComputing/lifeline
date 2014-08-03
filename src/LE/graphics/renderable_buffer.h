@@ -24,6 +24,9 @@ public:
 
   GLsizei get_num_verts() const;
 
+  static void draw(
+    GLenum prim_mode, GLint starting_vertex, GLsizei vertex_count);
+
 private:
   vertex_array p_VAO;
   vertex_buffer p_VBO;
@@ -46,6 +49,9 @@ public:
 
   GLsizei get_num_verts() const;
   GLsizei get_num_indices() const;
+
+  static void draw(
+    GLenum prim_mode, GLsizei starting_index, GLsizei index_count);
 
 private:
   vertex_array p_VAO;

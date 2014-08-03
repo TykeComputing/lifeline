@@ -31,12 +31,17 @@ public:
   void bind() const;
   void unbind() const;
 
+  size_t get_tile_size() const { return p_tile_size; }
+  size_t get_num_tiles() const { return p_num_tiles; }
+
 private:
   void p_read(std::string const& tsd_file_name);
 
   renderable_element_buffer p_tile_vertices;
   std::unique_ptr<texture2D> p_texture;
-  size_t p_tile_size;
+
+  size_t p_tile_size = 0;
+  size_t p_num_tiles = 0;
 };
 
 class tilemap_component : public engine_component_base
@@ -48,6 +53,8 @@ public:
   void unbind() const;
 
   static unique_id<engine_component_base> const type_id;
+
+  tileset const* get_tile_set() const { return p_tileset.get(); }
 
 private:
   // TODO: Make resource
