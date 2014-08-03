@@ -26,9 +26,35 @@ class engine;
 class space
 {
 public:
+  // Allows only entity to register components
   class component_registrar
+  {
+  private:
+    static void register_engine_component(
+      space * s,
+      unique_id<engine_component_base>::value_type type_id,
+      engine_component_base * comp);
 
-  space(std::string const& name);
+    static void unregister_engine_component(
+      space * s,
+      unique_id<engine_component_base>::value_type type_id,
+      engine_component_base * comp);
+
+    static void register_logic_component(
+      space * s,
+      unique_id<logic_component_base>::value_type type_id,
+      logic_component_base * comp);
+
+    static void unregister_logic_component(
+      space * s,
+      unique_id<logic_component_base>::value_type type_id,
+      logic_component_base * comp);
+
+    friend class entity;
+  };
+
+  explicit space(std::string const& name);
+  ~space();
 
   /**********************************************/
   /* Entity Management */
@@ -126,6 +152,7 @@ private:
   bool p_is_active = true;
 
   friend class engine;
+  friend class component_registrar;
 };
 
 } // namespace LE

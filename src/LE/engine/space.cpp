@@ -1,4 +1,4 @@
-5/*
+/*
 ************************************************************************************************
 Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
@@ -13,10 +13,48 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
+void space::component_registrar::register_engine_component(
+  space * s,
+  unique_id<engine_component_base>::value_type type_id,
+  engine_component_base * comp)
+{
+  s->p_register_engine_component(type_id, comp);
+}
+
+void space::component_registrar::unregister_engine_component(
+  space * s,
+  unique_id<engine_component_base>::value_type type_id,
+  engine_component_base * comp)
+{
+  s->p_unregister_engine_component(type_id, comp);
+}
+
+void space::component_registrar::register_logic_component(
+  space * s,
+  unique_id<logic_component_base>::value_type type_id,
+  logic_component_base * comp)
+{
+  s->p_register_logic_component(type_id, comp);
+}
+
+void space::component_registrar::unregister_logic_component(
+  space * s,
+  unique_id<logic_component_base>::value_type type_id,
+  logic_component_base * comp)
+{
+  s->p_unregister_logic_component(type_id, comp);
+}
+
 space::space(std::string const& name) :
   p_name(name)
 {
 
+}
+
+space::~space()
+{
+  // Entities reference space, thus we must clear them before deleting anything else in space.
+  p_entities.clear();
 }
 
 /**********************************************/
@@ -157,36 +195,24 @@ bool space::get_is_active() const
   return p_is_active;
 }
 
-/*!
- * \brief For internal use only by entity, should not be manually called.
- * \todo Make private or refactor in some way?
- */
-space::register_engine_component(COMP_T * comp)
+void space::p_register_engine_component(
+  unique_id<engine_component_base>::value_type type_id,
+  engine_component_base * comp)
 {
-  static_assert(std::is_base_of<engine_component_base, COMP_T>::value,
-    "Cannot use with non-engine component!");
-  static_assert(std::is_same<engine_component_base, COMP_T>::value == false,
-    "Cannot get base component!");
+  LE_FATAL_ERROR_IF(type_id == engine_component_base::type_id.value(),
+    "Cannot register base componet.")
 
-  p_engine_components[COMP_T::type_id.value()].emplace_back(comp);
+  p_engine_components[type_id].emplace_back(comp);
 }
 
-/*!
- * \brief For internal use only by entity, should not be manually called.
- * \note Should consider all iterators to engine components obtained from this space to be
- *   invalidated when called.
- * \todo Make private or refactor in some way?
- */
-template<typename COMP_T>
-void
-space::unregister_engine_component(COMP_T * comp)
+void space::p_unregister_engine_component(
+  unique_id<engine_component_base>::value_type type_id,
+  engine_component_base * comp)
 {
-  static_assert(std::is_base_of<engine_component_base, COMP_T>::value,
-    "Cannot use with non-engine component!");
-  static_assert(std::is_same<engine_component_base, COMP_T>::value == false,
-    "Cannot get base component!");
+  LE_FATAL_ERROR_IF(type_id == engine_component_base::type_id.value(),
+    "Cannot unregister base componet.")
 
-  auto & container = p_engine_components[COMP_T::type_id.value()];
+  auto & container = p_engine_components[type_id];
   auto find_it = std::find(container.begin(), container.end(), comp);
   if(find_it != container.end())
   {
@@ -195,48 +221,34 @@ space::unregister_engine_component(COMP_T * comp)
   }
   else
   {
-    LE_FATAL_ERROR("Attempting to unregister component that is not registered!");
+    LE_FATAL_ERROR("Attempting to unregister engine component that is not registered!");
   }
 }
 
-/*!
- * \brief For internal use only by entity, should not be manually called.
- * \todo Make private or refactor in some way?
- */
-template<typename COMP_T>
-void
-space::register_logic_component(COMP_T * comp)
+void space::p_register_logic_component(
+  unique_id<logic_component_base>::value_type type_id,
+  logic_component_base * comp)
 {
-  static_assert(std::is_base_of<logic_component_base, COMP_T>::value,
-    "Cannot use with non-logic component!");
-  static_assert(std::is_same<logic_component_base, COMP_T>::value == false,
-    "Cannot create base component!");
+  LE_FATAL_ERROR_IF(type_id == logic_component_base::type_id.value(),
+    "Cannot register base componet.")
 
-  // Add to container of all logic components as well as the container for this type
+  // Add to aggregate container
   p_logic_components[logic_component_base::type_id.value()].emplace_back(comp);
-  p_logic_components[COMP_T::type_id.value()].emplace_back(comp);
+  // Add to type specific container
+  p_logic_components[type_id].emplace_back(comp);
 }
 
-/*!container
- * \brief For internal use only by entity, should not be manually called.
- * \note Should consider all iterators to logic components obtained from this space to be
- *   invalidated when called.
- * \todo Make private or refactor in some way?
- */
-template<typename COMP_T>
-void
-space::unregister_logic_component(COMP_T * comp)
+void space::p_unregister_logic_component(
+  unique_id<logic_component_base>::value_type type_id,
+  logic_component_base * comp)
 {
-  static_assert(std::is_base_of<logic_component_base, COMP_T>::value,
-    "Cannot use with non-logic component!");
-  static_assert(std::is_same<logic_component_base, COMP_T>::value == false,
-    "Cannot create base component!");
+  LE_FATAL_ERROR_IF(type_id == engine_component_base::type_id.value(),
+    "Cannot unregister base componet.")
 
   auto unregister_logic_component_type = [&](
-    COMP_T * comp,
-    unique_id<logic_component_base>::value_type type_id)
+    unique_id<logic_component_base>::value_type target_type_id)
   {
-    auto & container = p_logic_components[type_id];
+    auto & container = p_logic_components[target_type_id];
     auto find_it = std::find(container.begin(), container.end(), comp);
     if(find_it != container.end())
     {
@@ -245,11 +257,13 @@ space::unregister_logic_component(COMP_T * comp)
     }
     else
     {
-      LE_FATAL_ERROR("Attempting to unregister component that is not registered!");
+      LE_FATAL_ERROR("Attempting to unregister logic component that is not registered!");
     }
   };
 
-  unregister_logic_component_type(COMP_T::type_id.value());
+  // Remove from type specific container
+  unregister_logic_component_type(type_id);
+  // Remove from aggregate container
   unregister_logic_component_type(logic_component_base::type_id.value());
 }
 

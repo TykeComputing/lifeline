@@ -100,7 +100,7 @@ space * engine::create_space(std::string const& name)
     p_spaces.size());
 
   auto * new_space = p_spaces.front().get();
-  new_space->set_owner(this);
+  new_space->p_set_owner(this);
 
   return new_space;
 }

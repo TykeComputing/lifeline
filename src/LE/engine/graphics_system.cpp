@@ -191,15 +191,15 @@ void graphics_system::p_render_sprites(
 
   // Very primitive draw loop
   // TODO - Improve
-  for(auto entity_it = target.entity_begin();
-    entity_it != target.entity_end();
-    ++entity_it)
+  for(auto sprite_comp_it = target.engine_component_begin<sprite_component>();
+    sprite_comp_it != target.engine_component_end<sprite_component>();
+    ++sprite_comp_it)
   {
-    auto & curr_ent = (*entity_it).second;
+    sprite_component * curr_sprite_comp = static_cast<sprite_component *>(*sprite_comp_it);
+    auto * curr_ent = curr_sprite_comp->get_owning_entity();
     auto const* curr_ent_t = curr_ent->get_component<transform_component>();
     auto const& model_to_world = curr_ent_t->get_matrix();
 
-    auto const* curr_sprite_comp = curr_ent->get_component<sprite_component>();
     if(curr_sprite_comp)
     {
       glUniform4fv(color_multiplier_ul, 1, curr_sprite_comp->m_color.data);

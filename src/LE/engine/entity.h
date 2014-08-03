@@ -174,7 +174,7 @@ private:
 
   typedef std::unordered_map<
     unique_id<engine_component_base>::value_type,
-    std::unique_ptr<component_base>> engine_component_container;
+    std::unique_ptr<engine_component_base>> engine_component_container;
 
   engine_component_container p_engine_components;
   logic_component_container p_logic_components;

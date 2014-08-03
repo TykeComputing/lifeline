@@ -32,15 +32,15 @@ entity::~entity()
     child->p_parent = nullptr;
   }
 
-  for(auto const& curr_engine_comp : p_engine_components)
+  for(auto & curr_engine_comp : p_engine_components)
   {
-    p_owner->unregister_engine_component(curr_engine_comp.second);
+    p_unregister_engine_component(curr_engine_comp.first, curr_engine_comp.second.get());
   }
 
-  for(auto const& curr_logic_comp : p_logic_components)
+  for(auto & curr_logic_comp : p_logic_components)
   {
     curr_logic_comp.second->teardown();
-    p_owner->unregister_logic_component(curr_logic_comp.second);
+    p_unregister_logic_component(curr_logic_comp.first, curr_logic_comp.second.get());
   }
 }
 
@@ -156,28 +156,28 @@ void entity::p_register_engine_component(
   unique_id<engine_component_base>::value_type type_id,
   engine_component_base * comp)
 {
-  p_owner->register_engine_component(type_id, comp);
+  space::component_registrar::register_engine_component(p_owner, type_id, comp);
 }
 
 void entity::p_unregister_engine_component(
   unique_id<engine_component_base>::value_type type_id,
   engine_component_base * comp)
 {
-  p_owner->unregister_engine_component(type_id, comp);
+  space::component_registrar::unregister_engine_component(p_owner, type_id, comp);
 }
 
 void entity::p_register_logic_component(
   unique_id<logic_component_base>::value_type type_id,
   logic_component_base * comp)
 {
-  p_owner->register_logic_component(type_id, comp);
+  space::component_registrar::register_logic_component(p_owner, type_id, comp);
 }
 
 void entity::p_unregister_logic_component(
   unique_id<logic_component_base>::value_type type_id,
   logic_component_base * comp)
 {
-  p_owner->unregister_logic_component(type_id, comp);
+  space::component_registrar::unregister_logic_component(p_owner, type_id, comp);
 }
 
 } // namespace LE

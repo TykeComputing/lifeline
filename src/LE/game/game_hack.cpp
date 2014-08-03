@@ -32,16 +32,31 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-// TEMP HACK
-class physics_component
+/////////////////////
+class physics_component : public engine_component_base
 {
-
+public:
+  static unique_id<engine_component_base> const type_id;
 };
-// TEMP HACK
-class AI_seek_component
+
+unique_id<engine_component_base> const physics_component::type_id;
+
+class AI_seek : public logic_component_base
 {
-
+public:
+  static unique_id<logic_component_base> const type_id;
 };
+
+unique_id<logic_component_base> const AI_seek::type_id;
+
+class bullet : public logic_component_base
+{
+public:
+  static unique_id<logic_component_base> const type_id;
+};
+
+unique_id<logic_component_base> const bullet::type_id;
+/////////////////////
 
 unique_id<logic_component_base> const game_hack::type_id;
 
@@ -57,6 +72,7 @@ void game_hack::initialize()
     new_ent->get_component<transform_component>()->set_scale(1.0f);
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/player.png"));
+    new_ent->create_component<physics_component>();
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
@@ -65,6 +81,8 @@ void game_hack::initialize()
 
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
+    new_ent->create_component<physics_component>();
+    new_ent->create_component<AI_seek>();
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
@@ -73,6 +91,8 @@ void game_hack::initialize()
 
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
+    new_ent->create_component<physics_component>();
+    new_ent->create_component<AI_seek>();
   }
   {
     auto * new_ent = game_space->create_entity("tilemap");
@@ -204,6 +224,8 @@ void game_hack::p_input(float dt)
 
       new_bullet->create_component<sprite_component>(
         resource_manager::load<texture2D>("textures/bullet.png"));
+      new_bullet->create_component<physics_component>();
+      new_bullet->create_component<bullet>();
     }
 
     // Movement
@@ -256,49 +278,50 @@ void game_hack::p_logic(float dt)
   {
     auto * const player_t = player->get_component<transform_component>();
 
-    for(auto entity_it = game_space->entity_begin();
-        entity_it != game_space->entity_end();
-        ++entity_it)
+    // Enemy seeking
+    for(auto ai_seek_it = game_space->logic_component_begin<AI_seek>();
+        ai_seek_it != game_space->logic_component_end<AI_seek>();
+        ++ai_seek_it)
     {
-      // Enemy seeking
-      auto & curr_entity = (*entity_it).second;
-      if(curr_entity->get_name() == "enemy")
+      auto * curr_entity = (*ai_seek_it)->get_owning_entity();
+      auto * const enemy_t = curr_entity->get_component<transform_component>();
+
+      if(p_ddraw_enabled)
       {
-        auto * const enemy_t = curr_entity->get_component<transform_component>();
+        game_space->m_world_ddraw.lines.add_circle(
+          enemy_t->get_pos(), enemy_seek_radius, vec4(1.0f, .0f, 1.0f, 1.0f));
+      }
+
+      vec2 dir_to_player =
+          player_t->get_pos() - enemy_t->get_pos();
+      float dist_to_player;
+      normalize(dir_to_player, dist_to_player);
+
+      if(dist_to_player <= enemy_seek_radius)
+      {
+        enemy_t->translate(dir_to_player * enemy_movement_speed * dt);
 
         if(p_ddraw_enabled)
         {
-          game_space->m_world_ddraw.lines.add_circle(
-            enemy_t->get_pos(), enemy_seek_radius, vec4(1.0f, .0f, 1.0f, 1.0f));
-        }
-
-        vec2 dir_to_player =
-            player_t->get_pos() - enemy_t->get_pos();
-        float dist_to_player;
-        normalize(dir_to_player, dist_to_player);
-
-        if(dist_to_player <= enemy_seek_radius)
-        {
-          enemy_t->translate(dir_to_player * enemy_movement_speed * dt);
-
-          if(p_ddraw_enabled)
-          {
-            game_space->m_world_ddraw.lines.add_arrow(
-              enemy_t->get_pos(),
-              dir_to_player,
-              enemy_seek_radius,
-              vec4(1.0f, 0.0f, 1.0f, 1.0f));
-          }
+          game_space->m_world_ddraw.lines.add_arrow(
+            enemy_t->get_pos(),
+            dir_to_player,
+            enemy_seek_radius,
+            vec4(1.0f, 0.0f, 1.0f, 1.0f));
         }
       }
-      // Bullet logic
-      else if(curr_entity->get_name() == "bullet")
-      {
-        // TODO velocity
-        curr_entity->get_component<transform_component>()->translate(
-          0.0f,
-          -bullet_movement_speed * dt);
-      }
+    }
+
+    // Bullet logic
+    for(auto bullet_it = game_space->logic_component_begin<bullet>();
+        bullet_it != game_space->logic_component_end<bullet>();
+        ++bullet_it )
+    {
+      auto * curr_entity = (*bullet_it)->get_owning_entity();
+
+      curr_entity->get_component<transform_component>()->translate(
+        0.0f,
+        -bullet_movement_speed * dt);
     }
   }
 }
@@ -312,11 +335,11 @@ void game_hack::p_physics(float dt)
   // Quick and dirty hack until actual physics is in place.
   std::vector<entity *> curr_ents;
   curr_ents.reserve(game_space->entity_num());
-  for(auto entity_it = game_space->entity_begin();
-      entity_it != game_space->entity_end();
-      ++entity_it)
+  for(auto physics_comp_it = game_space->engine_component_begin<physics_component>();
+    physics_comp_it != game_space->engine_component_end<physics_component>();
+    ++physics_comp_it)
   {
-    curr_ents.emplace_back((*entity_it).second.get());
+    curr_ents.emplace_back((*physics_comp_it)->get_owning_entity());
   }
 
   // n^2 collision detection using circles based on pos/scale
