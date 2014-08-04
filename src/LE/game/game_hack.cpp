@@ -32,7 +32,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-/////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
 class physics_component : public engine_component_base
 {
 public:
@@ -41,11 +41,17 @@ public:
 
 unique_id<engine_component_base> const physics_component::type_id;
 
-/////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
 class AI_seek : public logic_component_base
 {
 public:
   typedef unique_id<entity> target_id_t;
+
+  AI_seek(float speed, float range, target_id_t const& target_id) :
+    AI_seek(speed, range)
+  {
+    set_target(target_id);
+  }
 
   AI_seek(float speed, float range) :
     p_speed(speed), p_range(range)
@@ -75,7 +81,7 @@ public:
     if(owning_space->get_ddraw_enabled())
     {
       owning_space->m_world_ddraw.lines.add_circle(
-        this_t->get_pos(), p_range, vec4(1.0f, .0f, 1.0f, 1.0f));
+        this_t->get_pos(), p_range, vec4(1.0f, 0.0f, 1.0f, 1.0f));
     }
 
     vec2 dir_to_target = target_t->get_pos() - this_t->get_pos();
@@ -123,10 +129,10 @@ private:
   target_id_t::value_type p_target_id = target_id_t::null.value();
 };
 unique_id<logic_component_base> const AI_seek::type_id;
-/////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////
-class bullet : public logic_component_base
+////////////////////////////////////////////////////////////////////////////////////////////////
+class bullet_movement : public logic_component_base
 {
 public:
   virtual void update(float dt)
@@ -142,11 +148,10 @@ public:
   static unique_id<logic_component_base> const type_id;
 };
 
-unique_id<logic_component_base> const bullet::type_id;
-/////////////////////
+unique_id<logic_component_base> const bullet_movement::type_id;
+////////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////
-
+////////////////////////////////////////////////////////////////////////////////////////////////
 class slime_tumor_spread : public logic_component_base
 {
 public:
@@ -154,7 +159,116 @@ public:
 };
 
 unique_id<logic_component_base> const slime_tumor_spread::type_id;
-/////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+class enemy_damage : public logic_component_base
+{
+public:
+  static unique_id<logic_component_base> const type_id;
+};
+
+unique_id<logic_component_base> const enemy_damage::type_id;
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+class bullet_damage : public logic_component_base
+{
+public:
+  bullet_damage(unique_id<entity> const& shooter_id) :
+    p_shooter_id(shooter_id.value())
+  {
+  }
+
+  unique_id<entity>::value_type get_shooter_id() const { return p_shooter_id; }
+
+  static unique_id<logic_component_base> const type_id;
+
+private:
+  unique_id<entity>::value_type const p_shooter_id;
+};
+
+unique_id<logic_component_base> const bullet_damage::type_id;
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+class player_controls : public logic_component_base
+{
+public:
+  virtual void update(float dt)
+  {
+    entity * const player_ent = get_owning_entity();
+    if(player_ent == nullptr)
+    {
+      return;
+    }
+
+    space * const owning_space = player_ent->get_owning_space();
+    input_system const& input_sys = owning_space->get_owning_engine()->get_input_system();
+
+    auto * const player_t = player_ent->get_component<transform_component>();
+
+    // Shooting
+    if(input_sys.is_key_triggered(SDLK_SPACE) || input_sys.is_key_pressed(SDLK_m))
+    {
+      entity * new_bullet_ent = owning_space->create_entity("bullet");
+      auto * new_bullet_t = new_bullet_ent->get_component<transform_component>();
+      new_bullet_t->set_pos(player_t->get_pos());
+      new_bullet_t->set_scale(1.0f);
+
+      new_bullet_ent->create_component<sprite_component>(
+        resource_manager::load<texture2D>("textures/bullet.png"));
+      new_bullet_ent->create_component<physics_component>();
+      new_bullet_ent->create_component<bullet_movement>();
+      new_bullet_ent->create_component<bullet_damage>(player_ent->get_id());
+    }
+
+    // Movement
+    auto const& player_old_pos = player_ent->get_component<transform_component>()->get_pos();
+    vec2 player_transl = vec2::zero;
+    if(input_sys.is_key_pressed(SDLK_w))
+    {
+      player_transl.y() = m_player_movement_speed * dt;
+    }
+    if(input_sys.is_key_pressed(SDLK_s))
+    {
+      player_transl.y() = -m_player_movement_speed * dt;
+    }
+    if(input_sys.is_key_pressed(SDLK_a))
+    {
+      player_transl.x() = -m_player_movement_speed * dt;
+    }
+    if(input_sys.is_key_pressed(SDLK_d))
+    {
+      player_transl.x() = m_player_movement_speed * dt;
+    }
+    player_t->translate(player_transl);
+
+    if(player_transl != vec2::zero)
+    {
+      if(owning_space->get_ddraw_enabled())
+      {
+        owning_space->m_world_ddraw.lines.add_arrow(
+          player_old_pos, player_transl / dt, vec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+        owning_space->m_world_ddraw.points.add_point(
+          player_old_pos, vec4(0.0f, 0.0f, 1.0f, 1.0f));
+      }
+    }
+  }
+
+  float const m_player_movement_speed = 256.0f;
+
+  static unique_id<logic_component_base> const type_id;
+};
+
+unique_id<logic_component_base> const player_controls::type_id;
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 unique_id<logic_component_base> const game_hack::type_id;
 
@@ -173,6 +287,7 @@ void game_hack::initialize()
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/player.png"));
     new_ent->create_component<physics_component>();
+    new_ent->create_component<player_controls>();
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
@@ -182,8 +297,8 @@ void game_hack::initialize()
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
     new_ent->create_component<physics_component>();
-    auto * new_ai_seek = new_ent->create_component<AI_seek>(64.0f, 256.0f);
-    new_ai_seek->set_target(player->get_id());
+    new_ent->create_component<AI_seek>(64.0f, 256.0f, player->get_id());
+    new_ent->create_component<enemy_damage>();
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
@@ -193,8 +308,8 @@ void game_hack::initialize()
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
     new_ent->create_component<physics_component>();
-    auto * new_ai_seek = new_ent->create_component<AI_seek>(64.0f, 256.0f);
-    new_ai_seek->set_target(player->get_id());
+    new_ent->create_component<AI_seek>(64.0f, 256.0f, player->get_id());
+    new_ent->create_component<enemy_damage>();
   }
   {
     auto * new_ent = game_space->create_entity("tilemap");
@@ -206,8 +321,7 @@ void game_hack::initialize()
     new_ent->create_component<tilemap_component>(
       resource_manager::full_dir("tilemaps/test.tm"));
 
-    auto * new_ai_seek = new_ent->create_component<AI_seek>(128.0f, -256.0f);
-    new_ai_seek->set_target(player->get_id());
+    //auto * new_ai_seek = new_ent->create_component<AI_seek>(128.0f, -256.0f, player->get_id());
   }
 
   auto * pv = p_get_perf_vis_component();
@@ -227,19 +341,16 @@ void game_hack::update(float dt)
   LE_FATAL_ERROR_IF(get_owning_entity() == nullptr, "Owner is null!");
   LE_FATAL_ERROR_IF(get_owning_entity()->get_owning_space() == nullptr, "Space is null!");
 
-  p_input(dt);
+  p_input();
   p_physics(dt);
 }
 
-void game_hack::p_input(float dt)
+void game_hack::p_input()
 {
-  float const player_movement_speed = 256.0f;
-
   // TODO - get_owning_entity vs get_entity (etc.)?
   auto * const game_space = get_owning_entity()->get_owning_space();
   auto * const game_engine = game_space->get_owning_engine();
   auto const& input_sys = game_engine->get_input_system();
-  auto * const player = game_space->find_entity("player");
 
   // Exit
   if(input_sys.is_key_triggered(SDLK_ESCAPE))
@@ -314,59 +425,6 @@ void game_hack::p_input(float dt)
       }
     }
   }
-
-  // Player controls
-  if(player)
-  {
-    auto * const player_t = player->get_component<transform_component>();
-
-    // Shooting
-    if(input_sys.is_key_triggered(SDLK_SPACE) || input_sys.is_key_pressed(SDLK_m))
-    {
-      auto * new_bullet = game_space->create_entity("bullet");
-      auto * new_bullet_t = new_bullet->get_component<transform_component>();
-      new_bullet_t->set_pos(player_t->get_pos());
-      new_bullet_t->set_scale(1.0f);
-
-      new_bullet->create_component<sprite_component>(
-        resource_manager::load<texture2D>("textures/bullet.png"));
-      new_bullet->create_component<physics_component>();
-      new_bullet->create_component<bullet>();
-    }
-
-    // Movement
-    auto const& player_old_pos = player->get_component<transform_component>()->get_pos();
-    vec2 player_transl = vec2::zero;
-    if(input_sys.is_key_pressed(SDLK_w))
-    {
-      player_transl.y() = player_movement_speed * dt;
-    }
-    if(input_sys.is_key_pressed(SDLK_s))
-    {
-      player_transl.y() = -player_movement_speed * dt;
-    }
-    if(input_sys.is_key_pressed(SDLK_a))
-    {
-      player_transl.x() = -player_movement_speed * dt;
-    }
-    if(input_sys.is_key_pressed(SDLK_d))
-    {
-      player_transl.x() = player_movement_speed * dt;
-    }
-    player_t->translate(player_transl);
-
-    if(player_transl != vec2::zero)
-    {
-      if(game_space->get_ddraw_enabled())
-      {
-        game_space->m_world_ddraw.lines.add_arrow(
-          player_old_pos, player_transl / dt, vec4(1.0f, 0.0f, 0.0f, 1.0f));
-
-        game_space->m_world_ddraw.points.add_point(
-          player_old_pos, vec4(0.0f, 0.0f, 1.0f, 1.0f));
-      }
-    }
-  }
 }
 
 void game_hack::p_physics(float dt)
@@ -389,7 +447,7 @@ void game_hack::p_physics(float dt)
   for(auto ent_outer_it = curr_ents.begin(); ent_outer_it != curr_ents.end(); ++ent_outer_it)
   {
     // Don't consider this object or ones before it for testing (they've already been tested).
-    for(auto ent_inner_it = curr_ents.begin() + 1;
+    for(auto ent_inner_it = ent_outer_it + 1;
         ent_inner_it != curr_ents.end();
         ++ent_inner_it)
     {
@@ -422,44 +480,24 @@ void game_hack::p_physics(float dt)
       {
         entity * ents[2] = { ent_outer, ent_inner };
 
-        auto ent_involved_in_collision =
-          [](std::string const& name,
-            entity * (&ents)[2],
-            unsigned & index,
-            unsigned & other_index)->bool
+        // No collision messages implemented, the results of a collision are acted upon here for
+        //   now
+        for(int ent_check_it = 0; ent_check_it < 2; ++ent_check_it)
         {
-          if(ents[0]->get_name() == name)
+          if(ents[ent_check_it]->get_component<enemy_damage>())
           {
-            index = 0;
-            other_index = 1;
-            return true;
+            // kill other entity
+            ents[!ent_check_it]->kill();
           }
-          else if(ents[1]->get_name() == name)
+          if(ents[ent_check_it]->get_component<bullet_damage>())
           {
-            index = 1;
-            other_index = 0;
-            return true;
-          }
-
-          return false;
-        };
-
-        unsigned index;
-        unsigned other_index;
-        // Hacky collision logic
-        if(ent_involved_in_collision("player", ents, index, other_index))
-        {
-          if(ents[other_index]->get_name() == "enemy")
-          {
-            ents[index]->kill();
-          }
-        }
-        if(ent_involved_in_collision("enemy", ents, index, other_index))
-        {
-          if(ents[other_index]->get_name() == "bullet")
-          {
-            ents[index]->kill();
-            ents[other_index]->kill();
+            // Don't kill on collision with shooter
+            if(ents[ent_check_it]->get_component<bullet_damage>()->get_shooter_id() !=
+               ents[!ent_check_it]->get_id().value())
+            {
+              ents[0]->kill();
+              ents[1]->kill();
+            }
           }
         }
       }

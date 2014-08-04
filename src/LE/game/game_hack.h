@@ -31,8 +31,7 @@ public:
   static unique_id<logic_component_base> const type_id;
 
 private:
-  void p_input(float dt);
-  void p_logic(float dt);
+  void p_input();
   void p_display_controls_logic();
   void p_physics(float dt);
 
