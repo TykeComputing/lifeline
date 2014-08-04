@@ -244,44 +244,38 @@ void graphics_system::p_render_tilemaps(
     mat3 const& model_to_world = curr_ent_t->get_matrix();
     mat3 const model_to_NDC = world_to_NDC * model_to_world;
 
+    // Tileset data
     tileset const* curr_tileset = curr_tilemap_comp->get_tile_set();
     float tileset_tile_size = (float)curr_tileset->get_tile_size();
-    size_t tileset_num_tiles = curr_tileset->get_num_tiles();
 
-    unsigned const w = 4;
-    unsigned const h = 4;
-    int tilemap[w * h] = {
-      1, 1, 0, 0,
-      1, 1, 1, 1,
-      2, 2, 3, 2,
-      0, 2, 0, 0
-    };
+    // Tilemap data
+    uvec2 num_tiles = curr_tilemap_comp->get_num_tiles();
 
     mat3 tile_to_model = identity_mat3;
-
     curr_tilemap_comp->bind();
-    for(unsigned y = 0; y < h; ++y)
+    for(unsigned y = 0; y < num_tiles.y(); ++y)
     {
-      for(unsigned x = 0; x < w; ++x)
+      for(unsigned x = 0; x < num_tiles.x(); ++x)
       {
-        unsigned curr_index = y * w + x;
+        auto curr_tile = curr_tilemap_comp->get_tile_id(x, y);
 
-        // If 0, wrap around will cause uint max (desired)
-        int curr_tile = tilemap[curr_index];
+        // Negative tile_id indicates no tile is to be drawn
         if(curr_tile < 0)
         {
           continue;
         }
-        LE_FATAL_ERROR_IF((unsigned)curr_tile > tileset_num_tiles, "Invalid tile id!");
 
         tile_to_model(0, 0) = tileset_tile_size;
         tile_to_model(1, 1) = tileset_tile_size;
-        // Place tiles via top left
+        // Place tiles from top left of each tile.
         tile_to_model(0, 2) = (x * tileset_tile_size) + (tileset_tile_size * 0.5f);
         tile_to_model(1, 2) = (y * -tileset_tile_size) - (tileset_tile_size * 0.5f);
         mat3 tile_to_NDC = model_to_NDC * tile_to_model;
         glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, tile_to_NDC.data);
-        renderable_element_buffer::draw(GL_TRIANGLES, curr_tile * 6, 6);
+        renderable_element_buffer::draw(
+          GL_TRIANGLES,
+          curr_tileset->get_tile_index_buffer_offset(curr_tile),
+          tileset::num_indices_per_tile());
       }
     }
     curr_tilemap_comp->unbind();

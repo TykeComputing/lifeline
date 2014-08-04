@@ -91,6 +91,12 @@ void tileset::unbind() const
   texture2D::unbind();
 }
 
+size_t tileset::get_tile_index_buffer_offset(size_t tile_index) const
+{
+  LE_FATAL_ERROR_IF(tile_index > p_num_tiles, "Invalid tile index!");
+  return tile_index * 6;
+}
+
 void tileset::p_read(const std::string & tsd_file_name)
 {
   rapidjson::Document doc;
@@ -127,6 +133,13 @@ tilemap_component::tilemap_component(std::string const& tm_file_name)
   p_num_tiles.set(
     doc["width"].GetUint(),
     doc["height"].GetUint());
+
+  auto const& doc_tile_array = doc["tiles"];
+  p_tiles.reserve(doc_tile_array.Size());
+  for(auto it = doc_tile_array.Begin(); it != doc_tile_array.End(); ++it)
+  {
+    p_tiles.push_back(it->GetInt());
+  }
 }
 
 void tilemap_component::bind() const
@@ -137,6 +150,27 @@ void tilemap_component::bind() const
 void tilemap_component::unbind() const
 {
   p_tileset->unbind();
+}
+
+tilemap_component::tile_id_t tilemap_component::get_tile_id(unsigned x, unsigned y) const
+{
+  return p_tiles[p_get_tile_index(x, y)];
+}
+
+void tilemap_component::set_tile_id(unsigned x, unsigned y, tilemap_component::tile_id_t value)
+{
+  p_tiles[p_get_tile_index(x, y)] = value;
+}
+
+unsigned tilemap_component::p_get_tile_index(unsigned x, unsigned y) const
+{
+  LE_FATAL_ERROR_IF(x >= p_num_tiles.x(), "Invalid x");
+  LE_FATAL_ERROR_IF(y >= p_num_tiles.y(), "Invalid y");
+
+  unsigned index = y * p_num_tiles.x() + x;
+  LE_FATAL_ERROR_IF(index > p_tiles.size(), "Invalid index");
+
+  return index;
 }
 
 } // namespace LE
