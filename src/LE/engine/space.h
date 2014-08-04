@@ -75,7 +75,7 @@ public:
   entity * create_entity(std::string const& name);
 
   entity * find_entity(std::string const& name);
-  entity * find_entity(unique_id<entity> const& id);
+  entity * find_entity(unique_id<entity>::value_type id);
 
   void kill_all();
 
@@ -104,6 +104,11 @@ public:
   /**********************************************/
   /* Debug Drawing */
   /**********************************************/
+
+  // TODO - Enable/disable by message (once messsaging exists)?
+  void set_ddraw_enabled(bool ddraw_enabled) { p_ddraw_enabled = ddraw_enabled; }
+  bool get_ddraw_enabled() const { return p_ddraw_enabled; }
+
   void clear_ddraw();
 
   /*
@@ -150,6 +155,12 @@ private:
   engine * p_owner = nullptr;
 
   bool p_is_active = true;
+
+  /*!
+   * Should always be checked before using debug drawers to avoid non-rendering overhead of
+   *   debug drawing (generating lines).
+   */
+  bool p_ddraw_enabled = false;
 
   friend class engine;
   friend class component_registrar;

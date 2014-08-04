@@ -286,6 +286,11 @@ void graphics_system::p_render_tilemaps(
 
 void graphics_system::p_render_ddraw(space & target, const mat3 & world_to_NDC)
 {
+  if(target.get_ddraw_enabled() == false)
+  {
+    return;
+  }
+
   LE::shader_program::use(*p_debug_shader_prog);
 
   GLint to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");

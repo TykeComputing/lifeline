@@ -41,21 +41,119 @@ public:
 
 unique_id<engine_component_base> const physics_component::type_id;
 
+/////////////////////
 class AI_seek : public logic_component_base
 {
 public:
+  typedef unique_id<entity> target_id_t;
+
+  AI_seek(float speed, float range) :
+    p_speed(speed), p_range(range)
+  {
+  }
+
+  virtual void update(float dt)
+  {
+    if(p_target_id == target_id_t::null.value())
+    {
+      return;
+    }
+
+    auto * owning_entity = get_owning_entity();
+    auto * owning_space = owning_entity->get_owning_space();
+
+    auto * const target_ent = owning_space->find_entity(p_target_id);
+    if(target_ent == nullptr)
+    {
+      p_target_id = target_id_t::null.value();
+      return;
+    }
+
+    auto * const this_t = owning_entity->get_component<transform_component>();
+    auto * const target_t = target_ent->get_component<transform_component>();
+
+    if(owning_space->get_ddraw_enabled())
+    {
+      owning_space->m_world_ddraw.lines.add_circle(
+        this_t->get_pos(), p_range, vec4(1.0f, .0f, 1.0f, 1.0f));
+    }
+
+    vec2 dir_to_target = target_t->get_pos() - this_t->get_pos();
+    float dist_to_target;
+    normalize(dir_to_target, dist_to_target);
+
+    // Seek target if either in range or we have an infinite (negative) range
+    if( (dist_to_target <= p_range) || (p_range < 0.0f) )
+    {
+      // TODO - Use phyics
+      this_t->translate(dir_to_target * p_speed * dt);
+
+      if(owning_space->get_ddraw_enabled())
+      {
+        owning_space->m_world_ddraw.lines.add_arrow(
+          this_t->get_pos(),
+          dir_to_target,
+          p_range,
+          vec4(1.0f, 0.0f, 1.0f, 1.0f));
+      }
+    }
+  }
+
+  void set_target(target_id_t const& target_id)
+  {
+    p_target_id = target_id.value();
+  }
+
+  void set_speed(float speed)
+  {
+    p_speed = speed;
+  }
+
+  void set_range(float range)
+  {
+    p_range = range;
+  }
+
   static unique_id<logic_component_base> const type_id;
+
+private:
+  float p_speed = 0.0f;
+  //! Range at which seeking logic will occur. A negative radius indicates an infinite range.
+  float p_range = -1.0f;
+  target_id_t::value_type p_target_id = target_id_t::null.value();
 };
-
 unique_id<logic_component_base> const AI_seek::type_id;
+/////////////////////
 
+/////////////////////
 class bullet : public logic_component_base
 {
 public:
+  virtual void update(float dt)
+  {
+    get_owning_entity()->get_component<transform_component>()->translate(
+      0.0f,
+      -bullet_movement_speed * dt);
+  }
+
+  // TODO - Replace with phyiscs
+  float const bullet_movement_speed = 512.0f;
+
   static unique_id<logic_component_base> const type_id;
 };
 
 unique_id<logic_component_base> const bullet::type_id;
+/////////////////////
+
+/////////////////////
+
+class slime_tumor_spread : public logic_component_base
+{
+public:
+  static unique_id<logic_component_base> const type_id;
+};
+
+unique_id<logic_component_base> const slime_tumor_spread::type_id;
 /////////////////////
 
 unique_id<logic_component_base> const game_hack::type_id;
@@ -66,8 +164,10 @@ void game_hack::initialize()
   LE_FATAL_ERROR_IF(get_owning_entity()->get_owning_space() == nullptr, "Space is null!");
   space * game_space = get_owning_entity()->get_owning_space();
 
+  entity * player = nullptr;
   {
     auto * new_ent = game_space->create_entity("player");
+    player = new_ent;
     new_ent->get_component<transform_component>()->set_pos(0.0f, 100.0f);
     new_ent->get_component<transform_component>()->set_scale(1.0f);
     new_ent->create_component<sprite_component>(
@@ -82,7 +182,8 @@ void game_hack::initialize()
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
     new_ent->create_component<physics_component>();
-    new_ent->create_component<AI_seek>();
+    auto * new_ai_seek = new_ent->create_component<AI_seek>(64.0f, 256.0f);
+    new_ai_seek->set_target(player->get_id());
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
@@ -92,7 +193,8 @@ void game_hack::initialize()
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
     new_ent->create_component<physics_component>();
-    new_ent->create_component<AI_seek>();
+    auto * new_ai_seek = new_ent->create_component<AI_seek>(64.0f, 256.0f);
+    new_ai_seek->set_target(player->get_id());
   }
   {
     auto * new_ent = game_space->create_entity("tilemap");
@@ -103,6 +205,9 @@ void game_hack::initialize()
 
     new_ent->create_component<tilemap_component>(
       resource_manager::full_dir("tilemaps/test.tm"));
+
+    auto * new_ai_seek = new_ent->create_component<AI_seek>(128.0f, -256.0f);
+    new_ai_seek->set_target(player->get_id());
   }
 
   auto * pv = p_get_perf_vis_component();
@@ -123,7 +228,6 @@ void game_hack::update(float dt)
   LE_FATAL_ERROR_IF(get_owning_entity()->get_owning_space() == nullptr, "Space is null!");
 
   p_input(dt);
-  p_logic(dt);
   p_physics(dt);
 }
 
@@ -154,7 +258,7 @@ void game_hack::p_input(float dt)
   // Toggle debug drawing on/off
   if(input_sys.is_key_triggered(SDLK_o))
   {
-    p_ddraw_enabled = !p_ddraw_enabled;
+    game_space->set_ddraw_enabled(!game_space->get_ddraw_enabled());
   }
 
   // Toggle perf vis on/off
@@ -253,7 +357,7 @@ void game_hack::p_input(float dt)
 
     if(player_transl != vec2::zero)
     {
-      if(p_ddraw_enabled)
+      if(game_space->get_ddraw_enabled())
       {
         game_space->m_world_ddraw.lines.add_arrow(
           player_old_pos, player_transl / dt, vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -261,69 +365,6 @@ void game_hack::p_input(float dt)
         game_space->m_world_ddraw.points.add_point(
           player_old_pos, vec4(0.0f, 0.0f, 1.0f, 1.0f));
       }
-    }
-  }
-}
-
-// Super hacky/simple game logic
-void game_hack::p_logic(float dt)
-{
-  float const bullet_movement_speed = 512.0f;
-
-  float const enemy_seek_radius = 256.0f;
-  float const enemy_movement_speed = 64.0f;
-
-  auto * game_space = get_owning_entity()->get_owning_space();
-
-  auto * const player = game_space->find_entity("player");
-  if(player)
-  {
-    auto * const player_t = player->get_component<transform_component>();
-
-    // Enemy seeking
-    for(auto ai_seek_it = game_space->logic_component_begin<AI_seek>();
-        ai_seek_it != game_space->logic_component_end<AI_seek>();
-        ++ai_seek_it)
-    {
-      auto * curr_entity = (*ai_seek_it)->get_owning_entity();
-      auto * const enemy_t = curr_entity->get_component<transform_component>();
-
-      if(p_ddraw_enabled)
-      {
-        game_space->m_world_ddraw.lines.add_circle(
-          enemy_t->get_pos(), enemy_seek_radius, vec4(1.0f, .0f, 1.0f, 1.0f));
-      }
-
-      vec2 dir_to_player =
-          player_t->get_pos() - enemy_t->get_pos();
-      float dist_to_player;
-      normalize(dir_to_player, dist_to_player);
-
-      if(dist_to_player <= enemy_seek_radius)
-      {
-        enemy_t->translate(dir_to_player * enemy_movement_speed * dt);
-
-        if(p_ddraw_enabled)
-        {
-          game_space->m_world_ddraw.lines.add_arrow(
-            enemy_t->get_pos(),
-            dir_to_player,
-            enemy_seek_radius,
-            vec4(1.0f, 0.0f, 1.0f, 1.0f));
-        }
-      }
-    }
-
-    // Bullet logic
-    for(auto bullet_it = game_space->logic_component_begin<bullet>();
-        bullet_it != game_space->logic_component_end<bullet>();
-        ++bullet_it )
-    {
-      auto * curr_entity = (*bullet_it)->get_owning_entity();
-
-      curr_entity->get_component<transform_component>()->translate(
-        0.0f,
-        -bullet_movement_speed * dt);
     }
   }
 }

@@ -111,9 +111,9 @@ entity * space::find_entity(std::string const& name)
   return nullptr;
 }
 
-entity * space::find_entity(unique_id<entity> const& id)
+entity * space::find_entity(unique_id<entity>::value_type id)
 {
-  auto find_it = p_entities.find(id.value());
+  auto find_it = p_entities.find(id);
   if(find_it != p_entities.end())
   {
     return (*find_it).second.get();

@@ -14,14 +14,6 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
-namespace internal
-{
-
-class global_scope
-{
-};
-
-}
 /*
  * SCOPE_T limits the uniqueness of an id to a given type.
  * This allows class A and class B to have overlapping unique_ids.
@@ -29,7 +21,7 @@ class global_scope
  * Knowledge of the algorithm used to generate the ids should not be relied upon or used.
  *  (i.e. no guarantee of order or contiguousness is given)
  */
-template<typename SCOPE_T = internal::global_scope>
+template<typename SCOPE_T>
 class unique_id
 {
 public:
@@ -50,11 +42,16 @@ public:
     return p_value == rhs.p_value;
   }
 
+  static unique_id<SCOPE_T> const null;
+
 private:
   value_type const p_value;
 
   static value_type get_next();
 };
+
+template<typename SCOPE_T>
+unique_id<SCOPE_T> const unique_id<SCOPE_T>::null;
 
 } // namespace LE
 
