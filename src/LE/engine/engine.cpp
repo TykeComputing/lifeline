@@ -98,13 +98,6 @@ void engine::run()
 
 space * engine::create_space(std::string const& name)
 {
-  if(find_space(name) != nullptr)
-  {
-    log_error(log_scope::ENGINE,
-      "Attempting to create space named \"{0}\", but a space with the name \"{0}\" already exists.",
-      name);
-   }
-
   // Insert new spaces at the front to ensure oldest spaces are drawn last.
   p_spaces.emplace(p_spaces.begin(), new space(name));
   log_status(log_scope::ENGINE,
@@ -161,11 +154,41 @@ void engine::set_is_running(bool val)
   p_is_running = val;
 }
 
+void engine::remove_dead_spaces()
+{
+  for(auto it = p_spaces.begin(); it != p_spaces.end();)
+  {
+    if((*it)->get_is_alive() == false)
+    {
+      log_status(log_scope::ENGINE,
+        "Removing dead space named \"{}\", {} spaces now exist.",
+          (*it)->get_name(),
+          p_spaces.size() - 1); // don't count space being removed
+
+      // Order of spaces DOES matter, cannot swap with back/pop_back
+      it = p_spaces.erase(it);
+    }
+    else
+    {
+      ++it;
+    }
+  }
+}
+
 void engine::step(float dt)
 {
   high_resolution_profiling_point pp(p_profiling_records, "update");
 
+  // Since spaces can add more spaces (through logic components), we need to iterate over a temp
+  //   container while updating.
+  std::vector<space *> spaces_to_update;
+  spaces_to_update.reserve(p_spaces.size());
   for(auto const& curr_space : p_spaces)
+  {
+    spaces_to_update.push_back(curr_space.get());
+  }
+
+  for(auto const& curr_space : spaces_to_update)
   {
     if(curr_space->get_is_active() == false)
     {
@@ -176,8 +199,10 @@ void engine::step(float dt)
 
     p_logic_sys.update(*curr_space, dt);
 
-    curr_space->remove_dead();
+    curr_space->remove_dead_entities();
   }
+
+  remove_dead_spaces();
 }
 
 void engine::render_frame()

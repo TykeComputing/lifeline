@@ -126,6 +126,10 @@ entity const* entity::find_child(std::string const& name) const
 
 void entity::kill()
 {
+  log_status(log_scope::ENGINE, "Killing entity named \"{}\", in space \"{}\".",
+    p_name,
+    get_owning_space()->get_name());
+
   p_is_alive = false;
   for(auto * child : p_children)
   {

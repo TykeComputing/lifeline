@@ -361,9 +361,10 @@ void game_hack::p_input()
   // Reset
   if(input_sys.is_key_triggered(SDLK_RETURN))
   {
-    game_space->kill_all();
-    auto * new_game_hack_ent = game_space->create_entity("game_hack");
-    new_game_hack_ent->create_component<game_hack>();
+    game_space->kill();
+    auto * new_game_space = game_engine->create_space("game");
+    auto * new_game_hack_ent = new_game_space->create_entity("game_hack");
+    new_game_hack_ent->create_component<LE::game_hack>();
   }
 
   // Toggle debug drawing on/off
@@ -484,16 +485,22 @@ void game_hack::p_physics(float dt)
         //   now
         for(int ent_check_it = 0; ent_check_it < 2; ++ent_check_it)
         {
+          // Kill non-enemies that collide with enemies
           if(ents[ent_check_it]->get_component<enemy_damage>())
           {
-            // kill other entity
-            ents[!ent_check_it]->kill();
+            // Enemies don't kill other enemies
+            if(ents[!ent_check_it]->get_component<enemy_damage>() == false)
+            {
+              ents[!ent_check_it]->kill();
+            }
           }
+          // Kill enemies that collide with bullts
           if(ents[ent_check_it]->get_component<bullet_damage>())
           {
-            // Don't kill on collision with shooter
+            // Don't kill on collision with shooter or other bullets
             if(ents[ent_check_it]->get_component<bullet_damage>()->get_shooter_id() !=
-               ents[!ent_check_it]->get_id().value())
+               ents[!ent_check_it]->get_id().value()
+            && ents[!ent_check_it]->get_component<bullet_damage>() == nullptr)
             {
               ents[0]->kill();
               ents[1]->kill();

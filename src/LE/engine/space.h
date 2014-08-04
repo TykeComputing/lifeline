@@ -77,11 +77,9 @@ public:
   entity * find_entity(std::string const& name);
   entity * find_entity(unique_id<entity>::value_type id);
 
-  void kill_all();
-
   size_t entity_num() const { return p_entities.size(); }
 
-  void remove_dead();
+  void remove_dead_entities();
 
   /**********************************************/
   /* Component Tracking */
@@ -120,15 +118,26 @@ public:
   debug_draw_manager m_hud_ddraw;
 
   /**********************************************/
+  /* Lifespan */
+  /**********************************************/
+
+  void kill();
+
+  bool get_is_alive() const { return p_is_alive; }
+
+  /**********************************************/
   /* Utility */
   /**********************************************/
-  std::string const& get_name() const;
 
   engine * get_owning_engine();
   engine const* get_owning_engine() const;
 
   void set_is_active(bool value);
   bool get_is_active() const;
+
+  unique_id<space> const& get_id() { return p_id; }
+
+  std::string const& get_name() const;
 
 private:
   void p_set_owner(engine * new_owner);
@@ -154,13 +163,16 @@ private:
 
   engine * p_owner = nullptr;
 
-  bool p_is_active = true;
+  unique_id<space> const p_id;
 
   /*!
    * Should always be checked before using debug drawers to avoid non-rendering overhead of
    *   debug drawing (generating lines).
    */
   bool p_ddraw_enabled = false;
+
+  bool p_is_active = true;
+  bool p_is_alive = true;
 
   friend class engine;
   friend class component_registrar;

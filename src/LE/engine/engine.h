@@ -54,6 +54,8 @@ public:
 
   void set_is_running(bool val);
 
+  void remove_dead_spaces();
+
 private:
   void step(float dt);
   void render_frame();

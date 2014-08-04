@@ -124,19 +124,11 @@ entity * space::find_entity(unique_id<entity>::value_type id)
   }
 }
 
-void space::kill_all()
-{
-  for(auto & it : p_entities)
-  {
-    it.second->kill();
-  }
-}
-
-void space::remove_dead()
+void space::remove_dead_entities()
 {
   for(auto it = p_entities.begin(); it != p_entities.end();)
   {
-    if((*it).second->is_alive() == false)
+    if((*it).second->get_is_alive() == false)
     {
       log_status(log_scope::ENGINE,
         "Removing dead entity named \"{}\", {} entities now in space \"{}\".",
@@ -156,6 +148,7 @@ void space::remove_dead()
 /**********************************************/
 /* Debug Drawing */
 /**********************************************/
+
 void space::clear_ddraw()
 {
   m_world_ddraw.clear();
@@ -163,12 +156,17 @@ void space::clear_ddraw()
 }
 
 /**********************************************/
+/* Lifespan */
+/**********************************************/
+
+void space::kill()
+{
+  p_is_alive = false;
+}
+
+/**********************************************/
 /* Utility */
 /**********************************************/
-std::string const& space::get_name() const
-{
-  return p_name;
-}
 
 engine * space::get_owning_engine()
 {
@@ -193,6 +191,11 @@ void space::set_is_active(bool value)
 bool space::get_is_active() const
 {
   return p_is_active;
+}
+
+std::string const& space::get_name() const
+{
+  return p_name;
 }
 
 void space::p_register_engine_component(

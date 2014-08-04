@@ -134,7 +134,7 @@ public:
 
   void kill();
 
-  bool is_alive() const { return p_is_alive; }
+  bool get_is_alive() const { return p_is_alive; }
 
   /**********************************************/
   /* Utility */
