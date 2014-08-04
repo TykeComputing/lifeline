@@ -102,7 +102,7 @@ void game_hack::initialize()
     new_ent->get_component<transform_component>()->set_scale(1.0f);
 
     new_ent->create_component<tilemap_component>(
-      resource_manager::load<tileset>("tilesets/test/test.tsd"));
+      resource_manager::full_dir("tilemaps/test.tm"));
   }
 
   auto * pv = p_get_perf_vis_component();

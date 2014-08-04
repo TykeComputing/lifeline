@@ -47,7 +47,7 @@ private:
 class tilemap_component : public engine_component_base
 {
 public:
-  tilemap_component(std::string const& tm_file_name;
+  tilemap_component(std::string const& tm_file_name);
 
   void bind() const;
   void unbind() const;

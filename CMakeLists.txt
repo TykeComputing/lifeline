@@ -63,6 +63,8 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/common/profiling.h
   ${LE_SRC_DIR}/common/profiling_records.cpp
   ${LE_SRC_DIR}/common/profiling_records.h
+  ${LE_SRC_DIR}/common/rapidjson.cpp
+  ${LE_SRC_DIR}/common/rapidjson.h
   #${LE_SRC_DIR}/common/resource.cpp
   #${LE_SRC_DIR}/common/resource.h
   ${LE_SRC_DIR}/common/resource_manager.cpp
