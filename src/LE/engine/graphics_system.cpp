@@ -257,10 +257,10 @@ void graphics_system::p_render_tilemaps(
     {
       for(unsigned x = 0; x < num_tiles.x(); ++x)
       {
-        auto curr_tile = curr_tilemap_comp->get_tile_id(x, y);
+        auto curr_tile_id = curr_tilemap_comp->get_tile_id(x, y);
 
         // Negative tile_id indicates no tile is to be drawn
-        if(curr_tile < 0)
+        if(curr_tile_id < 0)
         {
           continue;
         }
@@ -274,7 +274,7 @@ void graphics_system::p_render_tilemaps(
         glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, tile_to_NDC.data);
         renderable_element_buffer::draw(
           GL_TRIANGLES,
-          curr_tileset->get_tile_index_buffer_offset(curr_tile),
+          curr_tileset->get_tile_index_buffer_offset(curr_tile_id),
           tileset::num_indices_per_tile());
       }
     }
