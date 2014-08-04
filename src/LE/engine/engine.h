@@ -73,6 +73,7 @@ private:
   profiling_records p_profiling_records;
 
   bool p_is_running = true;
+  bool p_is_paused = false;
 };
 
 } // namespace LE

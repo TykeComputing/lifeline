@@ -50,19 +50,32 @@ void engine::run()
     p_is_running = true;
     while(p_is_running)
     {
-      p_profiling_records.start_new_record_entry();
+      if(p_is_paused == false)
+      {
+        p_profiling_records.start_new_record_entry();
+      }
+
       high_resolution_profiling_point pp(p_profiling_records, "total_frame");
 
       // Cap maximum number of iterations per frame. If there is a massive spike in frame time
       //   for any reason this will prevent the game from completely stalling while trying to
       //   update too many times.
       current_dt = std::min(current_dt, max_iterations_per_frame * update_dt);
-
       while(current_dt > update_dt)
       {
         p_os_interface.update(*this, p_input_sys);
 
-        step(update_dt);
+        // Since this pauses absolutely everything except rendering, it need to be done in the
+        //   engine itself.
+        if(p_input_sys.is_key_released(SDLK_PAUSE))
+        {
+          p_is_paused = !p_is_paused;
+        }
+
+        if(p_is_paused == false)
+        {
+          step(update_dt);
+        }
 
         current_dt -= update_dt;
       }

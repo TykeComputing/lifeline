@@ -284,7 +284,9 @@ void graphics_system::p_render_tilemaps(
   LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
-void graphics_system::p_render_ddraw(space & target, const mat3 & world_to_NDC)
+void graphics_system::p_render_ddraw(
+  space & target,
+  mat3 const& world_to_NDC)
 {
   if(target.get_ddraw_enabled() == false)
   {
