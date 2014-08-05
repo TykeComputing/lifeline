@@ -96,16 +96,23 @@ void engine::run()
   log_status(log_scope::ENGINE, "Engine shutting down.");
 }
 
+/*!
+ * \brief Creates a new space and queues it to be added to the engine.
+ *    The new space will not be added until the next step.
+ *
+ * \note: Space will be drawn in the reverse order from which they are created (i.e. the oldest
+ *   will be drawn last thus placing it ontop of everything else). TODO - Come up with better
+ *   system than this (priority?)
+ */
 space * engine::create_space(std::string const& name)
 {
-  // Insert new spaces at the front to ensure oldest spaces are drawn last.
-  p_spaces.emplace(p_spaces.begin(), new space(name));
+  p_new_spaces.emplace_back(new space(name));
   log_status(log_scope::ENGINE,
     "Creating space named named \"{}\", {} spaces now in this engine.",
     name,
-    p_spaces.size());
+    p_spaces.size() + p_new_spaces.size());
 
-  auto * new_space = p_spaces.front().get();
+  auto * new_space = p_new_spaces.back().get();
   new_space->p_set_owner(this);
 
   return new_space;
@@ -179,16 +186,7 @@ void engine::step(float dt)
 {
   high_resolution_profiling_point pp(p_profiling_records, "update");
 
-  // Since spaces can add more spaces (through logic components), we need to iterate over a temp
-  //   container while updating.
-  std::vector<space *> spaces_to_update;
-  spaces_to_update.reserve(p_spaces.size());
   for(auto const& curr_space : p_spaces)
-  {
-    spaces_to_update.push_back(curr_space.get());
-  }
-
-  for(auto const& curr_space : spaces_to_update)
   {
     if(curr_space->get_is_active() == false)
     {
@@ -203,6 +201,19 @@ void engine::step(float dt)
   }
 
   remove_dead_spaces();
+
+  // Since spaces can add more spaces we wait until now to add spaces created last step.
+  if(p_new_spaces.empty() == false)
+  {
+    //   Note that we want spaces created first to be last in the container, so we insert at the
+    //   beginning and insert in reverse order.
+    p_spaces.insert(
+      p_spaces.begin(),
+      std::make_move_iterator(p_new_spaces.rbegin()),
+      std::make_move_iterator(p_new_spaces.rend()) );
+
+    p_new_spaces.clear();
+  }
 }
 
 void engine::render_frame()
