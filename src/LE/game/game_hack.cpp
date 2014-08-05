@@ -11,6 +11,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <string>
 #include <vector>
 
+#include <LE/common/dt_timer.h>
 #include <LE/common/fatal_error.h>
 #include <LE/common/logging.h>
 #include <LE/common/resource_exception.h>
@@ -155,7 +156,34 @@ unique_id<logic_component_base> const bullet_movement::type_id;
 class slime_tumor_spread : public logic_component_base
 {
 public:
+  slime_tumor_spread(float spread_time) :
+    p_spread_timer(spread_time)
+  {
+  }
+
+  virtual void update(float dt)
+  {
+    if(p_spread_timer.advance(dt))
+    {
+      p_spread_timer.reset();
+
+      auto * tm = get_owning_entity()->get_component<tilemap_component>();
+
+      uvec2 num_tiles = tm->get_num_tiles();
+      for(unsigned y = 0; y < num_tiles.y(); ++y)
+      {
+        for(unsigned x = 0; x < num_tiles.x(); ++x)
+        {
+          tm->set_tile_id(x, y, 4);
+        }
+      }
+    }
+  }
+
   static unique_id<logic_component_base> const type_id;
+
+private:
+  dt_countup p_spread_timer;
 };
 
 unique_id<logic_component_base> const slime_tumor_spread::type_id;
@@ -320,6 +348,8 @@ void game_hack::initialize()
 
     new_ent->create_component<tilemap_component>(
       resource_manager::full_dir("tilemaps/test.tm"));
+
+    new_ent->create_component<slime_tumor_spread>(10.0f);
 
     //auto * new_ai_seek = new_ent->create_component<AI_seek>(128.0f, -256.0f, player->get_id());
   }

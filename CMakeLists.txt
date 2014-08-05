@@ -1,6 +1,6 @@
 ################################################################################################
 # Copyright 2014 by Peter Clark. All Rights Reserved.
-################################################################################################`
+################################################################################################
 
 # TODO - Add checks for versions of VS < 2013 and add fatal messages
 
@@ -50,6 +50,8 @@ set(LE_EXECUTABLE_SRC_LIST
 
   ${LE_SRC_DIR}/common/char.h
   ${LE_SRC_DIR}/common/cppformat.h
+  ${LE_SRC_DIR}/common/dt_timer.cpp
+  ${LE_SRC_DIR}/common/dt_timer.h
   ${LE_SRC_DIR}/common/fatal_error.cpp
   ${LE_SRC_DIR}/common/fatal_error.h
   ${LE_SRC_DIR}/common/fatal_construction_exception.cpp

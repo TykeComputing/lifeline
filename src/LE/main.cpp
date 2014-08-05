@@ -69,6 +69,7 @@ int main(int arg_count, char *args[])
   int res = 0;
 
   handle_args(arg_count, args);
+
   try
   {
     LE::engine game_engine;
