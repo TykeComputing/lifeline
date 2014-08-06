@@ -165,17 +165,35 @@ public:
   {
     if(p_spread_timer.advance(dt))
     {
+      //log_status(log_scope::GAME, "Slime spreading!");
       p_spread_timer.reset();
 
       auto * tm = get_owning_entity()->get_component<tilemap_component>();
+      LE_FATAL_ERROR_IF(tm == nullptr, "Error");
+      tm->set_tile_id(0, 0, 4);
+
+      std::vector<uvec2> existing_slime_pos;
+      auto num = tm->count_num_tile_id_instances(4);
+      existing_slime_pos.reserve(num);
 
       uvec2 num_tiles = tm->get_num_tiles();
       for(unsigned y = 0; y < num_tiles.y(); ++y)
       {
         for(unsigned x = 0; x < num_tiles.x(); ++x)
         {
-          tm->set_tile_id(x, y, 4);
+          if(tm->get_tile_id(x, y) == 4)
+          {
+            existing_slime_pos.emplace_back(x, y);
+          }
         }
+      }
+
+      for(uvec2 const& pos : existing_slime_pos)
+      {
+        tm->try_set_tile_id(pos.x() + 1, pos.y(), 4);
+        tm->try_set_tile_id(pos.x() - 1, pos.y(), 4);
+        tm->try_set_tile_id(pos.x(), pos.y() - 1, 4);
+        tm->try_set_tile_id(pos.x(), pos.y() + 1, 4);
       }
     }
   }
@@ -349,7 +367,7 @@ void game_hack::initialize()
     new_ent->create_component<tilemap_component>(
       resource_manager::full_dir("tilemaps/test.tm"));
 
-    new_ent->create_component<slime_tumor_spread>(10.0f);
+    new_ent->create_component<slime_tumor_spread>(1.0f);
 
     //auto * new_ai_seek = new_ent->create_component<AI_seek>(128.0f, -256.0f, player->get_id());
   }

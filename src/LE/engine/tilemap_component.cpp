@@ -157,9 +157,25 @@ tilemap_component::tile_id_t tilemap_component::get_tile_id(unsigned x, unsigned
   return p_tiles[p_get_tile_index(x, y)];
 }
 
-void tilemap_component::set_tile_id(unsigned x, unsigned y, tilemap_component::tile_id_t value)
+size_t tilemap_component::count_num_tile_id_instances(tile_id_t value) const
+{
+  return std::count_if(
+    p_tiles.begin(),
+    p_tiles.end(),
+    std::bind2nd(std::equal_to<tile_id_t>(), value) );
+}
+
+void tilemap_component::set_tile_id(unsigned x, unsigned y, tile_id_t value)
 {
   p_tiles[p_get_tile_index(x, y)] = value;
+}
+
+void tilemap_component::try_set_tile_id(unsigned x, unsigned y, tile_id_t value)
+{
+  if(x < p_num_tiles.x() && y < p_num_tiles.y())
+  {
+    p_tiles[p_get_tile_index(x, y)] = value;
+  }
 }
 
 unsigned tilemap_component::p_get_tile_index(unsigned x, unsigned y) const
@@ -167,10 +183,7 @@ unsigned tilemap_component::p_get_tile_index(unsigned x, unsigned y) const
   LE_FATAL_ERROR_IF(x >= p_num_tiles.x(), "Invalid x");
   LE_FATAL_ERROR_IF(y >= p_num_tiles.y(), "Invalid y");
 
-  unsigned index = y * p_num_tiles.x() + x;
-  LE_FATAL_ERROR_IF(index > p_tiles.size(), "Invalid index");
-
-  return index;
+  return y * p_num_tiles.x() + x;
 }
 
 } // namespace LE

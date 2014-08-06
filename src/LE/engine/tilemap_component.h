@@ -63,7 +63,9 @@ public:
   tileset const* get_tile_set() const { return p_tileset.get(); }
   uvec2 const& get_num_tiles() const { return p_num_tiles; }
   tile_id_t get_tile_id(unsigned x, unsigned y) const;
+  size_t count_num_tile_id_instances(tile_id_t value) const;
   void set_tile_id(unsigned x, unsigned y, tile_id_t value);
+  void try_set_tile_id(unsigned x, unsigned y, tile_id_t value);
 
 private:
   unsigned p_get_tile_index(unsigned x, unsigned y) const;
