@@ -152,11 +152,6 @@ void tilemap_component::unbind() const
   p_tileset->unbind();
 }
 
-tilemap_component::tile_id_t tilemap_component::get_tile_id(unsigned x, unsigned y) const
-{
-  return p_tiles[p_get_tile_index(x, y)];
-}
-
 size_t tilemap_component::count_num_tile_id_instances(tile_id_t value) const
 {
   return std::count_if(
@@ -165,9 +160,26 @@ size_t tilemap_component::count_num_tile_id_instances(tile_id_t value) const
     std::bind2nd(std::equal_to<tile_id_t>(), value) );
 }
 
+tilemap_component::tile_id_t tilemap_component::get_tile_id(unsigned x, unsigned y) const
+{
+  return p_tiles[p_get_tile_index(x, y)];
+}
+
 void tilemap_component::set_tile_id(unsigned x, unsigned y, tile_id_t value)
 {
   p_tiles[p_get_tile_index(x, y)] = value;
+}
+
+tilemap_component::tile_id_t tilemap_component::try_get_tile_id(unsigned x, unsigned y) const
+{
+  if(x < p_num_tiles.x() && y < p_num_tiles.y())
+  {
+    return get_tile_id(x, y);
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 void tilemap_component::try_set_tile_id(unsigned x, unsigned y, tile_id_t value)

@@ -157,7 +157,7 @@ class slime_tumor_spread : public logic_component_base
 {
 public:
   slime_tumor_spread(float spread_time) :
-    p_spread_timer(spread_time)
+    p_spread_timer(spread_time), p_max_spread_time(spread_time)
   {
   }
 
@@ -166,6 +166,7 @@ public:
     if(p_spread_timer.advance(dt))
     {
       //log_status(log_scope::GAME, "Slime spreading!");
+      p_spread_timer.set_target_time((std::rand() / (float)RAND_MAX) * p_max_spread_time);
       p_spread_timer.reset();
 
       auto * tm = get_owning_entity()->get_component<tilemap_component>();
@@ -188,12 +189,26 @@ public:
         }
       }
 
+      auto make_slime_tile = [&tm](
+        unsigned x,
+        unsigned y)
+      {
+        auto curr_tile_id = tm->try_get_tile_id(x, y);
+        if(curr_tile_id != 4 && tilemap_component::tile_exists(curr_tile_id))
+        {
+          if(std::rand() % 4)
+          {
+            tm->set_tile_id(x, y, 4);
+          }
+        }
+      };
+
       for(uvec2 const& pos : existing_slime_pos)
       {
-        tm->try_set_tile_id(pos.x() + 1, pos.y(), 4);
-        tm->try_set_tile_id(pos.x() - 1, pos.y(), 4);
-        tm->try_set_tile_id(pos.x(), pos.y() - 1, 4);
-        tm->try_set_tile_id(pos.x(), pos.y() + 1, 4);
+        make_slime_tile(pos.x() + 1, pos.y());
+        make_slime_tile(pos.x() - 1, pos.y());
+        make_slime_tile(pos.x(), pos.y() - 1);
+        make_slime_tile(pos.x(), pos.y() + 1);
       }
     }
   }
@@ -202,6 +217,7 @@ public:
 
 private:
   dt_countup p_spread_timer;
+  float p_max_spread_time;
 };
 
 unique_id<logic_component_base> const slime_tumor_spread::type_id;
