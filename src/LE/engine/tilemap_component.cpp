@@ -8,8 +8,6 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <algorithm>
 
-
-#include <LE/common/char.h>
 #include <LE/common/fatal_error.h>
 #include <LE/common/logging.h>
 #include <LE/common/rapidjson.h>

@@ -6,7 +6,6 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "rapidjson.h"
 
-#include <LE/common/char.h>
 #include <LE/common/file_string.h>
 #include <LE/common/logging.h>
 
@@ -37,7 +36,7 @@ namespace LE
       size_t const error_line_num = 1 + std::count_if(
         file_data_str.cbegin(),
         error_it,
-        is_newline);
+        std::bind2nd(std::equal_to<char>(), '\n'));
 
       // Compute column (char offset into line), using 1 as base column
       std::string::const_reverse_iterator reverse_error_it{error_it};
