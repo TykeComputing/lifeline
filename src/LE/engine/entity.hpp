@@ -161,8 +161,6 @@ entity::create_logic_component(ARG_TS &&... args)
     new_comp->set_owner(this);
     p_register_logic_component(COMP_T::type_id.value(), new_comp);
 
-    new_comp->initialize();
-
     return new_comp;
   }
   else
