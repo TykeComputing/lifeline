@@ -8,6 +8,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <algorithm>
 #include <fstream>
+#include <functional>
 
 namespace LE
 {

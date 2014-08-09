@@ -51,7 +51,7 @@ vecn<N, COMP_T>::vecn(vecn<N, OTHER_COMP_T> const& rhs)
 {
   for(size_t i = 0; i < N; ++i)
   {
-    data[i] = static_cast<OTHER_COMP_T>(rhs.data[i]);
+    data[i] = static_cast<COMP_T>(rhs.data[i]);
   }
 }
 
@@ -113,8 +113,8 @@ template<typename OTHER_COMP_T>
 vecn<2, COMP_T>::vecn(vecn<2, OTHER_COMP_T> const& rhs)
 {
   set(
-    static_cast<OTHER_COMP_T>(rhs.x()),
-    static_cast<OTHER_COMP_T>(rhs.y()) );
+    static_cast<COMP_T>(rhs.x()),
+    static_cast<COMP_T>(rhs.y()) );
 }
 
 template<typename COMP_T>
@@ -176,9 +176,9 @@ template<typename OTHER_COMP_T>
 vecn<3, COMP_T>::vecn(vecn<3, OTHER_COMP_T> const& rhs)
 {
   set(
-    static_cast<OTHER_COMP_T>(rhs.x()),
-    static_cast<OTHER_COMP_T>(rhs.y()),
-    static_cast<OTHER_COMP_T>(rhs.z()) );
+    static_cast<COMP_T>(rhs.x()),
+    static_cast<COMP_T>(rhs.y()),
+    static_cast<COMP_T>(rhs.z()) );
 }
 
 template<typename COMP_T>
@@ -256,10 +256,10 @@ template<typename OTHER_COMP_T>
 vecn<4, COMP_T>::vecn(vecn<4, OTHER_COMP_T> const& rhs)
 {
   set(
-    static_cast<OTHER_COMP_T>(rhs.x()),
-    static_cast<OTHER_COMP_T>(rhs.y()),
-    static_cast<OTHER_COMP_T>(rhs.z()),
-    static_cast<OTHER_COMP_T>(rhs.w()) );
+    static_cast<COMP_T>(rhs.x()),
+    static_cast<COMP_T>(rhs.y()),
+    static_cast<COMP_T>(rhs.z()),
+    static_cast<COMP_T>(rhs.w()) );
 }
 
 template<typename COMP_T>

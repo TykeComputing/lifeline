@@ -174,7 +174,7 @@ void graphics_system::p_load_shader(
     std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
     out_sp = std::unique_ptr<shader_program>{new shader_program{shader_prog_input}};
   }
-  catch(LE::resource_exception const& e)
+  catch(LE::resource_exception const&)
   {
     LE_FATAL_ERROR("Error loading shader!");
     return;

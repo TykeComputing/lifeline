@@ -31,7 +31,7 @@ tileset::tileset(std::string const& tsd_file_name)
   p_num_tiles = num_tiles.x() * num_tiles.y();
 
   // Dimensions of a single tile when entire tileset is considered using coordinates [0, 1]
-  vec2 const tile_tex_coord_dim = vec2(p_tile_size) / vec2(texture_dim);
+  vec2 const tile_tex_coord_dim = vec2((float)p_tile_size) / vec2(texture_dim);
 
   uvec2 curr_tile;
   for(curr_tile.y() = 0; curr_tile.y() < num_tiles.y(); ++curr_tile.y())

@@ -86,7 +86,7 @@ int main(int arg_count, char *args[])
 
     game_engine.run();
   }
-  catch(LE::fatal_construction_exception const& e)
+  catch(LE::fatal_construction_exception const&)
   {
     LE_FATAL_ERROR("Unable to create engine!"); // TODO - Remove
     res = -1;

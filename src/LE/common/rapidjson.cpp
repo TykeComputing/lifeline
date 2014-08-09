@@ -6,6 +6,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "rapidjson.h"
 
+#include <functional>
+
 #include <LE/common/file_string.h>
 #include <LE/common/logging.h>
 

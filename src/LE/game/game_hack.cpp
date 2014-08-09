@@ -143,7 +143,7 @@ public:
       -bullet_movement_speed * dt);
   }
 
-  // TODO - Replace with phyiscs
+  // TODO - Replace with phyics
   float const bullet_movement_speed = 512.0f;
 
   static unique_id<logic_component_base> const type_id;
