@@ -33,9 +33,9 @@ void perf_vis::update(float dt)
 {
   LE_UNUSED_VAR(dt);
 
-  auto * owning_space = get_owning_entity()->get_owning_space();
-  auto & hud_ddraw = owning_space->m_hud_ddraw;
-  auto const& records = owning_space->get_owning_engine()->get_profiling_records();
+  space * owning_space = get_owning_entity()->get_owning_space();
+  debug_draw_manager & hud_ddraw = owning_space->m_hud_ddraw;
+  profiling_records const& records = owning_space->get_owning_engine()->get_profiling_records();
 
   // Reserve space for all lines upfront
   // - Scaffolding consists of 2 solid lines and 1 dashed line per graph.
@@ -53,9 +53,9 @@ void perf_vis::update(float dt)
 
   for(auto const& key_record_pair : records)
   {
-    auto const& name = key_record_pair.first;
+    std::string const& name = key_record_pair.first;
     auto const& record = key_record_pair.second;
-    auto const& graph_color = get_graph_color(name);
+    vec4 const& graph_color = get_graph_color(name);
 
     p_draw_scaffold(
       hud_ddraw,
@@ -81,7 +81,7 @@ void perf_vis::update(float dt)
   }
 
   // Update indicator for the current max time below the lower left corner of the first graph
-  auto * max_time_text_ent = p_get_text_entity(
+  entity * max_time_text_ent = p_get_text_entity(
     "pv_max_time_indicator",
     fmt::format("Max Time: {} seconds", p_max_time),
     p_text_size_is_dirty);
@@ -296,7 +296,7 @@ void perf_vis::p_update_graph_label(
     vec2 const& bottom_left,
     vec4 const& color)
 {
-  auto * name_text_ent = p_get_text_entity(name, name, p_text_size_is_dirty);
+  entity * name_text_ent = p_get_text_entity(name, name, p_text_size_is_dirty);
   auto * name_text_t = name_text_ent->get_component<transform_component>();
   auto * name_text_s = name_text_ent->get_component<sprite_component>();
   name_text_t->set_pos(
@@ -325,7 +325,7 @@ entity * perf_vis::p_get_text_entity(
   std::string const ent_name = "pv_" + name;
 
   // Check if we've already created an entity for this text.
-  auto * result = get_owning_entity()->find_child(ent_name);
+  entity * result = get_owning_entity()->find_child(ent_name);
   if(result == nullptr)
   {
     // An entity for this graph's text does not yet exist, create it and set it up for text
