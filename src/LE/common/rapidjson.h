@@ -4,22 +4,16 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
-#ifndef LE_COMMON_FATAL_CONSTRUCTION_EXCEPTION_H
-#define LE_COMMON_FATAL_CONSTRUCTION_EXCEPTION_H
+#ifndef LE_COMMON_RAPIDJSON_H
+#define LE_COMMON_RAPIDJSON_H
 
 #include <string>
 
+#include <rapidjson/document.h>
+
 namespace LE
 {
+  bool parse_file(rapidjson::Document & doc, std::string const& file_name);
+}
 
-class fatal_construction_exception
-{
-public:
-  fatal_construction_exception();
-
-private:
-};
-
-} // namespace LE
-
-#endif // LE_COMMON_FATAL_CONSTRUCTION_EXCEPTION_H
+#endif // LE_COMMON_RAPIDJSON_H

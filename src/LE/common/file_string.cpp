@@ -8,6 +8,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <algorithm>
 #include <fstream>
+#include <functional>
 
 namespace LE
 {
@@ -36,12 +37,11 @@ file_string::file_string(std::string const& file_path) :
 
 unsigned file_string::get_num_lines() const
 {
-  auto is_new_line_pred = [](char c)->bool
-  {
-    return c == '\n';
-  };
-
-  return std::count_if(p_file_string.cbegin(), p_file_string.cend(), is_new_line_pred);
+  // num lines = num newlines + 1 (first line)
+  return 1 + std::count_if(
+    p_file_string.cbegin(),
+    p_file_string.cend(),
+    std::bind2nd(std::equal_to<char>(), '\n'));
 }
 
 bool file_string::is_valid() const

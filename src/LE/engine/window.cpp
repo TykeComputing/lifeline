@@ -8,6 +8,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <LE/common/fatal_error.h>
 #include <LE/common/fatal_construction_exception.h>
+#include <LE/common/logging.h>
 
 namespace LE
 {
@@ -18,9 +19,9 @@ window::window()
   p_raw_window = SDL_CreateWindow("Lifeline Engine", 64, 64, 1280, 768, sdl_window_flags);
   if(p_raw_window == nullptr)
   {
-    LE_FATAL_ERROR(SDL_GetError());
+    log_error(log_scope::ENGINE, "Error creating SDL window: {}", SDL_GetError());
     SDL_ClearError();
-    throw fatal_construction_exception("Error creating SDL window, exiting...");
+    throw fatal_construction_exception{};
   }
 }
 

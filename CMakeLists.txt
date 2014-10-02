@@ -1,6 +1,6 @@
 ################################################################################################
 # Copyright 2014 by Peter Clark. All Rights Reserved.
-################################################################################################`
+################################################################################################
 
 # TODO - Add checks for versions of VS < 2013 and add fatal messages
 
@@ -49,6 +49,8 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/main.cpp
 
   ${LE_SRC_DIR}/common/cppformat.h
+  ${LE_SRC_DIR}/common/dt_timer.cpp
+  ${LE_SRC_DIR}/common/dt_timer.h
   ${LE_SRC_DIR}/common/fatal_error.cpp
   ${LE_SRC_DIR}/common/fatal_error.h
   ${LE_SRC_DIR}/common/fatal_construction_exception.cpp
@@ -58,12 +60,12 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/common/logging.cpp
   ${LE_SRC_DIR}/common/logging.h
   ${LE_SRC_DIR}/common/macros.h
-  ${LE_SRC_DIR}/common/message_exception.cpp
-  ${LE_SRC_DIR}/common/message_exception.h
   ${LE_SRC_DIR}/common/profiling.hpp
   ${LE_SRC_DIR}/common/profiling.h
   ${LE_SRC_DIR}/common/profiling_records.cpp
   ${LE_SRC_DIR}/common/profiling_records.h
+  ${LE_SRC_DIR}/common/rapidjson.cpp
+  ${LE_SRC_DIR}/common/rapidjson.h
   #${LE_SRC_DIR}/common/resource.cpp
   #${LE_SRC_DIR}/common/resource.h
   ${LE_SRC_DIR}/common/resource_manager.cpp
@@ -96,9 +98,9 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/graphics/debug_draw_manager.h
   ${LE_SRC_DIR}/graphics/error_checking.cpp
   ${LE_SRC_DIR}/graphics/error_checking.h
-  ${LE_SRC_DIR}/graphics/renderable_array.cpp
-  ${LE_SRC_DIR}/graphics/renderable_array.hpp
-  ${LE_SRC_DIR}/graphics/renderable_array.h
+  ${LE_SRC_DIR}/graphics/renderable_buffer.cpp
+  ${LE_SRC_DIR}/graphics/renderable_buffer.hpp
+  ${LE_SRC_DIR}/graphics/renderable_buffer.h
   ${LE_SRC_DIR}/graphics/shader.cpp
   ${LE_SRC_DIR}/graphics/shader.h
   ${LE_SRC_DIR}/graphics/shader_program.cpp
@@ -137,6 +139,7 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/engine/OS_interface.cpp
   ${LE_SRC_DIR}/engine/OS_interface.h
   ${LE_SRC_DIR}/engine/space.cpp
+  ${LE_SRC_DIR}/engine/space.hpp
   ${LE_SRC_DIR}/engine/space.h
   ${LE_SRC_DIR}/engine/sprite_component.cpp
   ${LE_SRC_DIR}/engine/sprite_component.h
@@ -189,6 +192,8 @@ target_compile_options(${PROJECT_NAME}
     $<$<CXX_COMPILER_ID:GNU>:
       # Enable
       -Wall -Wextra -Werror -Wfatal-errors -Wpedantic
+      # Disable
+      -Wno-unused-local-typedefs #rapidjson
     >
 )
 

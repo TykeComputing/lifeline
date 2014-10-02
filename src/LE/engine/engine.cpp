@@ -50,19 +50,32 @@ void engine::run()
     p_is_running = true;
     while(p_is_running)
     {
-      p_profiling_records.start_new_record_entry();
+      if(p_is_paused == false)
+      {
+        p_profiling_records.start_new_record_entry();
+      }
+
       high_resolution_profiling_point pp(p_profiling_records, "total_frame");
 
       // Cap maximum number of iterations per frame. If there is a massive spike in frame time
       //   for any reason this will prevent the game from completely stalling while trying to
       //   update too many times.
       current_dt = std::min(current_dt, max_iterations_per_frame * update_dt);
-
       while(current_dt > update_dt)
       {
         p_os_interface.update(*this, p_input_sys);
 
-        step(update_dt);
+        // Since this pauses absolutely everything except rendering, it need to be done in the
+        //   engine itself.
+        if(p_input_sys.is_key_released(SDLK_PAUSE))
+        {
+          p_is_paused = !p_is_paused;
+        }
+
+        if(p_is_paused == false)
+        {
+          step(update_dt);
+        }
 
         current_dt -= update_dt;
       }
@@ -74,38 +87,33 @@ void engine::run()
       frame_timer.reset();
     }
   }
-  catch(resource_exception const& e)
+  catch(resource_exception const&)
   {
-    log_error(log_scope::ENGINE, "{} - Uncaught resource exception, exiting!", e.what());
+    log_error(log_scope::ENGINE, "Uncaught resource exception!");
     LE_FATAL_ERROR("Uncaught resource exception!");
-    return;
   }
-  catch(message_exception const& e)
-  {
-    log_error(log_scope::ENGINE, "{} - Uncaught message exception, exiting!", e.what());
-    LE_FATAL_ERROR("Uncaught message exception");
-    return;
-  }
+
+  log_status(log_scope::ENGINE, "Engine shutting down.");
 }
 
+/*!
+ * \brief Creates a new space and queues it to be added to the engine.
+ *    The new space will not be added until the next step.
+ *
+ * \note: Space will be drawn in the reverse order from which they are created (i.e. the oldest
+ *   will be drawn last thus placing it ontop of everything else). TODO - Come up with better
+ *   system than this (priority?)
+ */
 space * engine::create_space(std::string const& name)
 {
-  if(find_space(name) != nullptr)
-  {
-    log_error(log_scope::ENGINE,
-      "Attempting to create space named \"{0}\", but a space with the name \"{0}\" already exists.",
-      name);
-   }
-
-  // Insert new spaces at the front to ensure oldest spaces are drawn last.
-  p_spaces.emplace(p_spaces.begin(), new space(name));
+  p_new_spaces.emplace_back(new space(name));
   log_status(log_scope::ENGINE,
     "Creating space named named \"{}\", {} spaces now in this engine.",
     name,
-    p_spaces.size());
+    p_spaces.size() + p_new_spaces.size());
 
-  auto * new_space = p_spaces.front().get();
-  new_space->set_owner(this);
+  auto * new_space = p_new_spaces.back().get();
+  new_space->p_set_owner(this);
 
   return new_space;
 }
@@ -153,6 +161,27 @@ void engine::set_is_running(bool val)
   p_is_running = val;
 }
 
+void engine::remove_dead_spaces()
+{
+  for(auto it = p_spaces.begin(); it != p_spaces.end();)
+  {
+    if((*it)->get_is_alive() == false)
+    {
+      log_status(log_scope::ENGINE,
+        "Removing dead space named \"{}\", {} spaces now exist.",
+          (*it)->get_name(),
+          p_spaces.size() - 1); // don't count space being removed
+
+      // Order of spaces DOES matter, cannot swap with back/pop_back
+      it = p_spaces.erase(it);
+    }
+    else
+    {
+      ++it;
+    }
+  }
+}
+
 void engine::step(float dt)
 {
   high_resolution_profiling_point pp(p_profiling_records, "update");
@@ -168,7 +197,22 @@ void engine::step(float dt)
 
     p_logic_sys.update(*curr_space, dt);
 
-    curr_space->remove_dead();
+    curr_space->remove_dead_entities();
+  }
+
+  remove_dead_spaces();
+
+  // Since spaces can add more spaces we wait until now to add spaces created last step.
+  if(p_new_spaces.empty() == false)
+  {
+    //   Note that we want spaces created first to be last in the container, so we insert at the
+    //   beginning and insert in reverse order.
+    p_spaces.insert(
+      p_spaces.begin(),
+      std::make_move_iterator(p_new_spaces.rbegin()),
+      std::make_move_iterator(p_new_spaces.rend()) );
+
+    p_new_spaces.clear();
   }
 }
 

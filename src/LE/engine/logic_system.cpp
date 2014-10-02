@@ -14,20 +14,22 @@ namespace LE
 
 void logic_system::update(space & target, float dt)
 {
-  // Very primitive update loop
-  // TODO - Improve (having array of logic components
-  for(auto entity_it = target.entity_begin();
-      entity_it != target.entity_end();
-      ++entity_it)
+  // Since logic components may add more logic components we need to iterate over a temporary
+  //   vector (since in case of vector growth all iterators would be invalidated).
+  // NOTE - Purposefully not updating entities created this frame until next frame.
+  std::vector<logic_component_base *> to_update(
+    target.logic_component_begin<logic_component_base>(),
+    target.logic_component_end<logic_component_base>());
+
+  for(auto * curr_logic_comp : to_update)
   {
-    auto & curr_ent = (*entity_it).second;
-    for(auto logic_comp_it = curr_ent->logic_component_begin();
-        logic_comp_it != curr_ent->logic_component_end();
-        ++logic_comp_it)
+    if(curr_logic_comp->is_initialized() == false)
     {
-      auto & curr_logic_comp = (*logic_comp_it).second;
-      curr_logic_comp->update(dt);
+      curr_logic_comp->initialize();
+      curr_logic_comp->p_is_init = true;
     }
+
+    curr_logic_comp->update(dt);
   }
 }
 

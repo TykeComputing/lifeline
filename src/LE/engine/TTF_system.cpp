@@ -26,9 +26,9 @@ public:
     p_raw_font = TTF_OpenFont(file_path.c_str(), static_cast<int>(size));
     if(p_raw_font == nullptr)
     {
-      resource_exception except(TTF_GetError());
+      log_error(log_scope::ENGINE, "Error creating TTF font: {}", TTF_GetError());
       SDL_ClearError();
-      throw except;
+      throw resource_exception {};
     }
   }
 
@@ -52,17 +52,17 @@ TTF_system::TTF_system()
   SDL_version const* linked = TTF_Linked_Version();
 
   log_status(log_scope::ENGINE, log_line_seperator);
-  log_status(log_scope::ENGINE, "Compiled against SDL_ttf version {}.{}.{}...",
+  log_status(log_scope::ENGINE, "Compiled against SDL_ttf version {}.{}.{}",
     (unsigned)compiled.major, (unsigned)compiled.minor, (unsigned)compiled.patch);
-  log_status(log_scope::ENGINE, "Linked against SDL_ttf version {}.{}.{}...",
+  log_status(log_scope::ENGINE, "Linked against SDL_ttf version {}.{}.{}",
     (unsigned)linked->major, (unsigned)linked->minor, (unsigned)linked->patch);
   log_status(log_scope::ENGINE, log_line_seperator);
 
   if(TTF_Init() != 0)
   {
-    LE_FATAL_ERROR(TTF_GetError());
+    log_error(log_scope::ENGINE, "Error initializing SDL_ttf: {}", TTF_GetError());
     SDL_ClearError();
-    throw fatal_construction_exception("Error initializing SDL, exiting...\n");
+    throw fatal_construction_exception{};
   }
 }
 
@@ -123,10 +123,9 @@ texture2D * TTF_system::render_text_to_texture(std::string const& text, unsigned
     SDL_Color{255, 255, 255, 255}, wrap_length);
   if(text_surface == nullptr)
   {
-    LE_FATAL_ERROR(TTF_GetError());
-    resource_exception except(TTF_GetError());
+    log_error(log_scope::ENGINE, "Error rendering text using TTF: {}", TTF_GetError());
     SDL_ClearError();
-    throw except;
+    throw resource_exception {};
   }
 
   texture2D * text_texture = new texture2D;

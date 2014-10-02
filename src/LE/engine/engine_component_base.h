@@ -28,6 +28,7 @@ class engine_component_base : public component_base
 public:
   virtual ~engine_component_base() {}
 
+  static unique_id<engine_component_base> const type_id;
 private:
 };
 

@@ -7,17 +7,54 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include "space.h"
 
 #include <LE/common/logging.h>
-
 #include <LE/engine/engine.h>
 #include <LE/engine/transform_component.h>
 
 namespace LE
 {
 
+void space::component_registrar::register_engine_component(
+  space * s,
+  unique_id<engine_component_base>::value_type type_id,
+  engine_component_base * comp)
+{
+  s->p_register_engine_component(type_id, comp);
+}
+
+void space::component_registrar::unregister_engine_component(
+  space * s,
+  unique_id<engine_component_base>::value_type type_id,
+  engine_component_base * comp)
+{
+  s->p_unregister_engine_component(type_id, comp);
+}
+
+void space::component_registrar::register_logic_component(
+  space * s,
+  unique_id<logic_component_base>::value_type type_id,
+  logic_component_base * comp)
+{
+  s->p_register_logic_component(type_id, comp);
+}
+
+void space::component_registrar::unregister_logic_component(
+  space * s,
+  unique_id<logic_component_base>::value_type type_id,
+  logic_component_base * comp)
+{
+  s->p_unregister_logic_component(type_id, comp);
+}
+
 space::space(std::string const& name) :
   p_name(name)
 {
 
+}
+
+space::~space()
+{
+  // Entities reference space, thus we must clear them before deleting anything else in space.
+  p_entities.clear();
 }
 
 /**********************************************/
@@ -39,7 +76,7 @@ entity * space::create_entity(std::string const& name)
     {
       auto & new_ent = new_ent_emplace_result.first->second;
       log_status(log_scope::ENGINE,
-        "Creating entity named \"{}\", {} entities now space \"{}\".",
+        "Creating entity named \"{}\", {} entities now in space \"{}\".",
           new_ent->get_name(),
           p_entities.size(),
           p_name);
@@ -74,9 +111,9 @@ entity * space::find_entity(std::string const& name)
   return nullptr;
 }
 
-entity * space::find_entity(unique_id<entity> const& id)
+entity * space::find_entity(unique_id<entity>::value_type id)
 {
-  auto find_it = p_entities.find(id.value());
+  auto find_it = p_entities.find(id);
   if(find_it != p_entities.end())
   {
     return (*find_it).second.get();
@@ -87,22 +124,17 @@ entity * space::find_entity(unique_id<entity> const& id)
   }
 }
 
-void space::kill_all()
-{
-  for(auto & it : p_entities)
-  {
-    it.second->kill();
-  }
-}
-
-void space::remove_dead()
+void space::remove_dead_entities()
 {
   for(auto it = p_entities.begin(); it != p_entities.end();)
   {
-    if((*it).second->is_alive() == false)
+    if((*it).second->get_is_alive() == false)
     {
       log_status(log_scope::ENGINE,
-        "Removing dead entity named \"{}\"", (*it).second->get_name());
+        "Removing dead entity named \"{}\", {} entities now in space \"{}\".",
+          (*it).second->get_name(),
+          p_entities.size() - 1, // don't count entity being removed
+          p_name);
 
       it = p_entities.erase(it);
     }
@@ -116,6 +148,7 @@ void space::remove_dead()
 /**********************************************/
 /* Debug Drawing */
 /**********************************************/
+
 void space::clear_ddraw()
 {
   m_world_ddraw.clear();
@@ -123,12 +156,17 @@ void space::clear_ddraw()
 }
 
 /**********************************************/
+/* Lifespan */
+/**********************************************/
+
+void space::kill()
+{
+  p_is_alive = false;
+}
+
+/**********************************************/
 /* Utility */
 /**********************************************/
-std::string const& space::get_name() const
-{
-  return p_name;
-}
 
 engine * space::get_owning_engine()
 {
@@ -140,7 +178,7 @@ engine const* space::get_owning_engine() const
   return p_owner;
 }
 
-void space::set_owner(engine * new_owner)
+void space::p_set_owner(engine * new_owner)
 {
   p_owner = new_owner;
 }
@@ -153,6 +191,83 @@ void space::set_is_active(bool value)
 bool space::get_is_active() const
 {
   return p_is_active;
+}
+
+std::string const& space::get_name() const
+{
+  return p_name;
+}
+
+void space::p_register_engine_component(
+  unique_id<engine_component_base>::value_type type_id,
+  engine_component_base * comp)
+{
+  LE_FATAL_ERROR_IF(type_id == engine_component_base::type_id.value(),
+    "Cannot register base componet.")
+
+  p_engine_components[type_id].emplace_back(comp);
+}
+
+void space::p_unregister_engine_component(
+  unique_id<engine_component_base>::value_type type_id,
+  engine_component_base * comp)
+{
+  LE_FATAL_ERROR_IF(type_id == engine_component_base::type_id.value(),
+    "Cannot unregister base componet.")
+
+  auto & container = p_engine_components[type_id];
+  auto find_it = std::find(container.begin(), container.end(), comp);
+  if(find_it != container.end())
+  {
+    std::swap(*find_it, container.back());
+    container.pop_back();
+  }
+  else
+  {
+    LE_FATAL_ERROR("Attempting to unregister engine component that is not registered!");
+  }
+}
+
+void space::p_register_logic_component(
+  unique_id<logic_component_base>::value_type type_id,
+  logic_component_base * comp)
+{
+  LE_FATAL_ERROR_IF(type_id == logic_component_base::type_id.value(),
+    "Cannot register base componet.")
+
+  // Add to aggregate container
+  p_logic_components[logic_component_base::type_id.value()].emplace_back(comp);
+  // Add to type specific container
+  p_logic_components[type_id].emplace_back(comp);
+}
+
+void space::p_unregister_logic_component(
+  unique_id<logic_component_base>::value_type type_id,
+  logic_component_base * comp)
+{
+  LE_FATAL_ERROR_IF(type_id == engine_component_base::type_id.value(),
+    "Cannot unregister base componet.")
+
+  auto unregister_logic_component_type = [&](
+    unique_id<logic_component_base>::value_type target_type_id)
+  {
+    auto & container = p_logic_components[target_type_id];
+    auto find_it = std::find(container.begin(), container.end(), comp);
+    if(find_it != container.end())
+    {
+      std::swap(*find_it, container.back());
+      container.pop_back();
+    }
+    else
+    {
+      LE_FATAL_ERROR("Attempting to unregister logic component that is not registered!");
+    }
+  };
+
+  // Remove from type specific container
+  unregister_logic_component_type(type_id);
+  // Remove from aggregate container
+  unregister_logic_component_type(logic_component_base::type_id.value());
 }
 
 } // namespace LE

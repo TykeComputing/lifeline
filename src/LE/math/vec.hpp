@@ -39,11 +39,20 @@ vecn<N, COMP_T>::vecn(COMP_T fill_val)
   }
 }
 
-// Likely too expensive for something as commonly used as a vector, will worry about later.
 template<size_t N, typename COMP_T>
 vecn<N, COMP_T>::vecn(std::array<COMP_T, size> const& values)
 {
   set(values);
+}
+
+template<size_t N, typename COMP_T>
+template<typename OTHER_COMP_T>
+vecn<N, COMP_T>::vecn(vecn<N, OTHER_COMP_T> const& rhs)
+{
+  for(size_t i = 0; i < N; ++i)
+  {
+    data[i] = static_cast<COMP_T>(rhs.data[i]);
+  }
 }
 
 template<size_t N, typename COMP_T>
@@ -93,11 +102,19 @@ vecn<2, COMP_T>::vecn(COMP_T fill_val)
   data[1] = fill_val;
 }
 
-// Likely too expensive for something as commonly used as a vector, will worry about later.
 template<typename COMP_T>
 vecn<2, COMP_T>::vecn(COMP_T x, COMP_T y)
 {
   set(x, y);
+}
+
+template<typename COMP_T>
+template<typename OTHER_COMP_T>
+vecn<2, COMP_T>::vecn(vecn<2, OTHER_COMP_T> const& rhs)
+{
+  set(
+    static_cast<COMP_T>(rhs.x()),
+    static_cast<COMP_T>(rhs.y()) );
 }
 
 template<typename COMP_T>
@@ -154,7 +171,16 @@ vecn<3, COMP_T>::vecn(COMP_T fill_val)
   data[2] = fill_val;
 }
 
-// Likely too expensive for something as commonly used as a vector, will worry about later.
+template<typename COMP_T>
+template<typename OTHER_COMP_T>
+vecn<3, COMP_T>::vecn(vecn<3, OTHER_COMP_T> const& rhs)
+{
+  set(
+    static_cast<COMP_T>(rhs.x()),
+    static_cast<COMP_T>(rhs.y()),
+    static_cast<COMP_T>(rhs.z()) );
+}
+
 template<typename COMP_T>
 vecn<3, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z)
 {
@@ -219,11 +245,21 @@ vecn<4, COMP_T>::vecn(COMP_T fill_val)
   data[3] = fill_val;
 }
 
-// Likely too expensive for something as commonly used as a vector, will worry about later.
 template<typename COMP_T>
 vecn<4, COMP_T>::vecn(COMP_T x, COMP_T y, COMP_T z, COMP_T w)
 {
   set(x, y, z, w);
+}
+
+template<typename COMP_T>
+template<typename OTHER_COMP_T>
+vecn<4, COMP_T>::vecn(vecn<4, OTHER_COMP_T> const& rhs)
+{
+  set(
+    static_cast<COMP_T>(rhs.x()),
+    static_cast<COMP_T>(rhs.y()),
+    static_cast<COMP_T>(rhs.z()),
+    static_cast<COMP_T>(rhs.w()) );
 }
 
 template<typename COMP_T>
@@ -440,11 +476,11 @@ operator*=(
   return lhs;
 }
 
-template<size_t N, typename COMP_T>
+template<size_t N, typename COMP_T, typename RHS_T>
 vecn<N, COMP_T>
 operator/(
   vecn<N, COMP_T> const& lhs,
-  COMP_T rhs)
+  RHS_T rhs)
 {
   vecn<N, COMP_T> result;
   for(size_t i = 0; i < N; ++i)
@@ -454,11 +490,11 @@ operator/(
   return result;
 }
 
-template<size_t N, typename COMP_T>
+template<size_t N, typename COMP_T, typename RHS_T>
 vecn<N, COMP_T> &
 operator/=(
   vecn<N, COMP_T> & lhs,
-  COMP_T rhs)
+  RHS_T rhs)
 {
   for(size_t i = 0; i < N; ++i)
   {

@@ -18,7 +18,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
   GLenum last_error = glGetError(); \
   if(last_error != GL_NO_ERROR) \
   { \
-    LE_FATAL_ERROR("Internal OpenGL Error!\nCode(s): " + LE::get_GL_errors(last_error)); \
+    LE_FATAL_ERROR("Internal OpenGL Error!\n  Code(s): {}", LE::get_GL_errors(last_error)); \
   } \
 }
 

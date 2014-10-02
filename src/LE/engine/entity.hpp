@@ -88,6 +88,9 @@ entity::create_engine_component(ARG_TS &&... args)
   {
     auto * new_comp = static_cast<COMP_T *>(new_comp_it.first->second.get());
     new_comp->set_owner(this);
+
+    p_register_engine_component(COMP_T::type_id.value(), new_comp);
+
     return new_comp;
   }
   else
@@ -156,8 +159,7 @@ entity::create_logic_component(ARG_TS &&... args)
   {
     COMP_T * new_comp = static_cast<COMP_T *>(new_comp_it.first->second.get());
     new_comp->set_owner(this);
-
-    new_comp->initialize();
+    p_register_logic_component(COMP_T::type_id.value(), new_comp);
 
     return new_comp;
   }
@@ -181,7 +183,12 @@ entity::remove_logic_component()
   auto find_it = p_logic_components.find(COMP_T::type_id.value());
   if(find_it != p_logic_components.end())
   {
-    (*find_it).second->tear_down();
+    auto * comp = (*find_it).second;
+
+    comp->tear_down();
+
+    p_unregister_logic_component(COMP_T::type_id.value(), comp);
+
     p_logic_components.erase(find_it);
   }
 }

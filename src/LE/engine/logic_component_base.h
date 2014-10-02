@@ -12,6 +12,9 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 namespace LE
 {
 
+// fwd-declss
+class logic_system;
+
 /*!
  * \brief Used to execute any non-engine logic.
  *
@@ -42,7 +45,15 @@ public:
    */
   virtual void teardown() {}
 
+  bool is_initialized() const { return p_is_init; }
+
+  static unique_id<logic_component_base> const type_id;
+
 private:
+
+  bool p_is_init = false;
+
+  friend class logic_system;
 };
 
 } // namespace LE

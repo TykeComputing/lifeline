@@ -15,9 +15,11 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/common/resource_exception.h>
 #include <LE/common/resource_manager.h>
 
+#include <LE/graphics/colors.h>
 #include <LE/graphics/error_checking.h>
 #include <LE/graphics/texture.h>
 
+#include <LE/engine/tilemap_component.h>
 #include <LE/engine/transform_component.h>
 #include <LE/engine/sprite_component.h>
 
@@ -34,25 +36,26 @@ graphics_system::graphics_system()
   GLenum glew_init_res = glewInit();
   if(glew_init_res != GLEW_OK)
   {
-    LE_FATAL_ERROR(
-      convert_unsigned_string_to_signed( glewGetErrorString(glew_init_res) ).c_str());
-    throw fatal_construction_exception("Error intializing GLEW, exiting...");
+    log_error(log_scope::ENGINE, "Error intializing GLEW: {}",
+      convert_unsigned_string_to_signed(glewGetErrorString(glew_init_res)));
+    throw fatal_construction_exception{};
   }
 
   std::string glew_init_GL_errors = get_GL_errors();
   if(glew_init_GL_errors.empty())
   {
-    log_status(log_scope::ENGINE, "OpenGL Function Loading: No errors on glewInit...");
+    log_status(log_scope::ENGINE, "OpenGL Function Loading: No errors on glewInit");
   }
   else
   {
-    log_status(log_scope::ENGINE, "OpenGL Function Loading: Errors on glewInit: {} ...",
+    log_status(log_scope::ENGINE, "OpenGL Function Loading: Errors on glewInit: {}",
        glew_init_GL_errors.c_str());
   }
 
   if(!GLEW_VERSION_3_2)
   {
-    throw fatal_construction_exception("Error, unable to obtain OpenGL 3.2 context, exiting...");
+    log_error(log_scope::ENGINE, "Unable to obtain OpenGL 3.2 context");
+    throw fatal_construction_exception{};
   }
 
   log_status(log_scope::ENGINE, log_line_seperator);
@@ -81,7 +84,6 @@ graphics_system::graphics_system()
     p_debug_shader_prog,
     "shaders/2D/debug_draw.vert",
     "shaders/2D/debug_draw.frag");
-
 
   // Set some initial OpenGL state
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -120,55 +122,11 @@ void graphics_system::render(space & target)
   mat3 world_to_NDC = camera_to_NDC * world_to_camera;
   /////////////////////////////////////////////////
 
-  LE::shader_program::use(*p_textured_shader_prog);
-
-  GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
-  GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
-  GLint to_NDC_ul = p_textured_shader_prog->get_unform_location("to_NDC");
-
-  texture::set_active_unit(0);
-  glUniform1i(texture_ul, 0);
-
-  // Very primitive draw loop
-  // TODO - Improve
-  for(auto entity_it = target.entity_begin();
-    entity_it != target.entity_end();
-    ++entity_it)
-  {
-    auto & curr_ent = (*entity_it).second;
-    auto const* curr_ent_t = curr_ent->get_component<transform_component>();
-    auto const& model_to_world = curr_ent_t->get_matrix();
-
-    auto const* curr_sprite_comp = curr_ent->get_component<sprite_component>();
-    if(curr_sprite_comp)
-    {
-      glUniform4fv(color_multiplier_ul, 1, curr_sprite_comp->m_color.data);
-
-      mat3 model_to_NDC = world_to_NDC * model_to_world;
-      glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
-
-      curr_sprite_comp->bind();
-      LE::vertex_buffer::draw_arrays(GL_TRIANGLES, 0, curr_sprite_comp->get_num_verts());
-      curr_sprite_comp->unbind();
-    }
-  }
-  LE_FATAL_ERROR_IF_GL_ERROR();
-
-  LE::shader_program::use(*p_debug_shader_prog);
-
-  to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");
-  glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, world_to_NDC.data);
-
-  // TODO: Use camera mat
-  target.m_world_ddraw.draw();
-  target.m_world_ddraw.draw();
-
-  // TODO: Use hud mat
-  target.m_hud_ddraw.draw();
+  p_render_tilemaps(target, world_to_NDC);
+  p_render_sprites(target, world_to_NDC);
+  p_render_ddraw(target, world_to_NDC);
 
   LE::shader_program::use_default();
-
-  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 void graphics_system::update_render_target_size(uvec2 const& window_size)
@@ -216,12 +174,138 @@ void graphics_system::p_load_shader(
     std::vector<shader *> shader_prog_input({ shaders[0].get(), shaders[1].get() });
     out_sp = std::unique_ptr<shader_program>{new shader_program{shader_prog_input}};
   }
-  catch(LE::resource_exception const& e)
+  catch(LE::resource_exception const&)
   {
-    log_error(log_scope::GAME, "{}", e.what());
     LE_FATAL_ERROR("Error loading shader!");
     return;
   }
+}
+
+void graphics_system::p_render_sprites(
+  space & target,
+  mat3 const& world_to_NDC)
+{
+  LE::shader_program::use(*p_textured_shader_prog);
+
+  GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
+  GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
+  GLint to_NDC_ul = p_textured_shader_prog->get_unform_location("to_NDC");
+
+  texture::set_active_unit(0);
+  glUniform1i(texture_ul, 0);
+
+  for(auto sprite_comp_it = target.engine_component_begin<sprite_component>();
+    sprite_comp_it != target.engine_component_end<sprite_component>();
+    ++sprite_comp_it)
+  {
+    sprite_component const* curr_sprite_comp =
+      static_cast<sprite_component const*>(*sprite_comp_it);
+    auto const* curr_ent = curr_sprite_comp->get_owning_entity();
+    auto const* curr_ent_t = curr_ent->get_component<transform_component>();
+
+    auto const& model_to_world = curr_ent_t->get_matrix();
+
+    glUniform4fv(color_multiplier_ul, 1, curr_sprite_comp->m_color.data);
+
+    mat3 model_to_NDC = world_to_NDC * model_to_world;
+    glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
+
+    curr_sprite_comp->bind();
+    renderable_array_buffer::draw(GL_TRIANGLES, 0, curr_sprite_comp->get_num_verts());
+    curr_sprite_comp->unbind();
+  }
+  LE_FATAL_ERROR_IF_GL_ERROR();
+}
+
+void graphics_system::p_render_tilemaps(
+  space & target,
+  mat3 const& world_to_NDC)
+{
+  LE::shader_program::use(*p_textured_shader_prog);
+
+  GLint color_multiplier_ul = p_textured_shader_prog->get_unform_location("color_multiplier");
+  GLint texture_ul = p_textured_shader_prog->get_unform_location("texture");
+  GLint to_NDC_ul = p_textured_shader_prog->get_unform_location("to_NDC");
+
+  texture::set_active_unit(0);
+  glUniform1i(texture_ul, 0);
+
+  glUniform4fv(color_multiplier_ul, 1, colors::white.data);
+
+  for(auto tilemap_comp_it = target.engine_component_begin<tilemap_component>();
+    tilemap_comp_it != target.engine_component_end<tilemap_component>();
+    ++tilemap_comp_it)
+  {
+    tilemap_component const* curr_tilemap_comp
+      = static_cast<tilemap_component const*>(*tilemap_comp_it);
+    entity const* curr_ent = curr_tilemap_comp->get_owning_entity();
+    auto const* curr_ent_t = curr_ent->get_component<transform_component>();
+
+    mat3 const& model_to_world = curr_ent_t->get_matrix();
+    mat3 const model_to_NDC = world_to_NDC * model_to_world;
+
+    // Tileset data
+    tileset const* curr_tileset = curr_tilemap_comp->get_tile_set();
+    float tileset_tile_size = (float)curr_tileset->get_tile_size();
+
+    // Tilemap data
+    uvec2 num_tiles = curr_tilemap_comp->get_num_tiles();
+
+    mat3 tile_to_model = identity_mat3;
+    curr_tilemap_comp->bind();
+    for(unsigned y = 0; y < num_tiles.y(); ++y)
+    {
+      for(unsigned x = 0; x < num_tiles.x(); ++x)
+      {
+        auto curr_tile_id = curr_tilemap_comp->get_tile_id(x, y);
+
+        // Negative tile_id indicates no tile is to be drawn
+        if(curr_tile_id < 0)
+        {
+          continue;
+        }
+
+        tile_to_model(0, 0) = tileset_tile_size;
+        tile_to_model(1, 1) = tileset_tile_size;
+        // Place tiles from top left of each tile.
+        tile_to_model(0, 2) = (x * tileset_tile_size) + (tileset_tile_size * 0.5f);
+        tile_to_model(1, 2) = (y * -tileset_tile_size) - (tileset_tile_size * 0.5f);
+        mat3 tile_to_NDC = model_to_NDC * tile_to_model;
+        glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, tile_to_NDC.data);
+        renderable_element_buffer::draw(
+          GL_TRIANGLES,
+          curr_tileset->get_tile_index_buffer_offset(curr_tile_id),
+          tileset::num_indices_per_tile());
+      }
+    }
+    curr_tilemap_comp->unbind();
+
+  }
+  LE_FATAL_ERROR_IF_GL_ERROR();
+}
+
+void graphics_system::p_render_ddraw(
+  space & target,
+  mat3 const& world_to_NDC)
+{
+  if(target.get_ddraw_enabled() == false)
+  {
+    return;
+  }
+
+  LE::shader_program::use(*p_debug_shader_prog);
+
+  GLint to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");
+  glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, world_to_NDC.data);
+
+  // TODO: Use camera mat
+  target.m_world_ddraw.draw();
+  target.m_world_ddraw.draw();
+
+  // TODO: Use hud mat
+  target.m_hud_ddraw.draw();
+
+  LE_FATAL_ERROR_IF_GL_ERROR();
 }
 
 } // namespace LE

@@ -13,9 +13,3 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <cppformat/format.h>
 
 #endif // LE_COMMON_CPPFORMAT_H
-
-/*
-************************************************************************************************
-Copyright 2014 by Peter Clark. All Rights Reserved.
-************************************************************************************************
-*/

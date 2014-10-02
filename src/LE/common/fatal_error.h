@@ -11,6 +11,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <SDL2/SDL.h>
 
+#include <LE/common/cppformat.h>
+
 #if defined __GNUC__
 #include <sys/signal.h>
 #define LE_HALT_PROGRAM() raise(SIGTRAP);
@@ -20,13 +22,30 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #define LE_HALT_PROGRAM()
 #endif
 
-
-#define LE_FATAL_ERROR(msg) \
+/*!
+ * \def LE_FATAL_ERROR(...)
+ *
+ * Displays an error pop up (if available). Takes a format string followed by a varaible
+ *   number of parameters.
+ */
+#define LE_FATAL_ERROR(...) \
 { \
-  ::LE::internal::display_assert(__FILE__, __FUNCTION__, __LINE__, msg);\
+  ::LE::internal::display_assert(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__);\
   LE_HALT_PROGRAM(); \
 }
-#define LE_FATAL_ERROR_IF(cond, msg) { if(cond) { LE_FATAL_ERROR(msg); } }
+
+/*!
+ * \def LE_FATAL_ERROR_IF(cond, ...)
+ *
+ * If cond (condition) is true, calls \ref LE_FATAL_ERROR(...)
+ */
+#define LE_FATAL_ERROR_IF(cond, ...) \
+{ \
+  if(cond)\
+  { \
+    LE_FATAL_ERROR(__VA_ARGS__); \
+  } \
+}
 
 namespace LE
 {
@@ -34,16 +53,13 @@ namespace LE
 namespace internal
 {
   void display_assert(
-    std::string const& file,
-    std::string const& function,
+    char const* file,
+    char const* function,
     int line,
-    char const* message);
+    char const* format,
+    fmt::ArgList const& args);
 
-  void display_assert(
-    std::string const& file,
-    std::string const& function,
-    int line,
-    std::string const& message);
+  FMT_VARIADIC(void, display_assert, char const*,  char const*, int, char const*)
 }
 
 }

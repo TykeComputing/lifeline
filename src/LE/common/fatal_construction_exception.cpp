@@ -8,22 +8,14 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <iostream>
 
+#include <LE/common/fatal_error.h>
+
 namespace LE
 {
 
 fatal_construction_exception::fatal_construction_exception()
 {
-
-}
-
-fatal_construction_exception::fatal_construction_exception(char const* message) :
-  message_exception(message)
-{
-}
-
-fatal_construction_exception::fatal_construction_exception(std::string const& message) :
-  message_exception(message)
-{
+  LE_FATAL_ERROR("FATAL CONSTRUCTION EXCEPTION");
 }
 
 } // namespace LE

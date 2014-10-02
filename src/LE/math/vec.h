@@ -26,6 +26,9 @@ struct vecn
   explicit vecn(COMP_T fill_val);
   vecn(std::array<COMP_T, size> const& values);
 
+  template<typename OTHER_COMP_T>
+  explicit vecn(vecn<N, OTHER_COMP_T> const& rhs);
+
   void set(std::array<COMP_T, size> const& values);
 
   COMP_T & operator[](size_t index);
@@ -52,6 +55,9 @@ struct vecn<2, COMP_T>
   vecn();
   explicit vecn(COMP_T fill_val);
   vecn(COMP_T x, COMP_T y);
+
+  template<typename OTHER_COMP_T>
+  explicit vecn(vecn<2, OTHER_COMP_T> const& rhs);
 
   vecn(vecn<3, COMP_T> const& rhs);
   vecn(vecn<4, COMP_T> const& rhs);
@@ -83,6 +89,9 @@ struct vecn<3, COMP_T>
   vecn();
   explicit vecn(COMP_T fill_val);
   vecn(COMP_T x, COMP_T y, COMP_T z);
+
+  template<typename OTHER_COMP_T>
+  explicit vecn(vecn<3, OTHER_COMP_T> const& rhs);
 
   vecn(vecn<2, COMP_T> const& rhs, COMP_T z);
   vecn(vecn<4, COMP_T> const& rhs);
@@ -116,6 +125,9 @@ struct vecn<4, COMP_T>
   vecn();
   explicit vecn(COMP_T fill_val);
   vecn(COMP_T x, COMP_T y, COMP_T z, COMP_T w);
+
+  template<typename OTHER_COMP_T>
+  explicit vecn(vecn<4, OTHER_COMP_T> const& rhs);
 
   vecn(vecn<2, COMP_T> const& rhs, COMP_T z, COMP_T w);
   vecn(vecn<3, COMP_T> const& rhs, COMP_T w);
@@ -236,17 +248,17 @@ operator*=(
   vecn<N, COMP_T> const& lhs,
   COMP_T rhs);
 
-template<size_t N, typename COMP_T>
+template<size_t N, typename COMP_T, typename RHS_T>
 vecn<N, COMP_T>
 operator/(
   vecn<N, COMP_T> const& lhs,
-  COMP_T rhs);
+  RHS_T rhs);
 
-template<size_t N, typename COMP_T>
+template<size_t N, typename COMP_T, typename RHS_T>
 vecn<N, COMP_T> &
 operator/=(
   vecn<N, COMP_T> const& lhs,
-  COMP_T rhs);
+  RHS_T rhs);
 
 /**********************************************************************************************/
 /* Vector Operations */

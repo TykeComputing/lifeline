@@ -18,6 +18,9 @@ class entity;
 class component_base
 {
 public:
+  component_base() = default;
+  LE_NON_COPYABLE(component_base);
+
   virtual ~component_base() {}
 
   entity const* get_owning_entity() const;

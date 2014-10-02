@@ -78,6 +78,7 @@ int main(int arg_count, char *args[])
     auto * perf_vis_ent = perf_vis_space->create_entity("perf_vis");
     perf_vis_ent->create_component<LE::perf_vis>();
     perf_vis_space->set_is_active(false);
+    perf_vis_space->set_ddraw_enabled(true);
 
     auto * game_space = game_engine.create_space("game");
     auto * game_hack_ent = game_space->create_entity("game_hack");
@@ -85,9 +86,8 @@ int main(int arg_count, char *args[])
 
     game_engine.run();
   }
-  catch(LE::fatal_construction_exception const& e)
+  catch(LE::fatal_construction_exception const&)
   {
-    LE::log_error(LE::log_scope::GLOBAL, "{}", e.what());
     LE_FATAL_ERROR("Unable to create engine!"); // TODO - Remove
     res = -1;
   }

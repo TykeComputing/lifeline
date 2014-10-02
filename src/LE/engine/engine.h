@@ -33,14 +33,6 @@ public:
 
   void run();
 
-  /*
-   * NOTE: Space names are required to be unique. If a non-unique name is provided, no space
-   *   will be created and nullptr will be returned.
-   *
-   * NOTE: Space will be drawn in the reverse order from which they are created (i.e. the oldest
-   *         will be drawn last thus placing it ontop of everything else). TODO - Come up with
-   *         better system than this (priority?)
-   */
   space * create_space(std::string const& name);
   space * find_space(std::string const& name);
 
@@ -53,6 +45,8 @@ public:
   profiling_records const& get_profiling_records() const;
 
   void set_is_running(bool val);
+
+  void remove_dead_spaces();
 
 private:
   void step(float dt);
@@ -69,10 +63,12 @@ private:
   TTF_system p_sprite_text_sys; // TODO - merge or move into graphics system?
 
   std::vector<std::unique_ptr<space>> p_spaces;
+  std::vector<std::unique_ptr<space>> p_new_spaces;
 
   profiling_records p_profiling_records;
 
   bool p_is_running = true;
+  bool p_is_paused = false;
 };
 
 } // namespace LE

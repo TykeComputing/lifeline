@@ -4,6 +4,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 ************************************************************************************************
 */
 
+#include <LE/common/fatal_error.h>
+
 namespace LE
 {
 
@@ -20,7 +22,7 @@ matn<N, COMP_T>::matn(std::array<COMP_T, N * N> const& values)
 }
 
 template<size_t N, typename COMP_T>
-void 
+void
 matn<N, COMP_T>::set(std::array<COMP_T, N * N> const& values)
 {
   auto values_it = std::begin(values);
@@ -37,16 +39,18 @@ matn<N, COMP_T>::operator()(
   size_t row,
   size_t column)
 {
+  LE_FATAL_ERROR_IF(row >= N || column >= N, "Invalid index!");
   return data[(row * num_cols) + column];
 }
 
 template<size_t N, typename COMP_T>
-COMP_T const& 
+COMP_T const&
 matn<N, COMP_T>::operator()(
   size_t row,
-  size_t col) const
+  size_t column) const
 {
-  return data[(row * num_cols) + col];
+  LE_FATAL_ERROR_IF(row >= N || column >= N, "Invalid index!");
+  return data[(row * num_cols) + column];
 }
 
 template<size_t N, typename COMP_T>
@@ -58,7 +62,7 @@ matn<N, COMP_T>::operator[](
 }
 
 template<size_t N, typename COMP_T>
-COMP_T const& 
+COMP_T const&
 matn<N, COMP_T>::operator[](
   size_t index) const
 {
@@ -70,7 +74,7 @@ matn<N, COMP_T>::operator[](
 /**********************************************************************************************/
 
 template<typename COMP_T>
-matn<3, COMP_T> 
+matn<3, COMP_T>
 mat3mk(
   COMP_T m00, COMP_T m01, COMP_T m02,
   COMP_T m10, COMP_T m11, COMP_T m12,

@@ -10,6 +10,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include <LE/common/cppformat.h>
 #include <LE/common/macros.h>
+#include <LE/common/logging.h>
 #include <LE/common/resource_exception.h>
 
 #include <LE/graphics/error_checking.h>
@@ -59,7 +60,7 @@ bool texture::is_valid() const
   return p_is_valid;
 }
 
-ivec3 const& texture::get_dimensions() const
+uvec3 const& texture::get_dimensions() const
 {
   return p_dimensions;
 }
@@ -119,8 +120,10 @@ void texture2D::load_texture_file(std::string const& texture_file_name)
   if(texture_data == nullptr)
   {
     // NOTE: stbi_failure_reason is NOT thread safe.
-    throw resource_exception( fmt::format("Texture: Unable to load texture \"{}\", {}.",
-     texture_file_name, stbi_failure_reason()) );
+    log_error(log_scope::GRAPHICS, "Unable to load texture \"{}\", {}.",
+      texture_file_name, stbi_failure_reason());
+
+    throw resource_exception{};
   }
 
   set_data(GL_SRGB8_ALPHA8, w, h, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);
@@ -152,9 +155,9 @@ bool texture2D::is_valid() const
   return p_texture.is_valid();
 }
 
-ivec2 texture2D::get_dimensions() const
+uvec2 texture2D::get_dimensions() const
 {
-  return ivec2(p_texture.get_dimensions());
+  return p_texture.get_dimensions();
 }
 
 void texture2D::bind(texture2D const& tex2D)
