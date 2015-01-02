@@ -157,7 +157,7 @@ std::string toupper(std::string const& s)
   upper.reserve(s.size());
   std::transform(s.begin(), s.end(),
                  std::back_inserter(upper),
-                 [](char c) ->char { return std::toupper(c); });
+                 [](char c) ->char { return (char)std::toupper(c); });
   return upper;
 }
 
