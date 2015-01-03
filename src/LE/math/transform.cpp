@@ -107,11 +107,21 @@ mat3 const& transform::get_matrix() const
 {
   if(p_is_dirty)
   {
-    p_mat = mat3mk(
-      p_scale[0], 0.0f, p_pos[0],
-      0.0f, p_scale[1], p_pos[1],
-      0.0f, 0.0f, 1.0f
-    );
+    mat3 scale = mat3mk(
+      p_scale[0], 0.0f, 0.0f,
+      0.0f, p_scale[1], 0.0f,
+      0.0f, 0.0f, 1.0f);
+    vec2 dir = get_dir();
+    mat3 rotate = mat3mk(
+      dir.x(), -dir.y(), 0.0f,
+      dir.y(), dir.x(), 0.0f,
+      0.0f, 0.0f, 1.0f);
+    mat3 translate = mat3mk(
+      1.0f, 0.0f, p_pos[0],
+      0.0f, 1.0f, p_pos[1],
+      0.0f, 0.0f, 1.0f);
+
+    p_mat = translate * rotate * scale;
 
     p_is_dirty = false;
   }

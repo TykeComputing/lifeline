@@ -51,6 +51,17 @@ public:
   vec2 const& scale_by(vec2 const& value);
 
   /**********************************************/
+  /* Orientation */
+  /**********************************************/
+
+  float get_rot() const { return p_rot; }
+  vec2 get_dir() const { return vec2(cos(p_rot), sin(p_rot)); }
+  vec2 get_right() const { return get_orthogonal(get_dir()); }
+
+  void set_rot(float value) { p_rot = value; }
+  void rotate(float rads) { p_rot += rads; }
+
+  /**********************************************/
   /* Matrix */
   /**********************************************/
   mat3 const& get_matrix() const;
@@ -63,7 +74,7 @@ private:
   float p_z_order = 0.0f;
   vec2 p_scale = vec2(1.0f, 1.0f);
 
-  // TODO - Rotation
+  float p_rot = 0.0f;
 
 
   mutable mat3 p_mat;

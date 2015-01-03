@@ -334,6 +334,14 @@ public:
     {
       player_transl.x() = m_player_movement_speed * dt;
     }
+    if(input_sys.is_key_pressed(SDLK_q))
+    {
+      player_t->rotate(dt * 3.14f);
+    }
+    if(input_sys.is_key_pressed(SDLK_e))
+    {
+      player_t->rotate(-dt * 3.14f);
+    }
     player_t->translate(player_transl);
 
     if(player_transl != vec2::zero)
