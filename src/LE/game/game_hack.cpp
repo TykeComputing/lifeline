@@ -16,6 +16,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/common/logging.h>
 #include <LE/common/resource_exception.h>
 #include <LE/common/resource_manager.h>
+#include <LE/engine/camera_component.h>
 #include <LE/engine/tilemap_component.h>
 #include <LE/engine/transform_component.h>
 #include <LE/engine/engine.h>
@@ -150,6 +151,35 @@ public:
 };
 
 unique_id<logic_component_base> const bullet_movement::type_id;
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+class camera_follow : public logic_component_base
+{
+public:
+  camera_follow(unique_id<entity>::value_type target_id)
+    : target_id(target_id)
+  {
+  }
+
+  virtual void update(float dt)
+  {
+    (void)dt;
+    entity* target = get_owning_entity()->get_owning_space()->find_entity(target_id);
+    if(target)
+    {
+      vec2 const& target_pos = target->get_component<transform_component>()->get_pos();
+      get_owning_entity()->get_component<transform_component>()->set_pos(target_pos);
+    }
+  }
+
+  
+  unique_id<entity>::value_type target_id;
+
+  static unique_id<logic_component_base> const type_id;
+};
+
+unique_id<logic_component_base> const camera_follow::type_id;
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,12 +379,21 @@ void game_hack::initialize()
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/player.png"));
     new_ent->create_component<physics_component>();
-    new_ent->create_component<player_controls>();
+    new_ent->create_component<player_controls>();    
+  }
+  {
+    auto * new_ent = game_space->create_entity("camera");
+    new_ent->get_component<transform_component>()->set_pos(0.f, 100.0f);
+    new_ent->create_component<camera_component>(
+      game_space->get_owning_engine()->get_graphics_system().get_render_target_size(),
+      uvec2::zero,
+      game_space->get_owning_engine()->get_window().get_size());
+    new_ent->create_component<camera_follow>(player->get_id().value());
   }
   {
     auto * new_ent = game_space->create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(-200.0f, -100.0f);
-    new_ent->get_component<transform_component>()->set_scale(2.0f);
+    new_ent->get_component<transform_component>()->set_scale(1.0f);
 
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
@@ -365,7 +404,7 @@ void game_hack::initialize()
   {
     auto * new_ent = game_space->create_entity("enemy");
     new_ent->get_component<transform_component>()->set_pos(200.0f, -100.0f);
-    new_ent->get_component<transform_component>()->set_scale(2.0f);
+    new_ent->get_component<transform_component>()->set_scale(1.0f);
 
     new_ent->create_component<sprite_component>(
       resource_manager::load<texture2D>("textures/enemy.png"));
@@ -383,7 +422,7 @@ void game_hack::initialize()
     new_ent->create_component<tilemap_component>(
       resource_manager::full_dir("tilemaps/test.tm"));
 
-    new_ent->create_component<slime_tumor_spread>(1.0f);
+    //new_ent->create_component<slime_tumor_spread>(1.0f);
 
     //auto * new_ai_seek = new_ent->create_component<AI_seek>(128.0f, -256.0f, player->get_id());
   }

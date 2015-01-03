@@ -117,6 +117,8 @@ set(LE_EXECUTABLE_SRC_LIST
   ${LE_SRC_DIR}/graphics/vertex_buffer.cpp
   ${LE_SRC_DIR}/graphics/vertex_buffer.h
 
+  ${LE_SRC_DIR}/engine/camera_component.cpp
+  ${LE_SRC_DIR}/engine/camera_component.h
   ${LE_SRC_DIR}/engine/component_base.cpp
   ${LE_SRC_DIR}/engine/component_base.h
   ${LE_SRC_DIR}/engine/engine.cpp

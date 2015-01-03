@@ -39,13 +39,13 @@ private:
 
   void p_render_sprites(
     space & target,
-    mat3 const& world_to_NDC);
+    mat3 const& world_to_proj);
   void p_render_tilemaps(
     space & target,
-    mat3 const& world_to_NDC);
+    mat3 const& world_to_proj);
   void p_render_ddraw(
     space & target,
-    mat3 const& world_to_NDC);
+    mat3 const& world_to_proj);
 
   std::unique_ptr<shader_program> p_textured_shader_prog;
   std::unique_ptr<shader_program> p_debug_shader_prog;

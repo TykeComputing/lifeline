@@ -140,4 +140,24 @@ operator*=(
   return lhs;
 }
 
+template<size_t N, typename COMP_T>
+matn<N, COMP_T>
+operator*(
+  float scalar,
+  matn<N, COMP_T> const& m)
+{
+  mat3 res;
+  for(size_t i = 0; i < matn<N, COMP_T>::size; ++i)
+  {
+    res[i] = m[i] * scalar;
+  }
+  return res;
+}
+
+
+
+/**********************************************************************************************/
+/* Conversions */
+/**********************************************************************************************/
+
 } // namespace LE

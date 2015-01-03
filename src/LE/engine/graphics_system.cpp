@@ -19,6 +19,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/graphics/error_checking.h>
 #include <LE/graphics/texture.h>
 
+#include <LE/engine/camera_component.h>
 #include <LE/engine/tilemap_component.h>
 #include <LE/engine/transform_component.h>
 #include <LE/engine/sprite_component.h>
@@ -83,10 +84,10 @@ graphics_system::graphics_system()
   p_load_shader(
     p_debug_shader_prog,
     "shaders/2D/debug_draw.vert",
-    "shaders/2D/debug_draw.frag");
+    "shaders/2D/debug_draw.frag"); 
 
   // Set some initial OpenGL state
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
 
   glLineWidth(2.0f);
   glPointSize(5.0f);
@@ -102,31 +103,33 @@ void graphics_system::clear_render_target()
 
 void graphics_system::render(space & target)
 {
-  // HACK /////////////////////////////////////////
+  for(auto camera_comp_it = target.engine_component_begin<camera_component>();
+    camera_comp_it != target.engine_component_end<camera_component>();
+    ++camera_comp_it)
+  {
+    camera_component const* curr_camera_comp
+      = static_cast<camera_component const*>(*camera_comp_it);
 
-  // Camera space =
-  mat3 world_to_camera({
-    1.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 1.0f
-  });
+    uvec2 cam_viewport_pos = curr_camera_comp->get_viewport_pos();
+    uvec2 cam_viewport_dim = curr_camera_comp->get_viewport_dim();
 
-  uvec2 render_target_half_size = p_render_target_size / 2u;
+    glViewport(      
+      (int)cam_viewport_pos.x(), 
+      (int)cam_viewport_pos.y(),
+      (int)cam_viewport_dim.x(),
+      (int)cam_viewport_dim.y());
 
-  mat3 camera_to_NDC({
-    1.0f / render_target_half_size.x(), 0.0f, 0.0f,
-    0.0f, 1.0f / render_target_half_size.y(), 0.0f,
-    0.0f, 0.0f, 1.0f
-  });
+    mat3 world_to_camera = curr_camera_comp->get_world_to_cam();
+    mat3 const& camera_to_proj = curr_camera_comp->get_cam_to_proj();
 
-  mat3 world_to_NDC = camera_to_NDC * world_to_camera;
-  /////////////////////////////////////////////////
+    mat3 world_to_proj = camera_to_proj * world_to_camera;
 
-  p_render_tilemaps(target, world_to_NDC);
-  p_render_sprites(target, world_to_NDC);
-  p_render_ddraw(target, world_to_NDC);
+    p_render_tilemaps(target, world_to_proj);
+    p_render_sprites(target, world_to_proj);
+    p_render_ddraw(target, world_to_proj);
 
-  LE::shader_program::use_default();
+    LE::shader_program::use_default();
+  }
 }
 
 void graphics_system::update_render_target_size(uvec2 const& window_size)
@@ -183,7 +186,7 @@ void graphics_system::p_load_shader(
 
 void graphics_system::p_render_sprites(
   space & target,
-  mat3 const& world_to_NDC)
+  mat3 const& world_to_proj)
 {
   LE::shader_program::use(*p_textured_shader_prog);
 
@@ -207,8 +210,8 @@ void graphics_system::p_render_sprites(
 
     glUniform4fv(color_multiplier_ul, 1, curr_sprite_comp->m_color.data);
 
-    mat3 model_to_NDC = world_to_NDC * model_to_world;
-    glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_NDC.data);
+    mat3 model_to_proj = world_to_proj * model_to_world;
+    glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, model_to_proj.data);
 
     curr_sprite_comp->bind();
     renderable_array_buffer::draw(GL_TRIANGLES, 0, curr_sprite_comp->get_num_verts());
@@ -219,7 +222,7 @@ void graphics_system::p_render_sprites(
 
 void graphics_system::p_render_tilemaps(
   space & target,
-  mat3 const& world_to_NDC)
+  mat3 const& world_to_proj)
 {
   LE::shader_program::use(*p_textured_shader_prog);
 
@@ -242,7 +245,7 @@ void graphics_system::p_render_tilemaps(
     auto const* curr_ent_t = curr_ent->get_component<transform_component>();
 
     mat3 const& model_to_world = curr_ent_t->get_matrix();
-    mat3 const model_to_NDC = world_to_NDC * model_to_world;
+    mat3 const model_to_proj = world_to_proj * model_to_world;
 
     // Tileset data
     tileset const* curr_tileset = curr_tilemap_comp->get_tile_set();
@@ -270,8 +273,8 @@ void graphics_system::p_render_tilemaps(
         // Place tiles from top left of each tile.
         tile_to_model(0, 2) = (x * tileset_tile_size) + (tileset_tile_size * 0.5f);
         tile_to_model(1, 2) = (y * -tileset_tile_size) - (tileset_tile_size * 0.5f);
-        mat3 tile_to_NDC = model_to_NDC * tile_to_model;
-        glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, tile_to_NDC.data);
+        mat3 tile_to_proj = model_to_proj * tile_to_model;
+        glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, tile_to_proj.data);
         renderable_element_buffer::draw(
           GL_TRIANGLES,
           curr_tileset->get_tile_index_buffer_offset(curr_tile_id),
@@ -286,7 +289,7 @@ void graphics_system::p_render_tilemaps(
 
 void graphics_system::p_render_ddraw(
   space & target,
-  mat3 const& world_to_NDC)
+  mat3 const& world_to_proj)
 {
   if(target.get_ddraw_enabled() == false)
   {
@@ -296,7 +299,7 @@ void graphics_system::p_render_ddraw(
   LE::shader_program::use(*p_debug_shader_prog);
 
   GLint to_NDC_ul = p_debug_shader_prog->get_unform_location("to_NDC");
-  glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, world_to_NDC.data);
+  glUniformMatrix3fv(to_NDC_ul, 1, GL_TRUE, world_to_proj.data);
 
   // TODO: Use camera mat
   target.m_world_ddraw.draw();

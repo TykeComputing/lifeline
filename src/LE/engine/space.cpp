@@ -245,7 +245,7 @@ void space::p_unregister_logic_component(
   unique_id<logic_component_base>::value_type type_id,
   logic_component_base * comp)
 {
-  LE_FATAL_ERROR_IF(type_id == engine_component_base::type_id.value(),
+  LE_FATAL_ERROR_IF(type_id == logic_component_base::type_id.value(),
     "Cannot unregister base componet.")
 
   auto unregister_logic_component_type = [&](

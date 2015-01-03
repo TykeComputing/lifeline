@@ -81,6 +81,26 @@ operator*=(
   matn<3, COMP_T> & lhs,
   matn<3, COMP_T> const& rhs);
 
+template<size_t N,typename COMP_T>
+matn<N, COMP_T>
+operator*(
+  float scalar,
+  matn<N, COMP_T> const& m);
+
+/**********************************************************************************************/
+/* Matrix Operations */
+/**********************************************************************************************/
+
+void transpose(mat3 & m);
+mat3 get_transpose(mat3 const& m);
+mat3 get_inverse(mat3 const& m);
+
+/**********************************************************************************************/
+/* Conversions */
+/**********************************************************************************************/
+
+mat4 mat4mk(mat3 const& m);
+
 } // namespace LE
 
 #include "mat.hpp"

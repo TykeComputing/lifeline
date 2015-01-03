@@ -1,5 +1,7 @@
 # Find cppformat library (https://github.com/cppformat/cppformat)
 
+include(FindPackageHandleStandardArgs)
+
 # Stored in subrepo, platform specific path set by LE_EXTERNAL_LIB_DIR.
 find_path(CPPFORMAT_INCLUDE_PATH cppformat/format.h
   PATHS ${LE_EXTERNAL_INCLUDE_DIR}
