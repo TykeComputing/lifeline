@@ -59,6 +59,12 @@ void OS_interface::update(engine & game_engine, input_system & input_sys)
         game_engine.set_is_running(false);
       }
       break;
+
+      case SDL_MOUSEWHEEL:
+      {
+        input_sys.set_mouse_wheel_delta(vec2((float)curr_event.wheel.x, (float)curr_event.wheel.y));
+      }
+      break;
     }
   }
 

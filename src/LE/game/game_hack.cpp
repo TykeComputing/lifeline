@@ -290,10 +290,6 @@ public:
   virtual void update(float dt)
   {
     entity * const player_ent = get_owning_entity();
-    if(player_ent == nullptr)
-    {
-      return;
-    }
 
     space * const owning_space = player_ent->get_owning_space();
     input_system const& input_sys = owning_space->get_owning_engine()->get_input_system();
@@ -301,6 +297,16 @@ public:
     auto * const player_t = player_ent->get_component<transform_component>();
 
     // Shooting
+    auto const* const camera = owning_space->find_entity("camera");
+    if(camera == nullptr)
+      return;
+
+    // Using camera to world (NOT world to camera)
+    vec2 const& mouse_pos_world = vec2(
+      camera->get_component<transform_component>()->get_matrix() * vec3(input_sys.get_mouse_pos(), 1.0f) );
+    //mouse_pos_world -= 
+    // NEED TO SCALE MOUSE BY ratio of actual window size to render target size...
+
     if(input_sys.is_key_triggered(SDLK_SPACE) || input_sys.is_key_pressed(SDLK_m))
     {
       entity * new_bullet_ent = owning_space->create_entity("bullet");
@@ -334,18 +340,11 @@ public:
     {
       player_transl.x() = m_player_movement_speed * dt;
     }
-    if(input_sys.is_key_pressed(SDLK_q))
-    {
-      player_t->rotate(dt * 3.14f);
-    }
-    if(input_sys.is_key_pressed(SDLK_e))
-    {
-      player_t->rotate(-dt * 3.14f);
-    }
-    player_t->translate(player_transl);
 
     if(player_transl != vec2::zero)
     {
+      player_t->translate(player_transl);
+
       if(owning_space->get_ddraw_enabled())
       {
         owning_space->m_world_ddraw.lines.add_arrow(
@@ -391,7 +390,7 @@ void game_hack::initialize()
   }
   {
     auto * new_ent = game_space->create_entity("camera");
-    new_ent->get_component<transform_component>()->set_pos(0.f, 100.0f);
+    new_ent->get_component<transform_component>()->set_scale(1.0f);
     new_ent->create_component<camera_component>(
       game_space->get_owning_engine()->get_graphics_system().get_render_target_size(),
       uvec2::zero,

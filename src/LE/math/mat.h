@@ -10,6 +10,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <array>
 #include <type_traits>
 
+#include <LE/math/vec.h>
+
 namespace LE
 {
 
@@ -80,6 +82,12 @@ matn<3, COMP_T> &
 operator*=(
   matn<3, COMP_T> & lhs,
   matn<3, COMP_T> const& rhs);
+
+template<typename COMP_T>
+vecn<3, COMP_T>
+operator*(
+  matn<3, COMP_T> const& lhs,
+  vecn<3, COMP_T> const& rhs);
 
 template<size_t N,typename COMP_T>
 matn<N, COMP_T>

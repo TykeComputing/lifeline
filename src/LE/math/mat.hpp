@@ -140,6 +140,18 @@ operator*=(
   return lhs;
 }
 
+template<typename COMP_T>
+vecn<3, COMP_T>
+operator*(
+  matn<3, COMP_T> const& lhs,
+  vecn<3, COMP_T> const& rhs)
+{
+  return vec3
+    (lhs(0, 0) * rhs.x()) + (lhs(0, 1) * rhs.y()) + (lhs(0, 2) * rhs.z()) // x
+    (lhs(1, 0) * rhs.x()) + (lhs(1, 1) * rhs.y()) + (lhs(1, 2) * rhs.z()) // y
+    (lhs(2, 0) * rhs.x()) + (lhs(2, 1) * rhs.y()) + (lhs(2, 2) * rhs.z()) // z
+}
+
 template<size_t N, typename COMP_T>
 matn<N, COMP_T>
 operator*(
