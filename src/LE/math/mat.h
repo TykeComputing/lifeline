@@ -89,10 +89,10 @@ operator*(
   matn<3, COMP_T> const& lhs,
   vecn<3, COMP_T> const& rhs);
 
-template<size_t N,typename COMP_T>
+template<size_t N, typename COMP_T>
 matn<N, COMP_T>
 operator*(
-  float scalar,
+  COMP_T scalar,
   matn<N, COMP_T> const& m);
 
 /**********************************************************************************************/

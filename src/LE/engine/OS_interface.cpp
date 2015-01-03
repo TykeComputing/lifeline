@@ -62,7 +62,7 @@ void OS_interface::update(engine & game_engine, input_system & input_sys)
 
       case SDL_MOUSEWHEEL:
       {
-        input_sys.set_mouse_wheel_delta(vec2((float)curr_event.wheel.x, (float)curr_event.wheel.y));
+        input_sys.set_mouse_wheel_delta(uvec2((unsigned)curr_event.wheel.x, (unsigned)curr_event.wheel.y));
       }
       break;
     }

@@ -265,6 +265,10 @@ operator/=(
 /**********************************************************************************************/
 
 template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
+operator-(vecn<N, COMP_T> const& v);
+
+template<size_t N, typename COMP_T>
 COMP_T
 dot(
   vecn<N, COMP_T> const& lhs,

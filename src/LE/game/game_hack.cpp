@@ -25,6 +25,7 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 #include <LE/engine/sprite_component.h>
 #include <LE/engine/transform_component.h>
 #include <LE/engine/TTF_system.h>
+#include <LE/graphics/colors.h>
 #include <LE/graphics/error_checking.h>
 #include <LE/graphics/shader_program.h>
 #include <LE/graphics/vertex.h>
@@ -297,15 +298,15 @@ public:
     auto * const player_t = player_ent->get_component<transform_component>();
 
     // Shooting
-    auto const* const camera = owning_space->find_entity("camera");
-    if(camera == nullptr)
+    entity const* const camera_ent = owning_space->find_entity("camera");
+    if(camera_ent == nullptr)
       return;
 
+    auto const* const camera = camera_ent->get_component<camera_component>();
+
     // Using camera to world (NOT world to camera)
-    vec2 const& mouse_pos_world = vec2(
-      camera->get_component<transform_component>()->get_matrix() * vec3(input_sys.get_mouse_pos(), 1.0f) );
-    //mouse_pos_world -= 
-    // NEED TO SCALE MOUSE BY ratio of actual window size to render target size...
+    vec2 const& mouse_pos_world = camera->viewport_to_world_space(input_sys.get_mouse_pos());
+    owning_space->m_world_ddraw.lines.add_circle(mouse_pos_world, 32.0f, colors::red);
 
     if(input_sys.is_key_triggered(SDLK_SPACE) || input_sys.is_key_pressed(SDLK_m))
     {

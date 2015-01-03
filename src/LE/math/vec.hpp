@@ -508,6 +508,25 @@ operator/=(
 /**********************************************************************************************/
 
 template<size_t N, typename COMP_T>
+vecn<N, COMP_T>
+operator-(vecn<N, COMP_T> const& v)
+{
+  vecn<N, COMP_T> result;
+  for(size_t i = 0; i < N; ++i)
+  {
+    result[i] = -v[i];
+  }
+}
+
+template<size_t N>
+vecn<N, unsigned>
+operator-(vecn<N, unsigned> const& v)
+{
+  static_assert(true, "Cannot negate unsigned vectors!");
+}
+
+
+template<size_t N, typename COMP_T>
 COMP_T
 dot(
   vecn<N, COMP_T> const& lhs,

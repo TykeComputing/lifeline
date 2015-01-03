@@ -26,7 +26,7 @@ public:
 
   /*
    * Calculates a new render target size based on window_size that will keep 1 pixel in the
-   *   render target scalable to one pixel in the window.
+   *   render target scalable to n (integer) pixels in the window.
    */
   void update_render_target_size(uvec2 const& window_size);
   uvec2 const& get_render_target_size() const;

@@ -52,12 +52,12 @@ public:
   bool is_mouse_triggered(mouse_button button) const;
   bool is_mouse_released(mouse_button button) const;
 
-  vec2 const& get_mouse_pos() const;
-  vec2 const& get_prev_mouse_pos() const;
-  vec2 get_delta_mouse_pos() const;
+  uvec2 const& get_mouse_pos() const;
+  uvec2 const& get_prev_mouse_pos() const;
+  uvec2 get_delta_mouse_pos() const;
 
-  void set_mouse_wheel_delta(vec2 const& new_delta);
-  vec2 get_mouse_wheel_delta() const;
+  void set_mouse_wheel_delta(uvec2 const& new_delta);
+  uvec2 get_mouse_wheel_delta() const;
 
 private:
   std::vector<bool> p_curr_states;
@@ -66,10 +66,10 @@ private:
   Uint32 p_curr_mouse_state;
   Uint32 p_prev_mouse_state;
 
-  vec2 p_curr_mouse_pos;
-  vec2 p_prev_mouse_pos;
+  uvec2 p_curr_mouse_pos;
+  uvec2 p_prev_mouse_pos;
 
-  vec2 p_mouse_wheel_delta;
+  uvec2 p_mouse_wheel_delta;
   bool p_mouse_wheel_set_this_update;
 
   bool p_ignore_keyboard;
