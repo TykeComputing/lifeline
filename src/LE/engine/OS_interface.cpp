@@ -71,7 +71,7 @@ void OS_interface::update(engine & game_engine, input_system & input_sys)
   // Quick super easy hack
   // NOTE: Must be called after all SDL_PollEvents
   // TODO - Consider updating based on SDL_Events?
-  input_sys.update_keystates();
+  input_sys.update_input_state();
 }
 
 std::string OS_interface::get_base_dir() const

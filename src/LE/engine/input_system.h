@@ -31,7 +31,7 @@ class input_system
 public:
   input_system();
 
-  void update_keystates();
+  void update_input_state();
 
   /*
    * Get if key is currently being held down.

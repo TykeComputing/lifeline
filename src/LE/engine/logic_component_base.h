@@ -45,13 +45,9 @@ public:
    */
   virtual void teardown() {}
 
-  bool is_initialized() const { return p_is_init; }
-
   static unique_id<logic_component_base> const type_id;
 
 private:
-
-  bool p_is_init = false;
 
   friend class logic_system;
 };

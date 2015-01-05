@@ -239,6 +239,8 @@ void space::p_register_logic_component(
   p_logic_components[logic_component_base::type_id.value()].emplace_back(comp);
   // Add to type specific container
   p_logic_components[type_id].emplace_back(comp);
+
+  comp->initialize();
 }
 
 void space::p_unregister_logic_component(
@@ -263,6 +265,8 @@ void space::p_unregister_logic_component(
       LE_FATAL_ERROR("Attempting to unregister logic component that is not registered!");
     }
   };
+
+  comp->teardown();
 
   // Remove from type specific container
   unregister_logic_component_type(type_id);

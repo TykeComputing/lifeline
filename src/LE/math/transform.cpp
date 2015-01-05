@@ -6,6 +6,8 @@ Copyright 2014 by Peter Clark. All Rights Reserved.
 
 #include "transform.h"
 
+#include <LE/math/float.h>
+
 namespace LE
 {
 
@@ -137,6 +139,27 @@ void transform::mark_as_dirty() const
 void transform::mark_as_clean() const
 {
   p_is_dirty = false;
+}
+
+void transform::set_rot(float value)
+{
+  mark_as_dirty();
+  p_rot = value;
+}
+
+void transform::rotate(float rads)
+{
+  mark_as_dirty();
+  p_rot += rads;
+}
+
+void transform::set_dir(vec2 const& value)
+{
+  mark_as_dirty();
+  LE_FATAL_ERROR_IF(length(value) > 1.0f + epsilon, "Dir must be a unit length vector!");
+  p_rot = acos(value.x());
+  if(value.y() < 0.0f)
+    p_rot = -p_rot;
 }
 
 } // namespace LE

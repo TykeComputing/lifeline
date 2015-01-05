@@ -138,15 +138,25 @@ unique_id<logic_component_base> const AI_seek::type_id;
 class bullet_movement : public logic_component_base
 {
 public:
+  bullet_movement(vec2 const& dir)
+    : dir(dir)
+  {
+  }
+
+  virtual void initialize()
+  {
+    get_owning_entity()->get_component<transform_component>()->set_dir(dir);
+  }
+
   virtual void update(float dt)
   {
     get_owning_entity()->get_component<transform_component>()->translate(
-      0.0f,
-      -bullet_movement_speed * dt);
+      dir * bullet_movement_speed * dt);
   }
 
-  // TODO - Replace with phyics
+  // TODO - Replace with physics
   float const bullet_movement_speed = 512.0f;
+  vec2 dir;
 
   static unique_id<logic_component_base> const type_id;
 };
@@ -306,9 +316,14 @@ public:
 
     // Using camera to world (NOT world to camera)
     vec2 const& mouse_pos_world = camera->viewport_to_world_space(input_sys.get_mouse_pos());
-    owning_space->m_world_ddraw.lines.add_circle(mouse_pos_world, 32.0f, colors::red);
+    owning_space->m_world_ddraw.lines.add_circle(mouse_pos_world, 16.0f, colors::red);
+    if(mouse_pos_world != player_t->get_pos())
+    {
+      log_status(log_scope::GAME, "Setting dir");
+      player_t->set_dir(get_normalized(mouse_pos_world - player_t->get_pos()));
+    }
 
-    if(input_sys.is_key_triggered(SDLK_SPACE) || input_sys.is_key_pressed(SDLK_m))
+    if(input_sys.is_mouse_triggered(pc_mouse_button_left) || input_sys.is_mouse_pressed(pc_mouse_button_right))
     {
       entity * new_bullet_ent = owning_space->create_entity("bullet");
       auto * new_bullet_t = new_bullet_ent->get_component<transform_component>();
@@ -318,7 +333,7 @@ public:
       new_bullet_ent->create_component<sprite_component>(
         resource_manager::load<texture2D>("textures/bullet.png"));
       new_bullet_ent->create_component<physics_component>();
-      new_bullet_ent->create_component<bullet_movement>();
+      new_bullet_ent->create_component<bullet_movement>(player_t->get_dir());
       new_bullet_ent->create_component<bullet_damage>(player_ent->get_id());
     }
 

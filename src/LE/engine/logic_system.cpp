@@ -23,12 +23,6 @@ void logic_system::update(space & target, float dt)
 
   for(auto * curr_logic_comp : to_update)
   {
-    if(curr_logic_comp->is_initialized() == false)
-    {
-      curr_logic_comp->initialize();
-      curr_logic_comp->p_is_init = true;
-    }
-
     curr_logic_comp->update(dt);
   }
 }

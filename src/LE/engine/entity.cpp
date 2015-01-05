@@ -39,7 +39,6 @@ entity::~entity()
 
   for(auto & curr_logic_comp : p_logic_components)
   {
-    curr_logic_comp.second->teardown();
     p_unregister_logic_component(curr_logic_comp.first, curr_logic_comp.second.get());
   }
 }

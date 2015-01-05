@@ -11,12 +11,20 @@ namespace LE
 
 input_system::input_system() :
   p_curr_states(SDL_NUM_SCANCODES, false),
-  p_prev_states(SDL_NUM_SCANCODES, false)
+  p_prev_states(SDL_NUM_SCANCODES, false),
+  p_curr_mouse_state(0),
+  p_prev_mouse_state(0),
+  p_curr_mouse_pos(0, 0),
+  p_prev_mouse_pos(0, 0),
+  p_mouse_wheel_delta(0, 0),
+  p_mouse_wheel_set_this_update(false),
+  p_ignore_keyboard(false),
+  p_ignore_mouse(false)
 {
 
 }
 
-void input_system::update_keystates()
+void input_system::update_input_state()
 {
   // Keyboard
   int num_SDL_keys;

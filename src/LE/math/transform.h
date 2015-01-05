@@ -58,8 +58,9 @@ public:
   vec2 get_dir() const { return vec2(cos(p_rot), sin(p_rot)); }
   vec2 get_right() const { return get_orthogonal(get_dir()); }
 
-  void set_rot(float value) { p_rot = value; }
-  void rotate(float rads) { p_rot += rads; }
+  void set_rot(float value);
+  void rotate(float rads);
+  void set_dir(vec2 const& value);
 
   /**********************************************/
   /* Matrix */
