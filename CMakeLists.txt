@@ -37,6 +37,7 @@ find_package(SDL2_ttf REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(CPPFormat REQUIRED)
+find_package(Box2D REQUIRED)
 find_package(Doxygen)
 
 set(LE_SRC_DIR "${CMAKE_SOURCE_DIR}/src/LE")
