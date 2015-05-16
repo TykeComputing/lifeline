@@ -38,6 +38,7 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(CPPFormat REQUIRED)
 find_package(Box2D REQUIRED)
+find_package(LuaBridge REQUIRED)
 find_package(Doxygen)
 
 set(LE_SRC_DIR "${CMAKE_SOURCE_DIR}/src/LE")
@@ -320,6 +321,8 @@ target_include_directories(${PROJECT_NAME}
     ${SDL2_INCLUDE_DIR}
     ${SDL2_TTF_INCLUDE_DIR}
     ${CPPFORMAT_INCLUDE_PATH}
+    ${BOX2D_INCLUDE_DIR}
+    ${LUABRIDGE_INCLUDE_DIR}
 
     ${LE_EXTERNAL_INCLUDE_DIR}
 )
@@ -330,10 +333,13 @@ target_link_libraries(${PROJECT_NAME}
     general ${OPENGL_gl_LIBRARY}
     general ${SDL2_LIBRARY}
     general ${SDL2_TTF_LIBRARY}
-
+    
   $<$<CXX_COMPILER_ID:MSVC>:
     debug ${CPPFORMAT_LIBRARY_DEBUG}
     optimized ${CPPFORMAT_LIBRARY}
+
+    debug ${BOX2D_LIBRARY_DEBUG}
+    optimized ${BOX2D_LIBRARY}
   >
 
   $<$<CXX_COMPILER_ID:GNU>:

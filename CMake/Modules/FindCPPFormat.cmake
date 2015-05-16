@@ -24,9 +24,9 @@ else()
 endif()
 
 if(CPPFORMAT_INCLUDE_PATH)
-  set(CPPFORMAT_FOUND 1 CACHE STRING "Set to 1 if GLEW is found, 0 otherwise")
+  set(CPPFORMAT_FOUND 1 CACHE STRING "Set to 1 if CPPFormat is found, 0 otherwise")
 else ()
-  set(CPPFORMAT_FOUND 0 CACHE STRING "Set to 1 if GLEW is found, 0 otherwise")
+  set(CPPFORMAT_FOUND 0 CACHE STRING "Set to 1 if CPPFormat is found, 0 otherwise")
 endif()
 
 mark_as_advanced(CPPFORMAT_FOUND)
